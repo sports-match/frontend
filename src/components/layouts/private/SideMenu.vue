@@ -7,14 +7,15 @@
           <SidebarMenuItem>
             <SidebarMenuButton class="text-sidebar-foreground/70">
               <House class="text-sidebar-foreground/70" />
-              <span>Dashbaord</span>
+              <RouterLink to="/">
+                Dashbaord
+              </RouterLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <Collapsible
             v-for="item in data.navMain"
             :key="item.title"
             as-child
-            :default-open="item.isActive"
             class="group/collapsible"
           >
             <SidebarMenuItem>
@@ -32,9 +33,9 @@
                     :key="subItem.title"
                   >
                     <SidebarMenuSubButton as-child>
-                      <a :href="subItem.url">
+                      <RouterLink :to="subItem.url">
                         <span>{{ subItem.title }}</span>
-                      </a>
+                      </RouterLink>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 </SidebarMenuSub>
@@ -42,7 +43,7 @@
             </SidebarMenuItem>
           </Collapsible>
           <SidebarMenuItem>
-            <SidebarMenuButton class="text-sidebar-foreground/70">
+            <SidebarMenuButton class="text-sidebar-foreground/70" @click="router.push('/playerStats')">
               <Medal class="text-sidebar-foreground/70" />
               <span>Player Stats</span>
             </SidebarMenuButton>
@@ -54,13 +55,13 @@
         <SidebarGroupLabel>Support</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton class="text-sidebar-foreground/70">
+            <SidebarMenuButton class="text-sidebar-foreground/70" @click="router.push('/faq')">
               <CircleHelp class="text-sidebar-foreground/70" />
               <span>FAQ</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton class="text-sidebar-foreground/70">
+            <SidebarMenuButton class="text-sidebar-foreground/70" @click="router.push('/contact')">
               <Mailbox class="text-sidebar-foreground/70" />
               <span>Contact Us</span>
             </SidebarMenuButton>
@@ -118,6 +119,7 @@ import {
   SidebarTrigger,
 } from '@/components/shares/ui/sidebar';
 import { useSidebar } from '@/components/shares/ui/sidebar/utils';
+import router from '@/routes';
 import { BadgeCheck, Banknote, Bell, CalendarRange, ChartLine, Check, ChevronRight, ChevronsUpDown, CircleHelp, Command, CreditCard, FileText, Folder, Forward, GalleryVerticalEnd, House, Landmark, LogOut, Mailbox, Medal, MoreHorizontal, Plus, Settings, Sparkles, Trash2 } from 'lucide-vue-next';
 
 const { open } = useSidebar();
@@ -142,16 +144,16 @@ const data = {
     },
     {
       title: 'Events',
-      url: '#',
+      url: '/evnents',
       icon: CalendarRange,
       items: [
         {
           title: 'Upcoming',
-          url: '#',
+          url: '/events/upcoming',
         },
         {
           title: 'Past Events',
-          url: '#',
+          url: '/events/past',
         },
       ],
     },

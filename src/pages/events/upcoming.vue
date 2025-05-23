@@ -1,30 +1,25 @@
 <template>
   <MainContentLayout>
     <template #title>
-      Welcome Back, {{ user.displayName }}
+      Upcoming Events
     </template>
 
     <div class="flex flex-col gap-4">
-      <EventCard />
-      <CalendarSection />
-      <EventList :events />
+      <EventList :events="upcoming">
+        <template #action>
+          <span />
+        </template>
+      </EventList>
     </div>
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
-import CalendarSection from '@/components/events/CalendarSection.vue';
-import EventCard from '@/components/events/Card.vue';
 import EventList from '@/components/events/List.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { useEventStore } from '@/stores/event';
-import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
 
-const userStore = useUserStore();
 const eventStore = useEventStore();
-
-const events = computed(() => eventStore.events);
-
-const user = computed(() => userStore.userDetails);
+const upcoming = computed(() => eventStore.upcomingEvents);
 </script>

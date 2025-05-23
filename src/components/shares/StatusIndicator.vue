@@ -25,7 +25,7 @@ const statusColors = {
 };
 
 const resolvedStatus = computed(() => {
-  return (props.status as string).toLowerCase();
+  return (props.status as string)?.toLowerCase();
 });
 
 const bgColor = computed(() => statusColors[resolvedStatus.value as keyof typeof statusColors]?.bg || statusColors.default.bg);

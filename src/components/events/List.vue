@@ -26,6 +26,12 @@
       @on-sort-change="fetchData"
       @on-page-change="fetchData"
     >
+      <template #signedUp="{ row }">
+        <div class="flex items-center gap-2">
+          <Percentage :percentage="row.original.signedUpPercent" />
+          {{ row.original.signedUp }}
+        </div>
+      </template>
       <template #status="{ row }">
         <StatusIndicator :status="row.original.status" />
       </template>
@@ -36,10 +42,10 @@
         <Button variant="ghost" size="sm">
           <Files class="size-4" />
         </Button>
-        <Button variant="ghost" size="sm">
+        <Button v-if="row.original.status?.toLowerCase() !== 'completed'" variant="ghost" size="sm">
           <ClockAlert class="size-4" />
         </Button>
-        <DropdownMenu>
+        <DropdownMenu v-if="row.original.status?.toLowerCase() !== 'completed'">
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="sm">
               <Ellipsis class="size-4" />
@@ -74,6 +80,7 @@
 import type { ColumnDef } from '@tanstack/vue-table';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
+import Percentage from '@/components/shares/Percentage.vue';
 import StatusIndicator from '@/components/shares/StatusIndicator.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
@@ -83,6 +90,12 @@ import { useEventStore } from '@/stores/event';
 import { Check, ClockAlert, Edit, Ellipsis, Eye, Files, Filter, QrCode, Search, Trash } from 'lucide-vue-next';
 import { computed, h, onMounted, ref } from 'vue';
 
+const props = defineProps({
+  events: {
+    type: Array,
+    default: () => [],
+  },
+});
 const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'date',
@@ -115,9 +128,7 @@ const columns: ColumnDef<any>[] = [
   },
 ];
 
-const eventStore = useEventStore();
-
-const eventList = computed(() => eventStore.events);
+const eventList = computed(() => props.events);
 const totalRecords = ref(0);
 const eventTable = ref();
 
