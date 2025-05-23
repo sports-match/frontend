@@ -1,6 +1,6 @@
 import { createPinia } from 'pinia';
 
-export { useCounterStore } from './counter';
+export { useEventStore } from './event';
 export { useUserStore } from './user';
 
 export const pinia = createPinia();

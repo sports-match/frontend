@@ -13,6 +13,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@tanstack/vue-table": "^8.21.3",
     "@vueuse/core": "^12.4.0",
     "@vueuse/integrations": "^12.4.0",
     "class-variance-authority": "^0.7.1",
