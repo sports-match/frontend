@@ -1,20 +1,26 @@
 <template>
   <div class="bg-black text-white rounded-2xl flex items-center justify-between shadow-lg">
     <div class="flex-1 p-6">
-      <div class="flex items-center font-semibold text-2xl mb-4">
-        Today --- 8:00 PM
-      </div>
-      <h2 class="text-lg font-semibold mb-2">
-        May 9th Mukilteo Mixer Standard Doubles Mixer
+      <h2 class="text-xl font-semibold mb-2">
+        NWBA - Bel-Red - NWBA - Bel-Red Fixed Partner Rotary Doubles Mixer
       </h2>
       <div class="flex items-center text-sm text-gray-300 mb-4">
-        Arena Badminton & Sports Club
+        <svg
+          class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round" stroke-linejoin="round"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        Thu May 15, 2025, 8:00 PM
       </div>
 
       <div class="flex space-x-2">
         <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
-          <Calendar class="mr-2 size-4" />
-          Event Detail
+          <Copy class="mr-2 size-4" />
+          <span>https://go.gl/xprowi2025</span>
         </Button>
 
         <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
@@ -32,8 +38,7 @@
 
     <div class="flex items-center">
       <img
-        src="@/assets/images/tennis.svg" alt="Event image"
-        class="h-52 w-auto object-contain"
+        src="@/assets/images/racket.svg" alt="racket"
       >
     </div>
   </div>
@@ -41,5 +46,5 @@
 
 <script setup>
 import { Button } from '@/components/shares/ui/button';
-import { Calendar, CircleAlert, ClockAlert, Link } from 'lucide-vue-next';
+import { CircleAlert, ClockAlert, Copy, Link } from 'lucide-vue-next';
 </script>

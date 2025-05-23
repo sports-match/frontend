@@ -52,7 +52,7 @@
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="$router.push({ name: 'ViewEvent', params: { id: row.original.id } })">
               <Eye class="size-4 mr-2" />
               View Details
             </DropdownMenuItem>

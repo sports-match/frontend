@@ -4,6 +4,7 @@ export const useEventStore = defineStore('event', {
   state: () => ({
     events: [
       {
+        id: 1,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -13,6 +14,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 2,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -22,6 +24,7 @@ export const useEventStore = defineStore('event', {
         status: 'Private',
       },
       {
+        id: 3,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -31,6 +34,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 4,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -40,6 +44,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 5,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -49,6 +54,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 6,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -58,6 +64,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 7,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -67,6 +74,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 8,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -76,6 +84,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 9,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -85,6 +94,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 10,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -94,6 +104,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 11,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -105,6 +116,7 @@ export const useEventStore = defineStore('event', {
     ],
     upcomingEvents: [
       {
+        id: 1,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -114,6 +126,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 2,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -123,6 +136,7 @@ export const useEventStore = defineStore('event', {
         status: 'Private',
       },
       {
+        id: 3,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -132,6 +146,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 4,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -141,6 +156,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 5,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -150,6 +166,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 6,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -159,6 +176,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 7,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -168,6 +186,7 @@ export const useEventStore = defineStore('event', {
         status: 'Publish',
       },
       {
+        id: 8,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -179,6 +198,7 @@ export const useEventStore = defineStore('event', {
     ],
     pastEvents: [
       {
+        id: 1,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -188,6 +208,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 2,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -197,6 +218,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 3,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -206,6 +228,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 4,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -215,6 +238,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 5,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -224,6 +248,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 6,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -233,6 +258,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 7,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',
@@ -242,6 +268,7 @@ export const useEventStore = defineStore('event', {
         status: 'Completed',
       },
       {
+        id: 8,
         date: '26/04/2020, 12:42 AM',
         eventName: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
         location: 'BBC-Mukilteo',

@@ -17,7 +17,7 @@ export const events = [{
     {
       path: ':id',
       name: 'ViewEvent',
-      // component: () => import('@/pages/events/view.vue'),
+      component: () => import('@/pages/events/view.vue'),
     },
     {
       path: ':id/edit',

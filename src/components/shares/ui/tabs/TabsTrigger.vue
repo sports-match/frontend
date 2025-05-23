@@ -1,16 +1,3 @@
-<script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { TabsTrigger, type TabsTriggerProps, useForwardProps } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-
-const props = defineProps<TabsTriggerProps & { class?: HTMLAttributes['class'] }>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwardedProps = useForwardProps(delegatedProps)
-</script>
-
 <template>
   <TabsTrigger
     v-bind="forwardedProps"
@@ -19,8 +6,21 @@ const forwardedProps = useForwardProps(delegatedProps)
       props.class,
     )"
   >
-    <span class="truncate">
+    <span class="truncate flex items-center gap-1">
       <slot />
     </span>
   </TabsTrigger>
 </template>
+
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import { TabsTrigger, type TabsTriggerProps, useForwardProps } from 'reka-ui';
+
+const props = defineProps<TabsTriggerProps & { class?: HTMLAttributes['class'] }>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwardedProps = useForwardProps(delegatedProps);
+</script>
