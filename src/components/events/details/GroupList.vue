@@ -81,8 +81,8 @@
                   :key="pIndex"
                   class="grid grid-cols-6 py-2 border-b last:border-b-0 text-sm"
                 >
-                  <span class="col-span-3">{{ player.name }}</span>
-                  <span>{{ player.rank }}</span>
+                  <span class="col-span-3 p-2">{{ player.name }}</span>
+                  <span class="p-2">{{ player.rank }}</span>
                   <div class="col-span-2 flex justify-end gap-2">
                     <Button variant="ghost" size="sm">
                       <ArrowLeftRight class="text-blue-500 size-4" />
