@@ -40,14 +40,7 @@
         <GroupList />
       </TabsContent>
       <TabsContent value="results">
-        <div class="p-4">
-          <h2 class="text-lg font-semibold mb-2">
-            Results
-          </h2>
-          <p class="text-sm text-gray-500">
-            No results available yet.
-          </p>
-        </div>
+        <ResultList />
       </TabsContent>
     </Tabs>
   </MainContentLayout>
@@ -57,6 +50,7 @@
 import EventCard from '@/components/events/details/Card.vue';
 import GroupList from '@/components/events/details/GroupList.vue';
 import RegisterList from '@/components/events/details/RegisterList.vue';
+import ResultList from '@/components/events/details/ResultList.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
