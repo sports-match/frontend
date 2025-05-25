@@ -34,7 +34,7 @@ import { ref } from 'vue';
 
 defineProps({
   percentage: {
-    type: Number,
+    type: [Number, String],
     default: 0,
   },
 });

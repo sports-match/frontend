@@ -35,7 +35,6 @@
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem>
-          <BadgeCheck />
           Account
         </DropdownMenuItem>
         <DropdownMenuItem>
