@@ -3,6 +3,9 @@
     <template #title>
       Welcome Back, {{ user.displayName }}
     </template>
+    <template #action>
+      <CreateEvent />
+    </template>
 
     <div v-if="!pending" class="flex flex-col gap-4">
       <EventCard />
@@ -16,6 +19,7 @@
 <script setup lang="ts">
 import CalendarSection from '@/components/events/CalendarSection.vue';
 import EventCard from '@/components/events/Card.vue';
+import CreateEvent from '@/components/events/CreateForm.vue';
 import EventList from '@/components/events/List.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import PendingOverlay from '@/components/shares/PendingOverlay.vue';
