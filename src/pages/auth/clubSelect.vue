@@ -81,7 +81,7 @@ function submitSelection() {
   console.log('Selected clubs:', selectedClubs.value);
   router.push({
     name: 'DashboardPage',
-    query: { clubs: selectedClubs.value.join(',') },
+    query: { pending: true },
   });
 }
 </script>
