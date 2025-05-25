@@ -114,14 +114,16 @@ import { SidebarMenuButton } from '@/components/shares/ui/sidebar';
 import { useUserStore } from '@/stores/user';
 import { BadgeInfo, ChevronDown, LogOutIcon, SettingsIcon, User } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
-
+const router = useRouter();
 const user = computed(() => userStore.userDetails);
 
 const getFistletter = (name: string) => name?.charAt(0).toUpperCase();
 
 function logout() {
-  userStore.logout();
+  userStore.Logout();
+  router.push({ name: 'AuthLoginPage' });
 }
 </script>
