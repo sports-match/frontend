@@ -22,6 +22,7 @@
     "lucide-vue-next": "^0.471.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.3.0",
+    "qrcode": "^1",
     "radix-vue": "^1.9.12",
     "reka-ui": "^2.2.1",
     "tailwind-merge": "^2.6.0",
