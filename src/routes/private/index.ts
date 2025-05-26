@@ -16,6 +16,11 @@ export const privateRoutes: RouteRecordRaw[] = [{
       },
       children: [
         {
+          path: 'skill-assessment',
+          name: 'SkillAssessmentPage',
+          component: () => import('@/pages/skillAssessment/index.vue'),
+        },
+        {
           path: 'dashboard',
           name: 'DashboardPage',
           component: () => import('@/pages/dashboard/index.vue'),
