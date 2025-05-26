@@ -87,6 +87,10 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
+const emit = defineEmits<{
+  (e: 'update:selectedValues', value: typeof options): void;
+}>();
+
 // Options
 const options = [
   { value: '1', label: 'Alice Johnson' },
@@ -121,11 +125,13 @@ function addItem(item: typeof options[0]) {
   }
   inputValue.value = '';
   isOpen.value = false;
+  emit('update:selectedValues', selectedValues.value);
 }
 
 // Remove item
 function removeItem(value: string) {
   selectedValues.value = selectedValues.value.filter(item => item.value !== value);
+  emit('update:selectedValues', selectedValues.value);
 }
 
 // 🧠 Handle clicks outside

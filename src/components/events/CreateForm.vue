@@ -20,11 +20,11 @@
         <div class="space-y-3 mt-2">
           <!-- <div class="flex flex-col"> -->
           <div class="flex items-center space-x-2">
-            <Switch id="public-event" />
+            <Switch id="public-event" v-model="form.publicEvent" />
             <Label for="public-event" class="font-normal">This event is public and anyone can sign up</Label>
           </div>
           <div class="flex items-center space-x-2">
-            <Switch id="waitlist" />
+            <Switch id="waitlist" v-model="form.waitlist" />
             <Label for="waitlist" class="font-normal">Allow users to join a waitlist once event is full</Label>
           </div>
         <!-- </div> -->
@@ -56,7 +56,7 @@
 
         <!-- Form Fields -->
         <div>
-          <Select>
+          <Select v-model="form.club" class="mb-4">
             <SelectTrigger>
               <SelectValue placeholder="Select club" />
             </SelectTrigger>
@@ -83,11 +83,11 @@
               </SelectItem>
             </SelectContent>
           </Select>
-          <Input class="flex flex-col justify-between" placeholder="Date" type="date" />
+          <Input v-model="form.date" class="flex flex-col justify-between" placeholder="Date" type="date" />
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <Input placeholder="Max players" />
-          <Select>
+          <Input v-model="form.maxPlayers" placeholder="Max players" />
+          <Select v-model="form.court">
             <SelectTrigger><SelectValue placeholder="Courts" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="1">
@@ -100,14 +100,14 @@
           </Select>
         </div>
         <div>
-          <Input placeholder="Event name" />
+          <Input v-model="form.name" placeholder="Event name" />
         </div>
         <div class="flex items-center space-x-2">
-          <MultiSelectOrganizer />
+          <MultiSelectOrganizer @update="(value) => form.organizers = value" />
         </div>
         <div class="grid gap-4 mb-4">
-          <MultiSelectEventTag class="col-span-2" />
-          <Textarea placeholder="Description" class="col-span-2" />
+          <MultiSelectEventTag class="col-span-2" @update="(value) => form.tags = value" />
+          <Textarea v-model="form.description" placeholder="Description" class="col-span-2" />
 
           <div class="col-span-2 ">
             <div>
@@ -191,7 +191,7 @@
             <X class="mr-2 size-4" />
             Cancel
           </Button>
-          <Button @click="() => submitted = !submitted">
+          <Button @click="submit">
             Public
             <ArrowRight class="ml-2 size-4" />
           </Button>
@@ -226,7 +226,7 @@ import { Textarea } from '@/components/shares/ui/textarea';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { ArrowRight, Check, Copy, Download, Mail, MessageCircle, MessageCircleMore, Plus, Upload, X } from 'lucide-vue-next';
 
-import { ref, shallowRef } from 'vue';
+import { reactive, ref, shallowRef } from 'vue';
 
 const submitted = ref(false);
 const sports = [
@@ -242,11 +242,28 @@ const selectedSport = ref(sports[0].value);
 function selectSport(val) {
   selectedSport.value = val;
 }
+
+const form = reactive({
+  sport: selectedSport,
+  club: '',
+  format: '',
+  date: '',
+  maxPlayers: '',
+  courts: '',
+  eventName: '',
+  organizers: [],
+  tags: [],
+  description: '',
+  image: null,
+  waitlist: false,
+  publicEvent: false,
+});
 const previewUrl = ref(null);
 
 function onFileChange(event) {
   const file = event.target.files[0];
   if (file && file.type.startsWith('image/')) {
+    form.image = file;
     previewUrl.value = URL.createObjectURL(file);
   }
 }
@@ -269,5 +286,10 @@ function copyLink() {
   navigator.clipboard.writeText(publicLink).then(() => {
     // alert('Link copied!');
   });
+}
+
+function submit() {
+  submitted.value = true;
+  console.log(form);
 }
 </script>
