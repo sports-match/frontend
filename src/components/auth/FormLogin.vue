@@ -58,15 +58,16 @@ import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { useAuthentication } from '@/composables';
+import { isLoading } from '@/composables/loading';
+import { notify } from '@/composables/notify';
 import { cn } from '@/utils';
 import { set } from '@vueuse/core';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const isLoading = ref(false);
+// const isLoading = ref(false);
 async function onSubmit(event: Event) {
   event.preventDefault();
   isLoading.value = true;
@@ -75,7 +76,8 @@ async function onSubmit(event: Event) {
     isLoading.value = false;
     const { accessToken } = useAuthentication();
     set(accessToken, 'auth-token');
-    router.push({ name: 'DashboardPage' });
+    // router.push({ name: 'DashboardPage' });
+    notify.success('Login successful! Redirecting to dashboard...');
   }, 2000);
 }
 </script>
