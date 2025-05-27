@@ -1,6 +1,11 @@
 import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
-export { useCounterStore } from './counter';
+export { useEventStore } from './event';
+export { usePlayerStatsStore } from './playerStats';
 export { useUserStore } from './user';
 
-export const pinia = createPinia();
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
+export { pinia };

@@ -1,17 +1,25 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { Layout } from '@/components/layouts/private';
+import { events } from '@/routes/private/events';
+import { playerStats } from '@/routes/private/playerStats';
 
 export const privateRoutes: RouteRecordRaw[] = [{
   path: '',
   component: Layout,
   children: [
+    ...events,
+    ...playerStats,
     {
       path: '',
       redirect: {
         name: 'DashboardPage',
       },
       children: [
-
+        {
+          path: 'skill-assessment',
+          name: 'SkillAssessmentPage',
+          component: () => import('@/pages/skillAssessment/index.vue'),
+        },
         {
           path: 'dashboard',
           name: 'DashboardPage',

@@ -46,7 +46,7 @@
             May 9th Mukilteo Mixer Standard Doubles Mixer
           </h3>
           <div class="flex gap-2 mt-2">
-            <san class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">Safiya Jetha</san>
+            <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">Safiya Jetha</span>
           </div>
           <div class="flex items-center gap-2 mt-2 text-gray-500 text-sm">
             <MapPinned class="size-4" />

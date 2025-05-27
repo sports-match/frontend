@@ -6,14 +6,14 @@
         class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground gap-5"
       >
         <Avatar class="h-10 w-10 rounded-full">
-          <!-- <AvatarImage :src="data.user.avatar" :alt="user.displayName" /> -->
+          <AvatarImage :src="avatarPath" :alt="user.username" />
           <AvatarFallback class="rounded-lg">
-            {{ getFistletter(user.displayName) }}
+            {{ getFistletter(user.username) }}
           </AvatarFallback>
         </Avatar>
         <div class="grid flex-1 text-left text-sm leading-tight">
-          <span class="truncate font-semibold">{{ user.displayName }}</span>
-          <span class="truncate text-xs">{{ user.username }}</span>
+          <span class="truncate font-semibold">{{ user.username }}</span>
+          <span class="truncate text-xs">{{ user.email }}</span>
         </div>
         <ChevronDown class="ml-auto size-4" />
       </SidebarMenuButton>
@@ -23,11 +23,11 @@
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <Avatar class="h-8 w-8 rounded-full">
             <AvatarFallback class="rounded-lg">
-              {{ getFistletter(user.displayName) }}
+              {{ getFistletter(user.username) }}
             </AvatarFallback>
           </Avatar>
           <div class="grid flex-1 text-left text-sm leading-tight">
-            <span class="truncate font-semibold">{{ user.displayName }}</span>
+            <span class="truncate font-semibold">{{ user.username }}</span>
             <span class="truncate text-xs">{{ user.email }}</span>
           </div>
         </div>
@@ -35,7 +35,6 @@
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem>
-          <BadgeCheck />
           Account
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -100,7 +99,6 @@ import {
   Avatar,
   AvatarFallback,
 } from '@/components/shares/ui/avatar';
-import { Button } from '@/components/shares/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -112,16 +110,18 @@ import {
 } from '@/components/shares/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/shares/ui/sidebar';
 import { useUserStore } from '@/stores/user';
-import { BadgeInfo, ChevronDown, LogOutIcon, SettingsIcon, User } from 'lucide-vue-next';
+import { ChevronDown} from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
-
-const user = computed(() => userStore.userDetails);
+const router = useRouter();
+const user = computed(() => userStore.userDetails?.user);
 
 const getFistletter = (name: string) => name?.charAt(0).toUpperCase();
-
+const avatarPath = computed(() => import.meta.env.VITE_BASE_URL + userStore.userDetails?.user?.avatarName || '');
 function logout() {
-  userStore.logout();
+  userStore.Logout();
+  router.push({ name: 'AuthLoginPage' });
 }
 </script>

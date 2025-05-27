@@ -5,9 +5,19 @@ export const events = [{
   },
   children: [
     {
+      path: 'upcoming',
+      name: 'UpcomingEvents',
+      component: () => import('@/pages/events/upcoming.vue'),
+    },
+    {
+      path: 'past',
+      name: 'PastEvents',
+      component: () => import('@/pages/events/past.vue'),
+    },
+    {
       path: ':id',
       name: 'ViewEvent',
-      // component: () => import('@/pages/events/view.vue'),
+      component: () => import('@/pages/events/view.vue'),
     },
     {
       path: ':id/edit',
@@ -22,7 +32,7 @@ export const events = [{
     {
       path: '',
       name: 'eventsPage',
-      // component: () => import('@/pages/events/index.vue'),
+      component: () => import('@/pages/events/index.vue'),
     },
   ],
 }];
