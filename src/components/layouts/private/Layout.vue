@@ -24,7 +24,7 @@
       <SideMenu />
       <SidebarInset class="text-foreground">
         <div class="flex items-center gap-2 px-4 py-2">
-          <Breadcrumb />
+          <!-- <Breadcrumb /> -->
         </div>
         <RouterView />
       </SidebarInset>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang=ts>
-import Breadcrumb from '@/components/layouts/private/Breadcrumb.vue';
+// import Breadcrumb from '@/components/layouts/private/Breadcrumb.vue';
 import Notifications from '@/components/layouts/private/Notifications.vue';
 import Profile from '@/components/layouts/private/Profile.vue';
 import SideMenu from '@/components/layouts/private/SideMenu.vue';

@@ -27,12 +27,14 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   // set(isLoading, true);
-  // const { isAuthenticated } = useAuthentication();
+  const { isAuthenticated } = useAuthentication();
 
-  // if (to.name !== 'AuthLoginPage' && !get(isAuthenticated))
-  //   next({ name: 'AuthLoginPage' });
-  // else
-  next();
+  if (!to.meta.public && !get(isAuthenticated))
+    return next({ name: 'AuthLoginPage' });
+  else if (to.meta.public && get(isAuthenticated))
+    return next({ name: 'DashboardPage' });
+  else
+    next();
 });
 
 router.afterEach(() => {

@@ -10,6 +10,9 @@ export const publicRoutes: RouteRecordRaw[] = [
     redirect: {
       name: 'AuthLoginPage',
     },
+    meta: {
+      public: true,
+    },
     children: [
       {
         path: 'club-select',

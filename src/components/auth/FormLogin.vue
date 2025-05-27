@@ -1,28 +1,29 @@
 <template>
   <div :class="cn('grid gap-16', $attrs.class ?? '')">
-    <form @submit="onSubmit">
+    <form @submit.prevent="onSubmit">
       <div class="grid gap-3">
         <div class="grid gap-1">
-          <Label for="email">
-            Email
+          <Label for="username">
+            Username
           </Label>
           <Input
-            id="email"
-            placeholder="name@example.com"
-            type="email"
+            id="username"
+            v-model="formData.username"
+            type="username"
             auto-capitalize="none"
-            auto-complete="email"
+            auto-complete="username"
             auto-correct="off"
             :disabled="isLoading"
             required
           />
         </div>
         <div class="grid gap-1">
-          <Label for="email">
+          <Label for="password">
             Password
           </Label>
           <Input
             id="password"
+            v-model="formData.password"
             type="password"
             auto-capitalize="none"
             auto-complete="password"
@@ -54,30 +55,39 @@
 </template>
 
 <script setup lang="ts">
+import { login } from '@/api/user';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { useAuthentication } from '@/composables';
 import { isLoading } from '@/composables/loading';
 import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores';
 import { cn } from '@/utils';
 import { set } from '@vueuse/core';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const userStore = useUserStore();
+
+const formData = ref({
+  username: '',
+  password: '',
+});
 
 // const isLoading = ref(false);
-async function onSubmit(event: Event) {
-  event.preventDefault();
-  isLoading.value = true;
-
-  setTimeout(() => {
-    isLoading.value = false;
-    const { accessToken } = useAuthentication();
-    set(accessToken, 'auth-token');
-    // router.push({ name: 'DashboardPage' });
-    notify.success('Login successful! Redirecting to dashboard...');
-  }, 2000);
+async function onSubmit() {
+  try {
+    const { data: { token: accessToken, user } } = await login(formData.value);
+    const { token } = useAuthentication();
+    set(token, accessToken);
+    userStore.setUserDetails(user);
+    router.push({ name: 'DashboardPage' });
+    notify.success('Login successful!');
+  } catch (error) {
+    notify.error(error as string);
+  }
 }
 </script>

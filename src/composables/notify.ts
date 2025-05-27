@@ -22,24 +22,12 @@ function getErrorMessage(error: NotifyError | string) {
     return toast.error(error);
   }
   if (error && typeof error !== 'string') {
-    if (error.response?.data?.errors?.length) {
-      error.response.data.errors.forEach((item: { defaultUserMessage: string }) => {
-        setTimeout(() => {
-          toast.error(item.defaultUserMessage);
-        }); // Delay before trigger another toast
-      }, 1);
-    } else if ((
+    toast.error(
       error.response?.data?.message
       || error.response?.data?.error_description
       || error.response?.data?.defaultUserMessage
-    )) {
-      toast.error(
-        error.response?.data?.message
-        || error.response?.data?.error_description
-        || error.response?.data?.defaultUserMessage
-        || 'Something went wrong',
-      );
-    }
+      || 'Something went wrong',
+    );
   } else {
     toast.error('Something went wrong');
   }

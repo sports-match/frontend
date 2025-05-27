@@ -1,7 +1,7 @@
 <template>
   <MainContentLayout>
     <template #title>
-      Welcome Back, {{ user.displayName }}
+      Welcome Back, {{ userStore.userDetails?.user?.username }}
     </template>
     <template #action>
       <CreateEvent />
