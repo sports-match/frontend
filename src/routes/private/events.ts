@@ -32,7 +32,7 @@ export const events = [{
     {
       path: '',
       name: 'eventsPage',
-      // component: () => import('@/pages/events/index.vue'),
+      component: () => import('@/pages/events/index.vue'),
     },
   ],
 }];

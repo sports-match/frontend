@@ -148,6 +148,10 @@ const data = {
       icon: CalendarRange,
       items: [
         {
+          title: 'List',
+          url: '/events',
+        },
+        {
           title: 'Upcoming',
           url: '/events/upcoming',
         },
