@@ -28,8 +28,8 @@
     >
       <template #signedUp="{ row }">
         <div class="flex items-center gap-2">
-          <Percentage :percentage="row.original.signedUpPercent" />
-          {{ row.original.signedUp }}
+          <Percentage :percentage="(row.original?.currentParticipants * 100 / row.original.maxParticipants) || 0" />
+          {{ row.original.currentParticipants }}
         </div>
       </template>
       <template #status="{ row }">
@@ -101,11 +101,11 @@ const emit = defineEmits(['onFetch']);
 
 const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'date',
+    accessorKey: 'eventTime',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Date' }),
   },
   {
-    accessorKey: 'eventName',
+    accessorKey: 'name',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
   },
   {
@@ -118,7 +118,7 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) => h(ColumnHeader, { column, title: 'Signed up' }),
   },
   {
-    accessorKey: 'courts',
+    accessorKey: 'groupCount',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Courts' }),
   },
   {
