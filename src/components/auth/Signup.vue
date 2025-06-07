@@ -3,11 +3,12 @@
     <form @submit="onSubmit">
       <div class="grid gap-3">
         <div class="grid gap-1">
-          <Label for="fullname">
-            Full Name
+          <Label for="username">
+            Username
           </Label>
           <Input
-            id="fullname"
+            id="username"
+            v-model="formData.username"
             :disabled="isLoading"
             required
           />
@@ -18,6 +19,7 @@
           </Label>
           <Input
             id="email"
+            v-model="formData.email"
             placeholder="name@example.com"
             type="email"
             auto-capitalize="none"
@@ -33,6 +35,7 @@
           </Label>
           <Input
             id="phone"
+            v-model="formData.phone"
             type="tel"
             placeholder="+# #####-####"
             auto-capitalize="none"
@@ -48,6 +51,7 @@
           </Label>
           <Input
             id="password"
+            v-model="formData.password"
             type="password"
             auto-capitalize="none"
             auto-complete="new-password"
@@ -79,25 +83,45 @@
 </template>
 
 <script setup lang="ts">
+import { register } from '@/api/user';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
+import { notify } from '@/composables/notify';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const emit = defineEmits(['onSubmit']);
 // const router = useRouter();
 const isLoading = ref(false);
+
+const formData = ref({
+  username: '',
+  email: '',
+  phone: '',
+  password: '',
+});
 async function onSubmit(event: Event) {
   event.preventDefault();
   isLoading.value = true;
-
-  setTimeout(() => {
-    isLoading.value = false;
-    // const { accessToken } = useAuthentication();
-    // set(accessToken, 'auth-token');
-    // router.push({ name: 'DashboardPage' });
+  try {
+    const { data } = await register(formData.value);
+    console.log(data);
     emit('onSubmit');
-  }, 2000);
+  } catch (error) {
+    notify.error(error as string);
+  } finally {
+    isLoading.value = false;
+  }
+  // try {
+  //   const { data: { token } } = await login(formData.value);
+  //   const { token } = useAuthentication();
+  //   set(token, accessToken);
+  //   userStore.setUserDetails(user);
+  //   router.push({ name: 'DashboardPage' });
+  //   notify.success('Login successful!');
+  // } catch (error) {
+  //   notify.error(error as string);
+  // }
 }
 </script>
