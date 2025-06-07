@@ -101,9 +101,9 @@ import { Label } from '@/components/shares/ui/label';
 import { notify } from '@/composables/notify';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['onSubmit']);
-// const router = useRouter();
+const router = useRouter();
 const isLoading = ref(false);
 
 const formData = ref({
@@ -114,12 +114,13 @@ const formData = ref({
   password: '',
   userType: 'ORGANIZER',
 });
+
 async function onSubmit(event: Event) {
   event.preventDefault();
   isLoading.value = true;
   try {
     const { data } = await register(formData.value);
-    emit('onSubmit', data.email);
+    router.push({ name: 'VerifyEmailPage', query: { email: data.email } });
   } catch (error) {
     notify.error(error as string);
   } finally {
