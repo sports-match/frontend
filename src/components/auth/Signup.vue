@@ -101,9 +101,13 @@ import { Label } from '@/components/shares/ui/label';
 import { notify } from '@/composables/notify';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
+
+const { user } = route.query;
+
 const isLoading = ref(false);
 
 const formData = ref({
@@ -112,7 +116,7 @@ const formData = ref({
   email: '',
   phone: '',
   password: '',
-  userType: 'ORGANIZER',
+  userType: user || 'PLAYER',
 });
 
 async function onSubmit(event: Event) {
