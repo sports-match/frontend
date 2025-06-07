@@ -43,9 +43,8 @@ import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
+const emit = defineEmits(['onSubmit']);
 const code = ref('');
 const timer = ref(30);
 let interval = null;
@@ -64,14 +63,12 @@ function startTimer() {
 }
 
 function resendCode() {
-  // trigger resend logic here (e.g., API call)
+  // trigger resend api
   startTimer();
 }
 
 function submitCode() {
-  // handle code submission
-  console.log('Submitted Code:', code.value);
-  router.push('/auth/club-select'); // redirect to login or next step
+  emit('onSubmit', code.value);
 }
 
 onMounted(() => {

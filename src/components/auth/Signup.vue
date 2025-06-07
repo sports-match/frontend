@@ -13,6 +13,17 @@
             required
           />
         </div>
+        <div>
+          <Label for="nickname">
+            Nickname
+          </Label>
+          <Input
+            id="nickname"
+            v-model="formData.nickName"
+            :disabled="isLoading"
+            required
+          />
+        </div>
         <div class="grid gap-1">
           <Label for="email">
             Email
@@ -97,31 +108,22 @@ const isLoading = ref(false);
 
 const formData = ref({
   username: '',
+  nickName: '',
   email: '',
   phone: '',
   password: '',
+  userType: 'ORGANIZER',
 });
 async function onSubmit(event: Event) {
   event.preventDefault();
   isLoading.value = true;
   try {
     const { data } = await register(formData.value);
-    console.log(data);
-    emit('onSubmit');
+    emit('onSubmit', data.email);
   } catch (error) {
     notify.error(error as string);
   } finally {
     isLoading.value = false;
   }
-  // try {
-  //   const { data: { token } } = await login(formData.value);
-  //   const { token } = useAuthentication();
-  //   set(token, accessToken);
-  //   userStore.setUserDetails(user);
-  //   router.push({ name: 'DashboardPage' });
-  //   notify.success('Login successful!');
-  // } catch (error) {
-  //   notify.error(error as string);
-  // }
 }
 </script>

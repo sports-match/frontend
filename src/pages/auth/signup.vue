@@ -16,8 +16,8 @@
         We've sent a 6-digit code to your phone/email. Please enter it below to continue.
       </span>
     </template>
-    <SignUpForm v-if="!submitted" @on-submit="() => { submitted = true }" />
-    <EmailVerify v-else @on-resend="submitted = false" />
+    <SignUpForm v-if="!submitted" @on-submit="onSubmitted" />
+    <EmailVerify v-else @on-submit="submitVerifyEmail" />
     <div class="text-center text-xs text-muted-foreground pt-4">
       © 2025 sportreview.com
     </div>
@@ -25,10 +25,31 @@
 </template>
 
 <script setup lang="ts">
+import { verifyEmail } from '@/api/user';
 import EmailVerify from '@/components/auth/EmailVerify.vue';
 import SignUpForm from '@/components/auth/Signup.vue';
 import PublicLayout from '@/components/layouts/public/Layout.vue';
+import { notify } from '@/composables/notify';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const submitted = ref(false);
+const submitEmail = ref('');
+
+function onSubmitted(email: string) {
+  submitEmail.value = email;
+  submitted.value = true;
+}
+
+async function submitVerifyEmail(code: string) {
+  try {
+    await verifyEmail({ email: submitEmail.value, code });
+    submitted.value = false;
+    router.push({ name: 'AuthLoginPage' });
+    notify.success('Sign up successfully! Please Sign in.');
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 </script>
