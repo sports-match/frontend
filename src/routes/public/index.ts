@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 import ClubSelect from '@/pages/auth/clubSelect.vue';
 import AuthLoginPage from '@/pages/auth/login/index.vue';
 import Signup from '@/pages/auth/signup.vue';
+import VerifyEmail from '@/pages/auth/verifyEmail.vue';
 
 export const publicRoutes: RouteRecordRaw[] = [
   {
@@ -18,6 +19,11 @@ export const publicRoutes: RouteRecordRaw[] = [
         path: 'club-select',
         name: 'ClubSelectPage',
         component: ClubSelect,
+      },
+      {
+        path: 'verify-email',
+        name: 'VerifyEmailPage',
+        component: VerifyEmail,
       },
       {
         path: 'signup',

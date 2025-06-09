@@ -3,11 +3,23 @@
     <form @submit="onSubmit">
       <div class="grid gap-3">
         <div class="grid gap-1">
-          <Label for="fullname">
-            Full Name
+          <Label for="username">
+            Username
           </Label>
           <Input
-            id="fullname"
+            id="username"
+            v-model="formData.username"
+            :disabled="isLoading"
+            required
+          />
+        </div>
+        <div>
+          <Label for="nickname">
+            Nickname
+          </Label>
+          <Input
+            id="nickname"
+            v-model="formData.nickName"
             :disabled="isLoading"
             required
           />
@@ -18,6 +30,7 @@
           </Label>
           <Input
             id="email"
+            v-model="formData.email"
             placeholder="name@example.com"
             type="email"
             auto-capitalize="none"
@@ -33,6 +46,7 @@
           </Label>
           <Input
             id="phone"
+            v-model="formData.phone"
             type="tel"
             placeholder="+# #####-####"
             auto-capitalize="none"
@@ -48,6 +62,7 @@
           </Label>
           <Input
             id="password"
+            v-model="formData.password"
             type="password"
             auto-capitalize="none"
             auto-complete="new-password"
@@ -79,25 +94,41 @@
 </template>
 
 <script setup lang="ts">
+import { register } from '@/api/user';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
+import { notify } from '@/composables/notify';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const emit = defineEmits(['onSubmit']);
-// const router = useRouter();
+const router = useRouter();
+const route = useRoute();
+
+const { user } = route.query;
+
 const isLoading = ref(false);
+
+const formData = ref({
+  username: '',
+  nickName: '',
+  email: '',
+  phone: '',
+  password: '',
+  userType: user || 'PLAYER',
+});
+
 async function onSubmit(event: Event) {
   event.preventDefault();
   isLoading.value = true;
-
-  setTimeout(() => {
+  try {
+    const { data } = await register(formData.value);
+    router.push({ name: 'VerifyEmailPage', query: { email: data.email } });
+  } catch (error) {
+    notify.error(error as string);
+  } finally {
     isLoading.value = false;
-    // const { accessToken } = useAuthentication();
-    // set(accessToken, 'auth-token');
-    // router.push({ name: 'DashboardPage' });
-    emit('onSubmit');
-  }, 2000);
+  }
 }
 </script>
