@@ -1,12 +1,12 @@
 <template>
   <MainContentLayout>
     <div>
-      <Button variant="icon" size="sm" @click="$router.push('/events')">
+      <Button variant="ghost" size="sm" @click="$router.push('/events')">
         <ChevronLeft class="mr-2 size-4" />
         Back
       </Button>
     </div>
-    <EventCard />
+    <EventCard :event="event" />
     <Tabs default-value="registrations" class="w-full">
       <TabsList class="border-b border-gray-200 w-full justify-start space-x-6 bg-transparent rounded-xs">
         <TabsTrigger

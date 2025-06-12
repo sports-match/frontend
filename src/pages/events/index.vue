@@ -4,6 +4,10 @@
       Events
     </template>
 
+    <template #action>
+      <CreateEvent />
+    </template>
+
     <div class="flex flex-col gap-4">
       <EventList :events :total-events @on-fetch="fetchData">
         <template #action>
@@ -16,6 +20,7 @@
 
 <script setup lang="ts">
 import { getEvents } from '@/api/event';
+import CreateEvent from '@/components/events/CreateForm.vue';
 import EventList from '@/components/events/List.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { notify } from '@/composables/notify';

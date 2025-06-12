@@ -2,7 +2,7 @@
   <Dialog :focus-outside="false">
     <DialogTrigger as-child>
       <!-- Trigger button can be placed here if needed -->
-      <Button @click="() => { fetchSports(); fetchClubs(); }">
+      <Button @click="() => { fetchSports(); fetchClubs(); fetchPlayers(); }">
         Create Event
       </Button>
     </DialogTrigger>
@@ -81,10 +81,25 @@
           <Input v-model="form.name" placeholder="Event name" />
         </div>
         <div class="flex items-center space-x-2">
-          <MultiSelectOrganizer v-model:selected-values="selctedHostPlayers" />
+          <MultiSelect
+            v-model="form.coHostPlayers"
+            :options="players"
+            value-key="id"
+            label-key="name"
+            return-type="value"
+            placeholder="Other Orgenizers"
+          />
         </div>
         <div class="grid gap-4 mb-4">
-          <MultiSelectEventTag v-model:selected-values="selectedTags" class="col-span-2" />
+          <MultiSelect
+            v-model="form.tags"
+            :options="tags"
+            value-key="value"
+            label-key="label"
+            return-type="value"
+            placeholder="Event Tags"
+            class="col-span-2"
+          />
           <Textarea v-model="form.description" placeholder="Description" class="col-span-2" />
 
           <div class="col-span-2 ">
@@ -139,9 +154,8 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { createEvent, getClubs, getSports } from '@/api/event';
-import MultiSelectEventTag from '@/components/events/MultiSelectEventTag.vue';
-import MultiSelectOrganizer from '@/components/events/MultiSelectOrganizer.vue';
+import { createEvent, getClubs, getPlayers, getSports } from '@/api/event';
+import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
 import {
@@ -165,8 +179,8 @@ import SingleSelect from './SingleSelect.vue';
 
 const submitted = ref(false);
 const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
-const selctedHostPlayers = ref(null);
-const selectedTags = ref(null);
+// const selctedHostPlayers = ref(null);
+// const selectedTag = ref([]);
 
 const sports: Ref<{ id: string }[]> = ref([
   // { value: 'badminton', label: 'Badminton', icon: 'badminton' },
@@ -177,8 +191,18 @@ const sports: Ref<{ id: string }[]> = ref([
   // Add more sports as needed
 ]);
 const clubs: Ref<{ id: string }[]> = ref([]);
+const players: Ref<{ id: string }[]> = ref([]);
+const tags = ref([
+  { value: 'ladder', label: 'Ladder' },
+  { value: 'mixer', label: 'Mixer' },
+  { value: 'academy', label: 'Academy' },
+  { value: 'open', label: 'Open' },
+  { value: 'league', label: 'League' },
+]);
 
 const selectedSport = ref();
+// const selectedPlayer = ref([]);
+
 function selectSport(val: string) {
   selectedSport.value = val;
 }
@@ -218,6 +242,16 @@ async function fetchSports() {
     notify.error(error as string);
   }
 }
+
+async function fetchPlayers() {
+  try {
+    const { data: { content } } = await getPlayers();
+    players.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
 function onFileChange(event: Event) {
   const file = event?.target?.files[0];
   if (file && file.type.startsWith('image/')) {
@@ -230,8 +264,8 @@ async function submit() {
   try {
     await createEvent({
       ...form,
-      tags: selectedTags.value?.map((tag: { value: string }) => tag.value) || [],
-      coHostPlayers: selctedHostPlayers.value?.map((player: { label: string }) => player.label) || [],
+      // tags: selectedTags.value?.map((tag: { value: string }) => tag.value) || [],
+      // coHostPlayers: selctedHostPlayers.value?.map((player: { label: string }) => player.label) || [],
       clubId: selectedClub.value?.id,
     });
     notify.success('Event created successfully');
