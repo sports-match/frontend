@@ -79,8 +79,7 @@
   </div>
 </template>
 
-<script setup>
-import { Button } from '@/components/shares/ui/button';
+<script setup lang="ts">
 import { Calendar } from '@/components/shares/ui/calendar';
 import { Separator } from '@/components/shares/ui/separator';
 import { MapPinned } from 'lucide-vue-next';

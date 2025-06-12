@@ -137,7 +137,8 @@
   </Dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Ref } from 'vue';
 import { createEvent, getClubs, getSports } from '@/api/event';
 import MultiSelectEventTag from '@/components/events/MultiSelectEventTag.vue';
 import MultiSelectOrganizer from '@/components/events/MultiSelectOrganizer.vue';
@@ -152,23 +153,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/shares/ui/dialog';
-import { Combobox } from '@/components/shares/ui/formInput';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
 import { Switch } from '@/components/shares/ui/switch';
 import { Textarea } from '@/components/shares/ui/textarea';
 import { notify } from '@/composables/notify';
-import { ArrowRight, Check, Copy, Download, Mail, MessageCircle, MessageCircleMore, Plus, Upload, X } from 'lucide-vue-next';
-import { onMounted, reactive, ref, shallowRef } from 'vue';
+import { ArrowRight, Check, Upload, X } from 'lucide-vue-next';
+import { reactive, ref } from 'vue';
 import SingleSelect from './SingleSelect.vue';
 
 const submitted = ref(false);
-const selectedClub = ref(null);
+const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
 const selctedHostPlayers = ref(null);
 const selectedTags = ref(null);
 
-const sports = ref([
+const sports: Ref<{ id: string }[]> = ref([
   // { value: 'badminton', label: 'Badminton', icon: 'badminton' },
   // { value: 'soccer', label: 'Soccer', icon: 'soccer' },
   // { value: 'basketball', label: 'Basketball', icon: 'basketball' },
@@ -176,10 +176,10 @@ const sports = ref([
   // { value: 'swimming', label: 'Swimming', icon: 'swimming' },
   // Add more sports as needed
 ]);
-const clubs = ref([]);
+const clubs: Ref<{ id: string }[]> = ref([]);
 
 const selectedSport = ref();
-function selectSport(val) {
+function selectSport(val: string) {
   selectedSport.value = val;
 }
 
@@ -198,14 +198,14 @@ const form = reactive({
   allowWaitList: false,
   enabled: false,
 });
-const previewUrl = ref(null);
+const previewUrl = ref<string | null>(null);
 
 async function fetchClubs() {
   try {
     const { data: { content } } = await getClubs();
     clubs.value = content;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
   }
 }
 
@@ -215,11 +215,11 @@ async function fetchSports() {
     sports.value = content;
     selectedSport.value = sports.value[0]?.id || null;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
   }
 }
-function onFileChange(event) {
-  const file = event.target.files[0];
+function onFileChange(event: Event) {
+  const file = event?.target?.files[0];
   if (file && file.type.startsWith('image/')) {
     form.posterImage = file;
     previewUrl.value = URL.createObjectURL(file);
@@ -228,16 +228,16 @@ function onFileChange(event) {
 
 async function submit() {
   try {
-    const { data } = await createEvent({
+    await createEvent({
       ...form,
-      tags: selectedTags.value?.map(tag => tag.value) || [],
-      coHostPlayers: selctedHostPlayers.value?.map(player => player.label) || [],
+      tags: selectedTags.value?.map((tag: { value: string }) => tag.value) || [],
+      coHostPlayers: selctedHostPlayers.value?.map((player: { label: string }) => player.label) || [],
       clubId: selectedClub.value?.id,
     });
     notify.success('Event created successfully');
     submitted.value = true;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
   }
 }
 </script>

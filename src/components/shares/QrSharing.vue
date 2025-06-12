@@ -49,13 +49,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Ref } from 'vue';
 import { Button } from '@/components/shares/ui/button';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { Copy, Download, Mail, MessageCircleMore } from 'lucide-vue-next';
-import { computed, ref, shallowRef } from 'vue';
+import { ref } from 'vue';
 
-const publicLink = shallowRef('https://go.gl/xprowi2025');
+const publicLink: Ref<string, string> = ref('https://go.gl/xprowi2025');
 const qrcode = useQRCode(publicLink, {
   errorCorrectionLevel: 'H',
   margin: 3,
@@ -70,7 +71,7 @@ function downloadQR() {
 }
 
 function copyLink() {
-  navigator.clipboard.writeText(publicLink).then(() => {
+  navigator.clipboard.writeText(publicLink.value).then(() => {
     // alert('Link copied!');
   });
 }
