@@ -18,7 +18,6 @@
       <!-- Event form -->
       <div v-if="!submitted" class="space-y-4">
         <div class="space-y-3 mt-2">
-          <!-- <div class="flex flex-col"> -->
           <div class="flex items-center space-x-2">
             <Switch id="public-event" v-model="form.enabled" />
             <Label for="public-event" class="font-normal">This event is public and anyone can sign up</Label>
@@ -27,8 +26,8 @@
             <Switch id="waitlist" v-model="form.allowWaitList" />
             <Label for="waitlist" class="font-normal">Allow users to join a waitlist once event is full</Label>
           </div>
-        <!-- </div> -->
         </div>
+
         <!-- Sport buttons -->
         <div class="overflow-x-auto px-1">
           <div class="flex gap-3 my-4 min-w-max">
@@ -45,7 +44,7 @@
                 <img
                   v-if="sport.icon"
                   :src="`/src/assets/sportTypes/${sport.icon}.svg`"
-                  :alt="`${sport.name} icon`"
+                  :alt="`${sport.name}-icon`"
                   class="w-10 h-10 mb-1"
                 >
               </div>
@@ -138,9 +137,10 @@
             <X class="mr-2 size-4" />
             Cancel
           </Button>
-          <Button @click="submit">
+          <Button :disabled="isLoading" @click="submit">
             Public
-            <ArrowRight class="ml-2 size-4" />
+            <ArrowRight v-if="!isLoading" class="ml-2 size-4" />
+            <LucideSpinner v-if="isLoading" class="ml-2 h-4 w-4 animate-spin" />
           </Button>
         </div>
         <Button v-else @click="submitted = false">
@@ -154,7 +154,7 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { createEvent, getClubs, getPlayers, getSports } from '@/api/event';
+import { createEvent, getClubs, getPlayers, getSports, uploadImage } from '@/api/event';
 import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -173,16 +173,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/shares/ui/switch';
 import { Textarea } from '@/components/shares/ui/textarea';
 import { notify } from '@/composables/notify';
-import { ArrowRight, Check, Upload, X } from 'lucide-vue-next';
+import { ArrowRight, Check, Loader2 as LucideSpinner, Upload, X } from 'lucide-vue-next';
 import { reactive, ref } from 'vue';
 import SingleSelect from './SingleSelect.vue';
 
+type EventForm = {
+  sportId: Ref<string | null>;
+  clubId: string | null;
+  format: string;
+  eventTime: string;
+  maxParticipants: string;
+  groupCount: string;
+  name: string;
+  coHostPlayers: string[];
+  tags: string[];
+  description: string;
+  posterImage: string | null;
+  allowWaitList: boolean;
+  enabled: boolean;
+};
 const submitted = ref(false);
 const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
-// const selctedHostPlayers = ref(null);
-// const selectedTag = ref([]);
+const isLoading = ref(false);
 
-const sports: Ref<{ id: string }[]> = ref([
+const sports: Ref<{ id: string; name: string; icon: string }[]> = ref([
   // { value: 'badminton', label: 'Badminton', icon: 'badminton' },
   // { value: 'soccer', label: 'Soccer', icon: 'soccer' },
   // { value: 'basketball', label: 'Basketball', icon: 'basketball' },
@@ -201,13 +215,14 @@ const tags = ref([
 ]);
 
 const selectedSport = ref();
-// const selectedPlayer = ref([]);
 
 function selectSport(val: string) {
   selectedSport.value = val;
 }
 
-const form = reactive({
+const inputFile = ref<File | null>(null);
+
+const form = reactive<EventForm>({
   sportId: selectedSport,
   clubId: null,
   format: '',
@@ -255,23 +270,30 @@ async function fetchPlayers() {
 function onFileChange(event: Event) {
   const file = event?.target?.files[0];
   if (file && file.type.startsWith('image/')) {
-    form.posterImage = file;
+    inputFile.value = file;
+    form.posterImage = `/api/localStorage/view/Screenshotfrom2024-09-2614-50-25-20250613021428902.png`;
     previewUrl.value = URL.createObjectURL(file);
   }
 }
 
 async function submit() {
+  isLoading.value = true;
   try {
+    if (inputFile.value) {
+      const { data } = await uploadImage(inputFile.value);
+      form.posterImage = data.data[0];
+    }
+
     await createEvent({
       ...form,
-      // tags: selectedTags.value?.map((tag: { value: string }) => tag.value) || [],
-      // coHostPlayers: selctedHostPlayers.value?.map((player: { label: string }) => player.label) || [],
       clubId: selectedClub.value?.id,
     });
     notify.success('Event created successfully');
     submitted.value = true;
   } catch (error) {
     notify.error(error as string);
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
