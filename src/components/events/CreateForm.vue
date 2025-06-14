@@ -191,6 +191,8 @@ type EventForm = {
   posterImage: string | null;
   allowWaitList: boolean;
   enabled: boolean;
+  image: string;
+  location: string;
 };
 const submitted = ref(false);
 const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
@@ -233,9 +235,11 @@ const form = reactive<EventForm>({
   coHostPlayers: [],
   tags: [],
   description: '',
-  posterImage: null,
+  posterImage: '',
   allowWaitList: false,
   enabled: false,
+  image: '',
+  location: '',
 });
 const previewUrl = ref<string | null>(null);
 
@@ -286,6 +290,7 @@ async function submit() {
 
     await createEvent({
       ...form,
+      eventTime: '2025-06-19 14:00:00',
       clubId: selectedClub.value?.id,
     });
     notify.success('Event created successfully');
