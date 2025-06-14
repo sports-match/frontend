@@ -78,7 +78,6 @@ function toggleClub(club) {
 }
 
 function submitSelection() {
-  console.log('Selected clubs:', selectedClubs.value);
   router.push({
     name: 'DashboardPage',
     query: { pending: true },

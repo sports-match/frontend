@@ -71,7 +71,6 @@ onMounted(() => {
 async function fetchEvent() {
   try {
     const { data: content } = await getEvent(id as string);
-    console.log(content);
     event.value = content;
   } catch (error) {
     notify.error(error as string);

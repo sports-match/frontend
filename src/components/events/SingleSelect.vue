@@ -100,8 +100,6 @@ function toggleDropdown() {
 }
 
 function selectItem(item: DropdownOption) {
-  console.log(item);
-
   emit('update:modelValue', item);
   isOpen.value = false;
   inputValue.value = '';
