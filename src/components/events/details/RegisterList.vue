@@ -9,13 +9,15 @@
         <Button variant="outline">
           <FileUp class="w-5 h-5 mr-2" /> Export
         </Button>
-        <Button class="bg-primary text-white">
+        <!-- <Button class="bg-primary text-white">
           <Users2Icon class="w-5 h-5 mr-2" /> Generate Group
-        </Button>
-        <Button class="bg-primary text-white">
+        </Button> -->
+        <GenerateGroup />
+        <!-- <Button class="bg-primary text-white">
           <Plus class="w-5 h-5 mr-2" />
           Add Member
-        </Button>
+        </Button> -->
+        <PlayerSearchDialog />
       </div>
     </div>
 
@@ -77,6 +79,8 @@
 
 <script setup lang="ts">
 import Datatable from '@/components/shares/datatable/index.vue';
+import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
+import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
