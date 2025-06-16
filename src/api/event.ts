@@ -18,3 +18,5 @@ export function uploadImage(file: File) {
   });
 }
 export const getImage = (path: string) => http.get(`${path}`);
+
+export const generateGroups = (eventId: string) => http.patch(`/events/${eventId}/generate-groups`);

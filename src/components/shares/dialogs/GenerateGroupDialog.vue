@@ -2,7 +2,7 @@
   <Dialog v-model:open="open">
     <!-- Trigger -->
     <DialogTrigger as-child>
-      <Button class="bg-primary text-white">
+      <Button class="bg-primary text-white" @click="generateGroup">
         <Users2Icon class="w-5 h-5 mr-2" /> Generate Group
       </Button>
     </DialogTrigger>
@@ -60,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import { generateGroups } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import {
   Dialog,
@@ -68,8 +69,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/shares/ui/dialog';
+import { notify } from '@/composables/notify';
 import { Users2Icon, X } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const { id } = route.params;
 
 // Example group data
 const groups = [
@@ -81,4 +87,13 @@ const groups = [
 ];
 
 const open = ref(false);
+
+async function generateGroup() {
+  try {
+    const { data } = await generateGroups(id as string);
+    console.log(data);
+  } catch (error) {
+    notify.error (error as string);
+  }
+}
 </script>
