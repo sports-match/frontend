@@ -7,32 +7,32 @@ export const events = [{
     {
       path: 'upcoming',
       name: 'UpcomingEvents',
-      component: () => import('@/pages/events/upcoming.vue'),
+      component: () => import('@/pages/admin/events/upcoming.vue'),
     },
     {
       path: 'past',
       name: 'PastEvents',
-      component: () => import('@/pages/events/past.vue'),
+      component: () => import('@/pages/admin/events/past.vue'),
     },
     {
       path: ':id',
       name: 'ViewEvent',
-      component: () => import('@/pages/events/view.vue'),
+      component: () => import('@/pages/admin/events/view.vue'),
     },
     {
       path: ':id/edit',
       name: 'EditEvent',
-      // component: () => import('@/pages/events/edit.vue'),
+      // component: () => import('@/pages/admin/events/edit.vue'),
     },
     {
       path: 'create',
       name: 'CreateEvent',
-      // component: () => import('@/pages/events/create.vue'),
+      // component: () => import('@/pages/admin/events/create.vue'),
     },
     {
       path: '',
       name: 'eventsPage',
-      component: () => import('@/pages/events/index.vue'),
+      component: () => import('@/pages/admin/events/index.vue'),
     },
   ],
 }];

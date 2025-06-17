@@ -1,3 +1,6 @@
+import ComparePlayerPage from '@/pages/admin/playerStats/compare.vue';
+import PlayerStatsPage from '@/pages/admin/playerStats/index.vue';
+
 export const playerStats = [
   {
     path: 'playerStats',
@@ -8,12 +11,12 @@ export const playerStats = [
       {
         path: '',
         name: 'PlayerStatsPage',
-        component: () => import('@/pages/playerStats/index.vue'),
+        component: PlayerStatsPage,
       },
       {
         path: 'compare',
         name: 'ComparePlayerPage',
-        component: () => import('@/pages/playerStats/compare.vue'),
+        component: ComparePlayerPage,
       },
     ],
   },

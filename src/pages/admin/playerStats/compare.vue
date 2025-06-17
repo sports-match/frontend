@@ -1,7 +1,7 @@
 <template>
   <MainContentLayout>
     <div>
-      <Button variant="icon" size="sm" @click="$router.push('/playerStats')">
+      <Button variant="ghost" size="sm" @click="$router.push('/playerStats')">
         <ChevronLeft class="mr-2 size-4" />
         Back
       </Button>
@@ -52,7 +52,7 @@
   </MainContentLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Card } from '@/components/shares/ui/card';
