@@ -94,7 +94,8 @@
         </div>
 
         <!-- Ratings Progress Chart -->
-        <div class="bg-white rounded-xl p-6">
+        <div class="bg-white rounded-xl">
+          <GraphView />
         <!-- Chart component here -->
         </div>
       </div>
@@ -130,6 +131,7 @@ import { useUserStore } from '@/stores/user';
 import { Calendar1, User, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import GraphView from './graphView.vue';
 
 const selectedDate = ref(new Date());
 const userStore = useUserStore();

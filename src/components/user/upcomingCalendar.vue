@@ -19,7 +19,7 @@
         </div>
       </div>
       <!-- Right: Event Info -->
-      <div class="space-y-2">
+      <div class="space-y-6">
         <div class="font-bold text-lg leading-tight">
           May 9th Mukilteo Mixer<br>
           <span class="font-normal">Standard Doubles Mixer</span>
@@ -61,7 +61,7 @@
         </div>
       </div>
       <!-- Right: Event Info -->
-      <div class="space-y-2">
+      <div class="space-y-6">
         <div class="font-bold text-lg leading-tight">
           May 9th Mukilteo Mixer<br>
           <span class="font-normal">Standard Doubles Mixer</span>
