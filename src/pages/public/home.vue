@@ -5,10 +5,15 @@
       <header class="flex justify-between items-center px-6 py-8">
         <img src="@/assets/images/main-logo.svg" alt="SportRevive Logo" class="h-8">
         <div class="space-x-2">
-          <Button variant="ghost" class="text-white border border-white">
+          <Button
+            variant="ghost" class="text-white border border-white"
+            @click="$router.push({ name: 'AuthSignupPage' })"
+          >
             Sign Up
           </Button>
-          <Button>Sign In</Button>
+          <Button @click="$router.push({ name: 'AuthLoginPage' })">
+            Sign In
+          </Button>
         </div>
       </header>
 
@@ -197,12 +202,15 @@
             Copyright © Sports 2025.
           </p>
         </div>
-        <div class="flex flex-col justify-between items-start md:items-end">
+        <div class="flex flex-col justify-end items-start md:items-end space-y-4">
+          <div>
+            Follow Us
+          </div>
           <div class="flex gap-4 mb-4">
-            <a href="#" aria-label="Facebook" class="text-white"><i class="fab fa-facebook-f" /></a>
-            <a href="#" aria-label="Instagram" class="text-white"><i class="fab fa-instagram" /></a>
-            <a href="#" aria-label="Twitter" class="text-white"><i class="fab fa-twitter" /></a>
-            <a href="#" aria-label="YouTube" class="text-white"><i class="fab fa-youtube" /></a>
+            <a href="#" aria-label="Facebook" class="text-white"><Facebook class="size-6" /></a>
+            <a href="#" aria-label="Instagram" class="text-white"><Instagram class="size-6" /></a>
+            <a href="#" aria-label="Twitter" class="text-white"><Twitter class="size-6" /></a>
+            <a href="#" aria-label="YouTube" class="text-white"><Youtube class="size-6" /></a>
           </div>
           <div class="text-sm flex gap-4">
             <a href="#" class="hover:text-white">Privacy Policy</a>
@@ -216,7 +224,7 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
-import { CalendarCheck2, ChartNoAxesCombined, CircleCheck, Clock, FileCheck, User, Users } from 'lucide-vue-next';
+import { CalendarCheck2, ChartNoAxesCombined, CircleCheck, Clock, Facebook, FileCheck, Instagram, Twitter, User, Users, Youtube } from 'lucide-vue-next';
 </script>
 
 <style>
