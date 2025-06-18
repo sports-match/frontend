@@ -1,4 +1,6 @@
-export const events = [{
+import type { RouteRecordRaw } from 'vue-router';
+
+export const events: RouteRecordRaw[] = [{
   path: 'events',
   redirect: {
     name: 'eventsPage',
@@ -19,16 +21,16 @@ export const events = [{
       name: 'ViewEvent',
       component: () => import('@/pages/admin/events/view.vue'),
     },
-    {
-      path: ':id/edit',
-      name: 'EditEvent',
-      // component: () => import('@/pages/admin/events/edit.vue'),
-    },
-    {
-      path: 'create',
-      name: 'CreateEvent',
-      // component: () => import('@/pages/admin/events/create.vue'),
-    },
+    // {
+    //   path: ':id/edit',
+    //   name: 'EditEvent',
+    //   // component: () => import('@/pages/admin/events/edit.vue'),
+    // },
+    // {
+    //   path: 'create',
+    //   name: 'CreateEvent',
+    //   // component: () => import('@/pages/admin/events/create.vue'),
+    // },
     {
       path: '',
       name: 'eventsPage',

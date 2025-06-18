@@ -40,7 +40,7 @@
   </PublicLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import PublicLayout from '@/components/layouts/public/Layout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';

@@ -30,7 +30,7 @@ router.beforeEach((to, _, next) => {
   const { isAuthenticated } = useAuthentication();
 
   if (!to.meta.public && !get(isAuthenticated))
-    return next({ name: 'AuthLoginPage' });
+    return next({ name: 'HomePage' });
   else if (to.meta.public && get(isAuthenticated))
     return next({ name: 'DashboardPage' });
   else
