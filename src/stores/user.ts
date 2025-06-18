@@ -19,6 +19,7 @@ type UserDetails = {
     pwdResetTime: string;
     roles: { dataScope: string; id: number; level: number; name: string }[];
     username: string;
+    userType: string;
   };
 };
 
@@ -27,7 +28,7 @@ export const useUserStore = defineStore('user', {
     storage: sessionStorage,
   },
   state: () => ({
-    userDetails: {},
+    userDetails: {} as UserDetails,
   }),
   actions: {
     setUserDetails(details: UserDetails) {

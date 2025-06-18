@@ -21,7 +21,7 @@ export const privateRoutes: RouteRecordRaw[] = [{
         {
           path: 'dashboard',
           name: 'DashboardPage',
-          component: () => import('@/pages/admin/dashboard.vue'),
+          component: () => import('@/pages/dashboard.vue'),
         },
       ],
     },

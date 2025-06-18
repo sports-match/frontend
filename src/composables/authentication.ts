@@ -1,7 +1,9 @@
+import { useUserStore } from '@/stores';
 import { get, set, useStorage } from '@vueuse/core';
 import { computed } from 'vue';
 
 export function useAuthentication() {
+  const userStore = useUserStore();
   const token = useStorage('token', null, sessionStorage);
   const isAuthenticated = computed(() => !!get(token));
 
@@ -10,6 +12,9 @@ export function useAuthentication() {
     return tokenValue || null;
   });
 
+  const isPlayer = computed(() => {
+    return userStore.$state.userDetails.user.userType === 'PLAYER';
+  });
   function clearSession() {
     set(token, null);
   }
@@ -18,5 +23,5 @@ export function useAuthentication() {
     set(token, null);
   }
 
-  return { logout, token, isAuthenticated, clearSession, getToken };
+  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer };
 }
