@@ -14,6 +14,11 @@ export const privateRoutes: RouteRecordRaw[] = [{
       },
       children: [
         {
+          path: 'profile',
+          name: 'ProfilePage',
+          component: () => import('@/pages/profile.vue'),
+        },
+        {
           path: 'skill-assessment',
           name: 'SkillAssessmentPage',
           component: () => import('@/pages/users/skillAssessment/index.vue'),

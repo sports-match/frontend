@@ -34,11 +34,8 @@
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem>
-          Account
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          Setting
+        <DropdownMenuItem @click="$router.push({ name: 'ProfilePage' })">
+          Profile
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
