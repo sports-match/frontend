@@ -9,7 +9,7 @@
       <div class="lg:col-span-2 flex flex-col gap-6">
         <!-- Achievements & Next Challenges -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="col-span-2 py-8 bg-gradient-to-r from-[#1f1f1f] to-[#2c2c2c] text-white p-6 rounded-xl flex justify-between items-center">
+          <div class="col-span-2 py-8 bg-gradient-to-r from-gray-900 to-black text-white p-6 rounded-xl flex justify-between items-center">
             <div>
               <h2 class="text-lg font-semibold flex items-center gap-2">
                 <span class="i-lucide-bar-chart-3" /> Achievements
@@ -103,7 +103,7 @@
       <!-- Sidebar (right, 1/3 width) -->
       <div class="flex flex-col gap-6">
         <!-- Last Match Card -->
-        <div class="bg-[#1f1f1f] text-white p-6 rounded-xl">
+        <div class="bg-gradient-to-r from-gray-900 to-black text-white p-6 rounded-xl">
           <h2 class="text-lg font-semibold mb-2">
             Last Match
           </h2>
