@@ -90,7 +90,7 @@ import { Calendar } from '@/components/shares/ui/calendar';
 import { Card, CardContent } from '@/components/shares/ui/card';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/shares/ui/Popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/shares/ui/popover/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
 import GridView from '@/components/user/events/gridView.vue';
 import ListView from '@/components/user/events/listView.vue';
