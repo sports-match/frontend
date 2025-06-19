@@ -22,19 +22,23 @@
         </Button>
       </div>
     </template>
-
-    <Card class="bg-gradient-to-r from-gray-900 to-black p-4 rounded-2xl flex items-center gap-4">
+    <Card class="bg-gradient-to-r from-gray-900 to-black p-6 pb-10 rounded-2xl flex items-end gap-4">
       <!-- Location Input -->
       <CardContent class="p-0 flex-1 flex flex-col">
         <Label for="location" class="text-white mb-1">Location</Label>
-        <Input
-          id="location"
-          v-model="location"
-          placeholder="Which place are you looking for?"
-          class="text-white bg-transparent border border-gray-500 placeholder:text-gray-400"
-        />
+        <div class="relative w-full">
+          <Input
+            id="location"
+            v-model="location"
+            placeholder="Which place are you looking for?"
+            class="w-full bg-transparent border text-white placeholder-gray-500 border-gray-500"
+          />
+          <!-- Icon on the right -->
+          <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <LocateFixed class="w-5 h-5" />
+          </div>
+        </div>
       </CardContent>
-
       <!-- Date Picker -->
       <CardContent class="p-0 flex-1 flex flex-col">
         <Label for="date" class="text-white mb-1">Date</Label>
@@ -50,8 +54,7 @@
           </PopoverTrigger>
           <PopoverContent class="w-auto p-0">
             <Calendar
-              :model-value="date"
-              calendar-label="Date of birth"
+              v-model="date"
               initial-focus
             />
           </PopoverContent>
@@ -74,7 +77,7 @@
       </CardContent>
 
       <!-- Search Button -->
-      <Button class="bg-blue-500 text-white hover:bg-blue-600 rounded-xl px-6 py-4">
+      <Button class="bg-blue-500 text-white hover:bg-blue-600 rounded-lg px-6 py-4">
         <Search class="mr-2 w-4 h-4" /> Search
       </Button>
     </Card>
@@ -95,7 +98,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import GridView from '@/components/user/events/gridView.vue';
 import ListView from '@/components/user/events/listView.vue';
 import mapView from '@/components/user/events/mapView.vue';
-import { CalendarIcon, Grid3x3, LayoutGrid, MapPinned, Search } from 'lucide-vue-next';
+import { CalendarIcon, Grid3x3, LayoutGrid, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -112,7 +115,7 @@ const statusOptions = ref(['Open', 'Closed']);
 
 const route = useRoute();
 const router = useRouter();
-const selectedIcon = ref(route.query.icon || 'grid');
+const selectedIcon = ref(route.query.icon || 'list');
 
 function selectIcon(icon: string) {
   selectedIcon.value = icon;
