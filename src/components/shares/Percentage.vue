@@ -29,9 +29,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
+<script setup lang="ts">
 defineProps({
   percentage: {
     type: [Number, String],
