@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
     <div>
-      <h3>Leaflet Map with Local Search Suggestions</h3>
+      <!-- <h3>Leaflet Map with Local Search Suggestions</h3>
       <div class="flex items-center gap-2 mb-2 relative">
         <input
           v-model="searchQuery"
@@ -24,7 +24,7 @@
         <button class="bg-blue-600 text-white px-3 py-1 rounded" @click="selectSuggestion(searchQuery)">
           Search
         </button>
-      </div>
+      </div> -->
       <div id="map" class="map-view" />
     </div>
   </div>
@@ -32,12 +32,26 @@
 
 <script setup lang="ts">
 import * as L from 'leaflet';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import 'leaflet/dist/leaflet.css';
+
+const { selectedLocation } = defineProps({
+  selectedLocation: Object,
+});
 
 const initialMap = ref<L.Map | null>(null);
 const searchQuery = ref('');
 const filteredSuggestions = ref<AddressPoint[]>([]);
+
+watch(
+  () => selectedLocation,
+  (newVal) => {
+    if (newVal && initialMap.value) {
+      initialMap.value.setView([newVal.lat, newVal.lon], 12);
+    }
+  },
+  { immediate: true, deep: true },
+);
 
 type AddressPoint = {
   name: string;
@@ -69,20 +83,23 @@ function filterSuggestions() {
 }
 
 // Move to selected suggestion
-function selectSuggestion(name: string) {
-  const target = addressPoints.find(p => p.name.toLowerCase() === name.toLowerCase());
-  if (target && initialMap.value) {
-    initialMap.value.setView([target.lat, target.lng], 16);
-    const marker = markers.find((m) => {
-      const pos = m.getLatLng();
-      return pos.lat === target.lat && pos.lng === target.lng;
-    });
-    marker?.openPopup();
-  }
-}
+// function selectSuggestion(name: string) {
+//   const target = addressPoints.find(p => p.name.toLowerCase() === name.toLowerCase());
+//   if (target && initialMap.value) {
+//     initialMap.value.setView([target.lat, target.lng], 16);
+//     const marker = markers.find((m) => {
+//       const pos = m.getLatLng();
+//       return pos.lat === target.lat && pos.lng === target.lng;
+//     });
+//     marker?.openPopup();
+//   }
+// }
 
 onMounted(() => {
   initialMap.value = L.map('map').setView([37.7749, -122.4194], 12);
+  if (initialMap.value && selectedLocation) {
+    initialMap.value.setView([selectedLocation.lat, selectedLocation.lon], 12);
+  }
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,

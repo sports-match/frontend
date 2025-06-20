@@ -26,18 +26,36 @@
       <!-- Location Input -->
       <CardContent class="p-0 flex-1 flex flex-col">
         <Label for="location" class="text-white mb-1">Location</Label>
-        <div class="relative w-full">
-          <Input
-            id="location"
-            v-model="location"
-            placeholder="Which place are you looking for?"
-            class="w-full bg-transparent border text-white placeholder-gray-500 border-gray-500"
-          />
-          <!-- Icon on the right -->
-          <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-            <LocateFixed class="w-5 h-5" />
-          </div>
-        </div>
+        <Combobox v-model="selectedPlace" by="display_name">
+          <ComboboxAnchor>
+            <div class="relative w-full max-w-sm items-center">
+              <ComboboxInput
+                v-model="searchQuery"
+                class="text-white pe-8"
+                :display-value="(val) => val?.display_name ?? searchQuery"
+                placeholder="Select place..."
+                @input="handleInput"
+                @focus="(e: Event) => (e.target as HTMLInputElement).select()"
+              />
+              <span class="absolute end-0 inset-y-0 flex items-center justify-center px-3">
+                <LocateFixed v-if="!isLoading" class="size-4 text-muted-foreground" />
+                <Loader2 v-else class="animate-spin size-4 text-muted-foreground" /></span>
+            </div>
+          </ComboboxAnchor>
+
+          <ComboboxList v-if="suggestions.length">
+            <ComboboxGroup>
+              <ComboboxItem
+                v-for="place in suggestions"
+                :key="place.place_id"
+                :value="place"
+                @click="selectSuggestion(place)"
+              >
+                {{ place.display_name }}
+              </ComboboxItem>
+            </ComboboxGroup>
+          </ComboboxList>
+        </Combobox>
       </CardContent>
       <!-- Date Picker -->
       <CardContent class="p-0 flex-1 flex flex-col">
@@ -82,7 +100,7 @@
       </Button>
     </Card>
 
-    <component :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" />
+    <component :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :selected-location="selectedPlace" />
   </MainContentLayout>
 </template>
 
@@ -91,14 +109,15 @@ import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { Button } from '@/components/shares/ui/button';
 import { Calendar } from '@/components/shares/ui/calendar';
 import { Card, CardContent } from '@/components/shares/ui/card';
-import { Input } from '@/components/shares/ui/input';
+import { Combobox, ComboboxAnchor, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/shares/ui/combobox';
 import { Label } from '@/components/shares/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/shares/ui/popover/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
 import GridView from '@/components/user/events/gridView.vue';
 import ListView from '@/components/user/events/listView.vue';
 import mapView from '@/components/user/events/mapView.vue';
-import { CalendarIcon, Grid3x3, LayoutGrid, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
+import { notify } from '@/composables/notify';
+import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -109,7 +128,6 @@ const icons = [
 ];
 
 const date = ref();
-const location = ref();
 const status = ref();
 const statusOptions = ref(['Open', 'Closed']);
 
@@ -120,5 +138,46 @@ const selectedIcon = ref(route.query.icon || 'list');
 function selectIcon(icon: string) {
   selectedIcon.value = icon;
   router.push({ query: { ...route.query, icon } });
+}
+
+// location search
+const searchQuery = ref('');
+const suggestions = ref<{ display_name: string; place_id: number }[]>([]);
+const selectedPlace = ref<{ display_name: string; place_id: number } | null>(null);
+const isLoading = ref(false);
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+function handleInput() {
+  if (debounceTimer)
+    clearTimeout(debounceTimer);
+  if (searchQuery.value.trim().length < 3) {
+    suggestions.value = [];
+    isLoading.value = false;
+    return;
+  }
+  isLoading.value = true;
+  debounceTimer = setTimeout(() => {
+    fetchSuggestions();
+  }, 1000);
+}
+
+async function fetchSuggestions() {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&addressdetails=1&limit=5`;
+    const response = await fetch(url);
+    const data = await response.json();
+    suggestions.value = data;
+  } catch (error) {
+    notify.error(`Error fetching suggestions: ${error}`);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+function selectSuggestion(place: { display_name: string; place_id: number }) {
+  selectedPlace.value = place;
+  searchQuery.value = place.display_name;
+  suggestions.value = [];
 }
 </script>
