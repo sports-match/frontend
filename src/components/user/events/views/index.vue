@@ -1,7 +1,7 @@
 <template>
   <MainContentLayout>
     <template #title>
-      Upcoming Events
+      {{ pageTitle }}
       <div class="text-sm font-normal">
         Join weekly ladder events, prove your skills, and boost your global ranking across academies
       </div>
@@ -119,7 +119,7 @@ import ListView from '@/components/user/events/views/listView.vue';
 import mapView from '@/components/user/events/views/mapView.vue';
 import { notify } from '@/composables/notify';
 import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const icons = [
@@ -142,9 +142,38 @@ const suggestions = ref<{ display_name: string; place_id: number }[]>([]);
 const selectedPlace = ref<{ display_name: string; place_id: number } | null>(null);
 const isLoading = ref(false);
 
+const pageTitle = computed(() => {
+  if (route.name === 'eventsPage')
+    return 'Events';
+  // Insert a space before every capital letter except the first
+  return typeof route.name === 'string'
+    ? route.name.replace(/([A-Z])/g, ' $1').replace(/^ /, '')
+    : route.name;
+});
+
+const eventTimeFilter = ref('');
+
 onMounted(() => {
   fetchEvents();
 });
+
+watch(
+  () => route.name,
+  (newVal) => {
+    switch (newVal) {
+      case 'eventsPage':
+        eventTimeFilter.value = '';
+        break;
+      case 'UpcomingEvents':
+        eventTimeFilter.value = 'UPCOMING';
+        break;
+      case 'PastEvents':
+        eventTimeFilter.value = 'PAST';
+        break;
+    }
+    fetchEvents();
+  },
+);
 
 function selectIcon(icon: string) {
   selectedIcon.value = icon;
@@ -154,7 +183,7 @@ function selectIcon(icon: string) {
 async function fetchEvents() {
   try {
     const { data: content } = await getEvents({
-      // eventTimeFilter: 'UPCOMING',
+      eventTimeFilter: eventTimeFilter.value,
       location: selectedPlace.value?.display_name,
       date: date.value,
       status: status.value,

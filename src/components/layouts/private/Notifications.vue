@@ -12,5 +12,6 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/shares/ui/button';
 import { Bell, MessageCircle } from 'lucide-vue-next';
 </script>
