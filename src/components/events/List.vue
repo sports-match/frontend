@@ -137,6 +137,6 @@ const eventTable = ref();
 
 const searchKey = ref('');
 function fetchData() {
-  emit('onFetch');
+  emit('onFetch', searchKey.value);
 }
 </script>

@@ -64,10 +64,11 @@ watch(
   },
 );
 
-async function fetchData() {
+async function fetchData(searchName = '') {
   try {
     const { data } = await getEvents({
       eventTimeFilter: eventTimeFilter.value,
+      name: searchName,
     });
     events.value = data.content;
     totalEvents.value = data.totalElements;
