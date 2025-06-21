@@ -100,11 +100,12 @@
       </Button>
     </Card>
 
-    <component :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :selected-location="selectedPlace" />
+    <component :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :events="events" :selected-location="selectedPlace" />
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
+import { getEvents } from '@/api/event';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { Button } from '@/components/shares/ui/button';
 import { Calendar } from '@/components/shares/ui/calendar';
@@ -113,12 +114,12 @@ import { Combobox, ComboboxAnchor, ComboboxGroup, ComboboxInput, ComboboxItem, C
 import { Label } from '@/components/shares/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/shares/ui/popover/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
-import GridView from '@/components/user/events/gridView.vue';
-import ListView from '@/components/user/events/listView.vue';
-import mapView from '@/components/user/events/mapView.vue';
+import GridView from '@/components/user/events/views/gridView.vue';
+import ListView from '@/components/user/events/views/listView.vue';
+import mapView from '@/components/user/events/views/mapView.vue';
 import { notify } from '@/composables/notify';
 import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const icons = [
@@ -134,18 +135,37 @@ const statusOptions = ref(['Open', 'Closed']);
 const route = useRoute();
 const router = useRouter();
 const selectedIcon = ref(route.query.icon || 'list');
+const events = ref(null);
+
+const searchQuery = ref('');
+const suggestions = ref<{ display_name: string; place_id: number }[]>([]);
+const selectedPlace = ref<{ display_name: string; place_id: number } | null>(null);
+const isLoading = ref(false);
+
+onMounted(() => {
+  fetchEvents();
+});
 
 function selectIcon(icon: string) {
   selectedIcon.value = icon;
   router.push({ query: { ...route.query, icon } });
 }
 
-// location search
-const searchQuery = ref('');
-const suggestions = ref<{ display_name: string; place_id: number }[]>([]);
-const selectedPlace = ref<{ display_name: string; place_id: number } | null>(null);
-const isLoading = ref(false);
+async function fetchEvents() {
+  try {
+    const { data: content } = await getEvents({
+      // eventTimeFilter: 'UPCOMING',
+      location: selectedPlace.value?.display_name,
+      date: date.value,
+      status: status.value,
+    });
+    events.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
+// location search
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 function handleInput() {

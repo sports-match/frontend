@@ -29,14 +29,16 @@
           <Link class="mr-2 size-4" />
           Share
         </Button>
-        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
-          <ClockAlert class="size-4" />
-        </Button>
-        <ReminderDialog>
-          <Button variant="outline" size="sm" class="bg-black text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-white rounded-xl">
-            <CircleAlert class="size-4" />
+        <template v-if="!isPlayer">
+          <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
+            <ClockAlert class="size-4" />
           </Button>
-        </ReminderDialog>
+          <ReminderDialog>
+            <Button variant="outline" size="sm" class="bg-black text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-white rounded-xl">
+              <CircleAlert class="size-4" />
+            </Button>
+          </ReminderDialog>
+        </template>
       </div>
     </div>
 
@@ -51,6 +53,7 @@
 <script setup lang="ts">
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import { Button } from '@/components/shares/ui/button';
+import { useAuthentication } from '@/composables';
 import { CircleAlert, ClockAlert, Copy, Link } from 'lucide-vue-next';
 
 defineProps({
@@ -59,4 +62,5 @@ defineProps({
     required: false,
   },
 });
+const { isPlayer } = useAuthentication();
 </script>

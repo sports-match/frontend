@@ -1,7 +1,7 @@
 import { instance as http } from '@/api/request';
 
-export const getEvents = () => http.get('/events');
-export const getEvent = (id: string) => http.get(`/events/${id}`);
+export const getEvents = (query?: any) => http.get('/events', { params: query });
+export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
 
 export const getClubs = () => http.get('/clubs');

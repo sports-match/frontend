@@ -3,7 +3,7 @@
     <!-- Title -->
     <CardHeader class="p-0">
       <CardTitle class="text-lg font-semibold">
-        {{ event?.title }}
+        {{ event?.name }}
       </CardTitle>
     </CardHeader>
 
@@ -12,7 +12,7 @@
       <Progress :model-value="progress" class="h-2 bg-gray-200 rounded-full" />
       <div class="flex justify-between text-xs text-gray-500 mt-1">
         <span>Signed up</span>
-        <span>{{ event?.signedUp }}/{{ event?.capacity }}</span>
+        <span>{{ event?.currentParticipants / event?.maxParticipants }}</span>
       </div>
     </div>
 
@@ -38,7 +38,7 @@
         <p class="font-medium">
           Courts
         </p>
-        <p>{{ event?.courts }}</p>
+        <p>{{ event?.groupCount }}</p>
       </div>
       <Button variant="default" class="flex items-center space-x-2">
         <FilePlus class="w-4 h-4" />
@@ -62,5 +62,5 @@ const props = defineProps({
   },
 });
 
-const progress = computed(() => (props.event?.signedUp / props.event?.capacity) * 100);
+const progress = computed(() => ((props.event?.currentParticipants / props.event?.maxParticipants) * 100) || 0);
 </script>
