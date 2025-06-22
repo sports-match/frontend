@@ -8,14 +8,14 @@
         </Button>
       </form>
 
-      <div class="flex  items-center gap-1.5">
+      <!-- <div class="flex  items-center gap-1.5">
         <slot name="action">
           <Button variant="outline">
             <Filter class="h-4 w-4 mr-2 opacity-60" />
             <span class="text-sm font-semibold opacity-60">Filter</span>
           </Button>
         </slot>
-      </div>
+      </div> -->
     </div>
 
     <Datatable

@@ -1,5 +1,19 @@
 import { instance as http } from '@/api/request';
 
+export type Event = {
+  id: string;
+  name: string;
+  description: string;
+  location: string;
+  date: string;
+  time: string;
+  sport: string;
+  club: string;
+  image: string;
+  eventTime: string;
+  status: string;
+};
+
 export const getEvents = (query?: any) => http.get('/events', { params: query });
 export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
