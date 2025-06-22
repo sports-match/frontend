@@ -135,7 +135,7 @@ const statusOptions = ref(['Open', 'Closed']);
 const route = useRoute();
 const router = useRouter();
 const selectedIcon = ref(route.query.icon || 'list');
-const events = ref(null);
+const events = ref<Record<string, any>>();
 
 const searchQuery = ref('');
 const suggestions = ref<{ display_name: string; place_id: number }[]>([]);

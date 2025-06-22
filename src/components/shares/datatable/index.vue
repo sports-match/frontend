@@ -16,6 +16,7 @@
               v-for="row in table.getRowModel().rows"
               :key="row.id"
               :data-state="row.getIsSelected() && 'selected'"
+              @click="$emit('onRowClick', row)"
             >
               <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                 <slot :name="cell.column.id" :row="row" :cell="cell">
@@ -90,7 +91,7 @@ const {
   manualFiltering = true,
 } = defineProps<DataTableProps>();
 
-const emits = defineEmits(['onPageChange', 'onSortChange']);
+const emits = defineEmits(['onPageChange', 'onSortChange', 'onRowClick']);
 
 const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);

@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-4">
-    <!-- {{ events }} -->
     <Datatable
       ref="eventTable"
       :total-records="totalRecords"
@@ -8,6 +7,7 @@
       :data="eventList"
       @on-sort-change="fetchData"
       @on-page-change="fetchData"
+      @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
     >
       <template #signedUp="{ row }">
         <div class="flex items-center gap-2">
@@ -18,13 +18,17 @@
       <template #status="{ row }">
         <div> {{ row.original.status }} </div>
         <div class="flex items-center gap-2">
-          <Button variant="destructive" size="sm">
+          <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
             <CreditCardIcon class="size-4 me-1" />
             Widthdraw
           </Button>
-          <Button size="sm">
+          <Button size="sm" @click.stop="checkIn(row.original.id)">
             <CircleCheck class="size-4 me-1" />
             Check in
+          </Button>
+          <Button size="sm" @click.stop="signUpEvent(row.original.id)">
+            <CalendarPlus class="size-5 me-1" />
+            Sign Up
           </Button>
         </div>
       </template>
@@ -34,11 +38,14 @@
 
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
+import { checkinEvent, joinEvent, widthdrawEvent } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import Percentage from '@/components/shares/Percentage.vue';
 import { Button } from '@/components/shares/ui/button';
-import { CircleCheck, CreditCardIcon } from 'lucide-vue-next';
+import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores/user';
+import { CalendarPlus, CircleCheck, CreditCardIcon } from 'lucide-vue-next';
 import { computed, h, ref } from 'vue';
 
 const props = defineProps({
@@ -47,12 +54,14 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-
 const emit = defineEmits(['onFetch']);
+
+const userStore = useUserStore();
 
 const eventList = computed(() => props.events?.content || []);
 const totalRecords = computed(() => props.events?.totalElements || 0);
 const eventTable = ref();
+const userId = computed(() => userStore.userDetails?.user?.id || null);
 
 const columns: ColumnDef<any>[] = [
   {
@@ -88,5 +97,37 @@ const columns: ColumnDef<any>[] = [
 
 function fetchData() {
   emit('onFetch');
+}
+
+async function checkIn(id: string | number) {
+  try {
+    await checkinEvent(id as string);
+    notify.success('Checked in successfully');
+  } catch (e) {
+    notify.error(e as string);
+  }
+}
+
+async function widthdraw(id: string | number) {
+  try {
+    await widthdrawEvent(id as string);
+    notify.success('Widthdraw event successfully');
+  } catch (e) {
+    notify.error(e as string);
+  }
+}
+
+async function signUpEvent(id: string | number) {
+  try {
+    await joinEvent(id as string, {
+      eventId: id,
+      playerId: userId.value,
+      joinWaitList: true,
+
+    });
+    notify.success('Joined event successfully');
+  } catch (e) {
+    notify.error(e as string);
+  }
 }
 </script>
