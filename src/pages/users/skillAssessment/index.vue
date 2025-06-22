@@ -16,13 +16,14 @@
           <Stepper v-model="currentStep" orientation="vertical" class="mx-auto flex w-full max-w-md flex-col justify-start gap-10">
             <StepperItem
               v-for="(step, index) in questions"
-              :key="step + index"
+              :key="`${step.id}-${index}`"
               v-slot="{ state }"
               class="relative flex w-full gap-6"
               :step="index"
+              disabled
             >
               <StepperSeparator
-                v-if="step !== steps[steps.length - 1]"
+                v-if="step !== questions[questions.length - 1]"
                 class="absolute left-[26px] top-[45px] block h-[105%] w-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-green-600"
               />
 
@@ -78,25 +79,43 @@
               :max="step.maxValue"
               :min="step.minValue"
             />
+            <div
+              v-if="form[step.id] !== undefined && !(form[step.id] >= step.minValue && form[step.id] <= step.maxValue)"
+              :key="step.id"
+              class="text-destructive"
+            >
+              Value should be between {{ step.minValue }} and {{ step.maxValue }}
+            </div>
 
-            <div class="pt-6">
-              <Button
-                v-if="currentStep === questions.length - 1"
-                class="w-full"
-                type="submit"
-                :disabled="!form[step.id]"
-              >
-                Submit <ArrowRight class="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                v-else
-                class="w-full mb-2"
-                type="button"
-                :disabled="!form[step.id]"
-                @click="nextStep(step.id, form[step.id])"
-              >
-                Next <ArrowRight class="ml-2 h-4 w-4" />
-              </Button>
+            <div class="pt-6 flex flex-col gap-2">
+              <div class="flex gap-2">
+                <Button
+                  v-if="currentStep > 0"
+                  class="flex-1"
+                  type="button"
+                  variant="outline"
+                  @click="currentStep--"
+                >
+                  Back
+                </Button>
+                <Button
+                  v-if="currentStep === questions.length - 1"
+                  class="flex-1"
+                  type="submit"
+                  :disabled="!form[step.id]"
+                >
+                  Submit <ArrowRight class="ml-2 h-4 w-4" />
+                </Button>
+                <Button
+                  v-else
+                  class="flex-1"
+                  type="button"
+                  :disabled="!(form[step.id] || form[step.id] >= step.minValue && form[step.id] <= step.maxValue)"
+                  @click="nextStep(step.id, form[step.id], form[step.id] >= step.minValue && form[step.id] <= step.maxValue)"
+                >
+                  Next <ArrowRight class="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </form>
@@ -110,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { selfAssessmentQuestions } from '@/api/user';
+import { answerSelfAssessment, selfAssessmentQuestions } from '@/api/user';
 import { Button } from '@/components/shares/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/shares/ui/card';
 import { Input } from '@/components/shares/ui/input';
@@ -120,9 +139,21 @@ import { useUserStore } from '@/stores/user';
 import { cn } from '@/utils';
 import { ArrowRight, Check, Circle, Dot } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+type Question = {
+  id: number;
+  category: string;
+  text: string;
+  minValue: number;
+  maxValue: number;
+  orderIndex: number;
+};
 
 const userStore = useUserStore();
-const questions = ref<{ id: number; category: string; text: string; minValue: number; maxValue: number }[]>([]);
+const router = useRouter();
+
+const questions = ref<Question[]>([]);
 const answers = ref<{ questionId: number; answerValue: number; playerId: number }[]>([]);
 const form = ref<Record<string, number>>({});
 const currentStep = ref(0);
@@ -130,7 +161,7 @@ const currentStep = ref(0);
 async function fetchQuestions() {
   try {
     const { data } = await selfAssessmentQuestions();
-    questions.value = data.sort((a, b) => a.orderIndex - b.orderIndex);
+    questions.value = data.sort((a: Question, b: Question) => a.orderIndex - b.orderIndex);
   } catch (error) {
     notify.error(error as string);
   }
@@ -146,22 +177,22 @@ function handleSubmit() {
   // Collect all answers before submit
   const lastStep = questions.value[currentStep.value];
   if (lastStep && form.value[lastStep.id] !== undefined) {
-    nextStep(lastStep.id, form.value[lastStep.id]);
+    nextStep(lastStep.id, form.value[lastStep.id], true);
   }
   submitQuestions();
 }
 
 async function submitQuestions() {
   try {
-    console.log(answers.value);
-
-    // const { data } = await selfAssessmentQuestions();
-    // questions.value = data.sort((a, b) => a.orderIndex - b.orderIndex);
+    await answerSelfAssessment({ answers: answers.value });
+    router.push({ name: 'DashboardPage' });
   } catch (error) {
     notify.error(error as string);
   }
 }
-function nextStep(questionId: number, value: number) {
+function nextStep(questionId: number, value: number, isValid: boolean) {
+  if (!isValid)
+    return;
   if (currentStep.value < questions.value.length - 1) {
     currentStep.value++;
   }
