@@ -15,3 +15,6 @@ type SignupPayload = {
 export const login = (data?: LoginCredential) => http.post(`${import.meta.env.VITE_API_URL}/auth/login`, data);
 export const register = (data?: SignupPayload) => http.post(`${import.meta.env.VITE_API_URL}/auth/register`, data);
 export const verifyEmail = (data?: { code: string; email: string }) => http.post(`${import.meta.env.VITE_API_URL}/auth/verify-email`, data);
+
+export const selfAssessmentQuestions = () => http.get(`/questions/self-assessment`);
+export const answerSelfAssessment = (data: any) => http.post(`/player-answers/submit-assessment`, data);

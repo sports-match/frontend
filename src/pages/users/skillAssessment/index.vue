@@ -15,7 +15,7 @@
         <div class="w-1/3">
           <Stepper v-model="currentStep" orientation="vertical" class="mx-auto flex w-full max-w-md flex-col justify-start gap-10">
             <StepperItem
-              v-for="(step, index) in stepsSelector"
+              v-for="(step, index) in questions"
               :key="step + index"
               v-slot="{ state }"
               class="relative flex w-full gap-6"
@@ -46,9 +46,9 @@
               <div class="flex flex-col gap-1">
                 <StepperTitle
                   :class="[state === 'active' && 'text-primary']"
-                  class="text-sm font-semibold transition lg:text-base"
+                  class="text-sm font-semibold transition lg:text-base capitalize"
                 >
-                  {{ step }}
+                  {{ step.category }}
                 </StepperTitle>
               </div>
             </StepperItem>
@@ -56,37 +56,50 @@
         </div>
 
         <!-- Step Content -->
-        <div class="w-2/3 space-y-4">
-          <div v-for="(step, index) in steps" v-show="currentStep === index" :key="index">
-            <h2 v-if="currentStep > 0" class="text-lg font-semibold mb-2">
+        <form class="w-2/3 space-y-4" @submit.prevent="handleSubmit">
+          <div v-for="(step, index) in questions" v-show="currentStep === index" :key="index">
+            <h2 class="text-lg font-semibold mb-2">
               <span>
-                Question #{{ currentStep }}.
+                Question #{{ currentStep + 1 }}.
               </span>
-              {{ steps[currentStep].label }}
+              <span class="capitalize">
+                {{ step.category }}
+              </span>
             </h2>
-            <p class="text-sm text-muted-foreground whitespace-pre-line mb-4" v-html="steps[currentStep].content" />
+            <p class="text-sm text-muted-foreground whitespace-pre-line mb-4">
+              {{ step.text }}
+            </p>
             <Input
-              v-if="steps[currentStep].input.type === 'date'"
-              v-model="form[steps[currentStep].input.model]"
-              type="date"
-              :placeholder="steps[currentStep].input.placeholder"
+              v-model="form[step.id]"
+              :name="step.category"
+              type="number"
+              :placeholder="`${step.minValue} ~ ${step.maxValue}`"
               class="w-full"
+              :max="step.maxValue"
+              :min="step.minValue"
             />
-            <Input
-              v-else
-              v-model="form[steps[currentStep].input.model]"
-              type="text"
-              :placeholder="steps[currentStep].input.placeholder"
-              class="w-full"
-            />
-          </div>
 
-          <div class="pt-6">
-            <Button class="w-full" @click="nextStep">
-              Next <ArrowRight class="ml-2 h-4 w-4" />
-            </Button>
+            <div class="pt-6">
+              <Button
+                v-if="currentStep === questions.length - 1"
+                class="w-full"
+                type="submit"
+                :disabled="!form[step.id]"
+              >
+                Submit <ArrowRight class="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                v-else
+                class="w-full mb-2"
+                type="button"
+                :disabled="!form[step.id]"
+                @click="nextStep(step.id, form[step.id])"
+              >
+                Next <ArrowRight class="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </Card>
 
@@ -97,125 +110,71 @@
 </template>
 
 <script setup lang="ts">
+import { selfAssessmentQuestions } from '@/api/user';
 import { Button } from '@/components/shares/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/shares/ui/card';
 import { Input } from '@/components/shares/ui/input';
 import { Stepper, StepperItem, StepperSeparator, StepperTitle, StepperTrigger } from '@/components/shares/ui/stepper';
+import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores/user';
 import { cn } from '@/utils';
 import { ArrowRight, Check, Circle, Dot } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
+const userStore = useUserStore();
+const questions = ref<{ id: number; category: string; text: string; minValue: number; maxValue: number }[]>([]);
+const answers = ref<{ questionId: number; answerValue: number; playerId: number }[]>([]);
+const form = ref<Record<string, number>>({});
 const currentStep = ref(0);
-const stepsSelector = [
-  'Birthday',
-  'Court Coverage',
-  'Shot Quality',
-  'Consistency / Control',
-  'Power',
-  'Anticipation & Strategy',
-];
 
-function nextStep() {
-  if (currentStep.value < stepsSelector.length - 1) {
-    currentStep.value++;
+async function fetchQuestions() {
+  try {
+    const { data } = await selfAssessmentQuestions();
+    questions.value = data.sort((a, b) => a.orderIndex - b.orderIndex);
+  } catch (error) {
+    notify.error(error as string);
   }
 }
 
-const form = ref({
-  birthday: '',
-  courtCoverage: '',
-  shotQuality: '',
-  consistency: '',
-  power: '',
-  anticipation: '',
+const userId = computed(() => userStore.userDetails?.user?.id || null);
+
+onMounted(() => {
+  fetchQuestions();
 });
 
-const steps = [
-  {
-    label: 'Birthday',
-    content: `
-      **Your answers to this survey will be kept confidential. Only your initial rating, once generated, will be public on your account.
-    `,
-    input: {
-      type: 'date',
-      model: 'birthday',
-      placeholder: 'Birthday',
-    },
-  },
-  {
-    label: 'Court Coverage',
-    content: `
-      (1) I can reach shots 1 step away and sometimes return to a neutral position
+function handleSubmit() {
+  // Collect all answers before submit
+  const lastStep = questions.value[currentStep.value];
+  if (lastStep && form.value[lastStep.id] !== undefined) {
+    nextStep(lastStep.id, form.value[lastStep.id]);
+  }
+  submitQuestions();
+}
 
-      (5~6) I can cover the entire court somewhat consistently, but sometimes over-extending puts me off-balance or out of position for the following shot.
+async function submitQuestions() {
+  try {
+    console.log(answers.value);
 
-      (10) I can cover all shots and recover to a neutral position consistently, and in doubles can cover some of my partner's responsibilities as well.
-    `,
-    input: {
-      type: 'text',
-      model: 'courtCoverage',
-      placeholder: 'Please make your selection',
-    },
-  },
-  {
-    label: 'Shot Quality',
-    content: `
-      (1) I can hit only basic shots to most areas on the court, but not able to hit all the shots I would like.
+    // const { data } = await selfAssessmentQuestions();
+    // questions.value = data.sort((a, b) => a.orderIndex - b.orderIndex);
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+function nextStep(questionId: number, value: number) {
+  if (currentStep.value < questions.value.length - 1) {
+    currentStep.value++;
+  }
 
-      (5~6) I can hit all shots to and from anywhere on the court if I am in a favorable position, and can add elements of deception to some shots.
-
-      (10) I can hit all shots to and from anywhere on the court even if I am in an unfavorable position (eg. backhand clear), and can include elements of deception at will.
-    `,
-    input: {
-      type: 'text',
-      model: 'shotQuality',
-      placeholder: 'Please make your selection',
-    },
-  },
-  {
-    label: 'Consistency / Control',
-    content: `
-      (1) I'm not very consistent yet. Unforced errors are fairly common. I am beginning to learn how to control the speed and direction of the shuttle.
-
-      (5~6) When comfortable, I'm mostly consistent, but shot control decreases in high pressure scenarios when the pace and intensity of the rally increases. Unforced errors are still somewhat common.
-
-      (10) I'm very consistent and shot control remains steady even in high pressure scenarios. Unforced errors are rare.
-    `,
-    input: {
-      type: 'text',
-      model: 'consistency',
-      placeholder: 'Please make your selection',
-    },
-  },
-  {
-    label: 'Power',
-    content: `
-      (1) I cannot clear the shuttle from baseline to baseline (full court) easily.
-
-      (5~6) I can clear the shuttle from baseline to baseline repeatedly, but I will start to fatigue.
-
-      (10) Clearing the shuttle from baseline to baseline repeatedly does not require much effort, and can even be done easily even from an off-balanced/recovery position from the deep corners of the court.
-    `,
-    input: {
-      type: 'text',
-      model: 'power',
-      placeholder: 'Please make your selection',
-    },
-  },
-  {
-    label: 'Anticipation & Strategy',
-    content: `
-      (1) I tend to react to shots one-at-a-time and it can be difficult to execute a specific strategy during a rally.
-
-      (5~6) I can anticipate some shots my opponent will hit, and some basic tendencies. I may approach a match with a simple strategy and adjust my strategy at some point during a match.
-
-      (10) I can recognize patterns and tendencies in my opponent's play as well as my own, and use that knowledge to make several adjustments throughout a match.
-    `,
-    input: {
-      type: 'text',
-      model: 'anticipation',
-      placeholder: 'Please make your selection',
-    },
-  },
-];
+  const existingAnswer = answers.value.find(ans => ans.questionId === questionId);
+  if (existingAnswer) {
+    existingAnswer.answerValue = value;
+  } else {
+    answers.value.push({
+      questionId,
+      answerValue: value,
+      playerId: userId.value as number,
+    });
+  }
+}
 </script>
