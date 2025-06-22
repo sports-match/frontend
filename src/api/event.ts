@@ -4,7 +4,7 @@ export const getEvents = (query?: any) => http.get('/events', { params: query })
 export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
 export const getEventPlayers = (eventId: string) => http.get(`/events/${eventId}/players`);
-export const checkinEvent = (eventId: string) => http.post(`/events/${eventId}/check-in`);
+export const checkinEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/check-in`, data);
 export const widthdrawEvent = (eventId: string) => http.post(`/events/${eventId}/withdraw`);
 export const joinEvent = (eventId: string, data: any) => http.post(`/events/${eventId}/join`, data);
 

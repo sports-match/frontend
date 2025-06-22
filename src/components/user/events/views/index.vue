@@ -28,10 +28,10 @@
         <Label for="location" class="text-white mb-1">Location</Label>
         <Combobox v-model="selectedPlace" by="display_name">
           <ComboboxAnchor>
-            <div class="relative w-full max-w-sm items-center">
+            <div class="relative w-full items-center">
               <ComboboxInput
                 v-model="searchQuery"
-                class="text-white pe-8"
+                class="text-white pe-8 border border-gray-500"
                 :display-value="(val) => val?.display_name ?? searchQuery"
                 placeholder="Select place..."
                 @input="handleInput"

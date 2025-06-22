@@ -72,9 +72,9 @@ onMounted(() => {
 async function fetchEvent() {
   try {
     const { data: content } = await getEvent(id as string);
+    event.value = content;
     const { data: registers } = await getEventPlayers(id as string);
     players.value = registers;
-    event.value = content;
   } catch (error) {
     notify.error(error as string);
   }
