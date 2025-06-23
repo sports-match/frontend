@@ -23,16 +23,28 @@ type UserDetails = {
   };
 };
 
+type AssessmentStatus = { assessmentCompleted: boolean; message: string };
+
 export const useUserStore = defineStore('user', {
   persist: {
     storage: sessionStorage,
   },
   state: () => ({
     userDetails: {} as UserDetails,
+    assessmentStatus: {
+      assessmentCompleted: false,
+      message: '',
+    },
+    playerId: null as number | null,
   }),
   actions: {
-    setUserDetails(details: UserDetails) {
+    setAssessmentStatus(status: boolean) {
+      this.assessmentStatus.assessmentCompleted = status;
+    },
+    setUserDetails(details: UserDetails, assessmentStatus: AssessmentStatus, playerId: number | null) {
       this.userDetails = details;
+      this.assessmentStatus = assessmentStatus;
+      this.playerId = playerId;
     },
     Logout() {
       const { logout } = useAuthentication();

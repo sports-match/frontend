@@ -167,7 +167,7 @@ async function fetchQuestions() {
   }
 }
 
-const userId = computed(() => userStore.userDetails?.user?.id || null);
+const playerId = computed(() => userStore?.playerId || null);
 
 onMounted(() => {
   fetchQuestions();
@@ -185,7 +185,9 @@ function handleSubmit() {
 async function submitQuestions() {
   try {
     await answerSelfAssessment({ answers: answers.value });
+    userStore.setAssessmentStatus(true);
     router.push({ name: 'DashboardPage' });
+    notify.success('Assessment submitted successfully!');
   } catch (error) {
     notify.error(error as string);
   }
@@ -204,7 +206,7 @@ function nextStep(questionId: number, value: number, isValid: boolean) {
     answers.value.push({
       questionId,
       answerValue: value,
-      playerId: userId.value as number,
+      playerId: playerId.value as number,
     });
   }
 }

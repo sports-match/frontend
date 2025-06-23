@@ -15,6 +15,11 @@ export function useAuthentication() {
   const isPlayer = computed(() => {
     return userStore.$state.userDetails.user.userType === 'PLAYER';
   });
+
+  const assessmentStatus = computed(() => {
+    return userStore.$state.assessmentStatus.assessmentCompleted;
+  });
+
   function clearSession() {
     set(token, null);
   }
@@ -23,5 +28,5 @@ export function useAuthentication() {
     set(token, null);
   }
 
-  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer };
+  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer, assessmentStatus };
 }
