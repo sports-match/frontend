@@ -31,33 +31,19 @@
       :page-size="10"
     >
       <template #actions="{ row }">
-        <Button variant="ghost" size="sm">
-          <ClockAlert class="text-yellow-500 size-4" />
-        </Button>
-        <Button variant="ghost" size="sm">
-          <Dock class="text-red-500 size-4" />
-        </Button>
-        <Button variant="ghost" size="sm">
-          <Check class="text-blue-500 size-4" />
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="sm">
-              <Ellipsis class="size-4" />
+        <div class="flex gap-2">
+          <ReminderDialog :event="event" :player="row.original">
+            <Button class="bg-yellow-500 hover:bg-yellow-400" size="sm">
+              <ClockAlert class="size-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Eye class="size-4 mr-2" /> View
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Edit class="size-4 mr-2" /> Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem class="text-destructive">
-              <Trash class="size-4 mr-2" /> Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </ReminderDialog>
+          <Button variant="destructive" size="sm">
+            <Dock class="size-4" />
+          </Button>
+          <Button class="bg-green-500 hover:bg-green-400" size="sm">
+            <CircleCheck class="size-4" />
+          </Button>
+        </div>
       </template>
       <template #checkIn="{ row }">
         <span :class="row.original.checkIn === 'Yes' ? 'text-green-500' : 'text-red-500'">
@@ -69,9 +55,11 @@
         <span class="ml-1">
           4900
         </span>
-        <Button variant="ghost" size="sm">
-          <ArrowLeftRight class="size-4 text-primary" />
-        </Button>
+        <PlayerSearchDialog :event="event">
+          <Button size="sm">
+            <ArrowLeftRight class="size-4" />
+          </Button>
+        </PlayerSearchDialog>
       </template>
     </Datatable>
   </div>
@@ -81,11 +69,19 @@
 import Datatable from '@/components/shares/datatable/index.vue';
 import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
+import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
-import { ArrowLeftRight, Check, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
+import { ArrowLeftRight, Check, CircleCheck, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+
+defineProps({
+  event: {
+    type: Object,
+    required: true,
+  },
+});
 
 // Dummy data for demonstration
 const data = ref([

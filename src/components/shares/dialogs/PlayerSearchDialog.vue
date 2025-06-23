@@ -1,88 +1,110 @@
 <template>
   <Dialog v-model:open="open">
-    <DialogTrigger as-child>
-      <Button class="bg-primary text-white">
-        <Plus class="w-5 h-5 mr-2" />
-        Add Member
-      </Button>
+    <DialogTrigger as-child @click="fetchPlayers">
+      <slot>
+        <Button class="bg-primary text-white">
+          <Plus class="w-5 h-5 mr-2" />
+          Add Member
+        </Button>
+      </slot>
     </DialogTrigger>
-    <DialogContent class="max-w-lg w-full sm:max-w-xl rounded-2xl p-0 overflow-hidden h-[80vh]">
-      <Command class="rounded-lg border shadow-md h-full">
+    <DialogContent class="max-w-lg w-full p-0">
+      <Command class="rounded-lg border h-full">
         <div class="flex items-center px-4 pt-4 pb-2 border-b">
           <CommandInput
             placeholder="Search"
-            class="w-full border-none outline-none ring-0 focus:ring-0"
+            class="w-full"
             @input="onSearch($event.target.value)"
           />
         </div>
         <CommandList
-          class="overflow-y-auto px-4 py-2 max-h-[calc(80vh-60px)]"
+          class="overflow-y-auto px-4 py-2 max-h-[calc(80vh-110px)]"
           @scroll.passive="onScroll"
         >
           <CommandGroup heading="Players Name">
             <CommandItem
-              v-for="(player, index) in paginatedPlayers"
-              :key="player + index"
-              class="cursor-pointer py-2"
+              v-for="player in paginatedPlayers"
+              :key="player.id"
+              class="cursor-pointer py-2 flex items-center"
+              :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
+              @click="selectPlayer(player)"
             >
-              {{ player }}
+              <span class="flex-1">{{ player.name }}</span>
+              <span v-if="selectedPlayer?.id === player.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
       </Command>
+      <DialogFooter class="p-5 pt-0">
+        <Button
+          :disabled="!selectedPlayer"
+          @click="submitPlayer"
+        >
+          Submit
+        </Button>
+      </DialogFooter>
     </DialogContent>
   </Dialog>
 </template>
 
 <script setup lang="ts">
+import { getEventPlayers, getPlayers } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
-import {
-  Command,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/shares/ui/command';
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from '@/components/shares/ui/dialog';
-import { Plus } from 'lucide-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
+import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
+import { notify } from '@/composables/notify';
+import { CheckIcon, Plus } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+
+const props = defineProps({
+  event: {
+    type: Object,
+    required: true,
+  },
+});
 
 const open = ref(false);
 
 // Example: Replace with your real player list (longer for demo)
-const players = [
-  'Aaditya chokshi',
-  'Aadidev Rijosh 🔥',
-  'Aadit Gupta 🔥',
-  'Aakash Chaurasia',
-  'Aakash Deep',
-  'Aakash Khandelwal',
-  'Aakash Sivakumar',
-  'Aarav Balsu 🦅',
-  'aarav rajesh',
-  // ...add more names for real use
-];
+const players = ref([
+  { id: 1, name: 'Aaditya chokshi' },
+  { id: 2, name: 'Aadidev Rijosh 🔥' },
+  { id: 3, name: 'Aadit Gupta 🔥' },
+  { id: 4, name: 'Aakash Chaurasia' },
+  { id: 5, name: 'Aakash Deep' },
+  { id: 6, name: 'Aakash Khandelwal' },
+  { id: 7, name: 'Aakash Sivakumar' },
+  { id: 8, name: 'Aarav Balsu 🦅' },
+  { id: 9, name: 'aarav rajesh' },
+  // ...add more objects for real use
+]);
+
+const selectedPlayer = ref<null | { id: number; name: string }>(null);
 
 // Pagination state
 const pageSize = 20;
 const page = ref(1);
 
 // Filtered and paginated players
-const filteredPlayers = ref(players);
+const filteredPlayers = ref(players.value);
 
 const paginatedPlayers = computed(() =>
   filteredPlayers.value.slice(0, page.value * pageSize),
 );
 
+async function fetchPlayers() {
+  try {
+    const { data: content } = await getEventPlayers(props.event.id);
+    players.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 // Search logic
 function onSearch(val: string) {
   page.value = 1;
-  filteredPlayers.value = players.filter(p =>
-    p.toLowerCase().includes(val.toLowerCase()),
+  filteredPlayers.value = players.value.filter(p =>
+    p.name.toLowerCase().includes(val.toLowerCase()),
   );
 }
 
@@ -93,6 +115,17 @@ function onScroll(e: Event) {
     if (paginatedPlayers.value.length < filteredPlayers.value.length) {
       page.value++;
     }
+  }
+}
+
+function selectPlayer(player: { id: number; name: string }) {
+  selectedPlayer.value = player;
+}
+
+function submitPlayer() {
+  if (selectedPlayer.value) {
+    // Handle submit logic here
+    // e.g. emit('select', selectedPlayer.value)
   }
 }
 </script>

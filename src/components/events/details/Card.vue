@@ -20,15 +20,12 @@
       </div>
 
       <div class="flex space-x-2">
-        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
+        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl" @click="copyLink">
           <Copy class="mr-2 size-4" />
-          <span>https://go.gl/xprowi2025</span>
+          <span>{{ link }}</span>
         </Button>
 
-        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
-          <Link class="mr-2 size-4" />
-          Share
-        </Button>
+        <SharesDialog :event="event" />
         <template v-if="!isPlayer">
           <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
             <ClockAlert class="size-4" />
@@ -52,15 +49,19 @@
 
 <script setup lang="ts">
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
+import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { useAuthentication } from '@/composables';
-import { CircleAlert, ClockAlert, Copy, Link } from 'lucide-vue-next';
+import { CircleAlert, ClockAlert, Copy, Link, Share } from 'lucide-vue-next';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   event: {
     type: Object,
-    required: false,
+    required: true,
   },
 });
 const { isPlayer } = useAuthentication();
+
+const link = computed(() => `${window.location.origin}/event/${props.event?.id}`);
 </script>

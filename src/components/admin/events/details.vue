@@ -34,7 +34,7 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList />
+        <RegisterList :event="event" />
       </TabsContent>
       <TabsContent value="groups">
         <GroupList />
