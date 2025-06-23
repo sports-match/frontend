@@ -19,7 +19,7 @@ export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, {
 export const createEvent = (data: any) => http.post('/events', data);
 export const getEventPlayers = (eventId: string) => http.get(`/events/${eventId}/players`);
 export const checkinEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/check-in`, data);
-export const widthdrawEvent = (eventId: string) => http.post(`/events/${eventId}/withdraw`);
+export const widthdrawEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
 export const joinEvent = (eventId: string, data: any) => http.post(`/events/${eventId}/join`, data);
 
 export const getClubs = () => http.get('/clubs');

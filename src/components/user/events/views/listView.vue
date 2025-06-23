@@ -61,7 +61,7 @@ const userStore = useUserStore();
 const eventList = computed(() => props.events?.content || []);
 const totalRecords = computed(() => props.events?.totalElements || 0);
 const eventTable = ref();
-const userId = computed(() => userStore.userDetails?.user?.id || null);
+const playerId = computed(() => userStore.playerId || null);
 
 const columns: ColumnDef<any>[] = [
   {
@@ -101,7 +101,10 @@ function fetchData() {
 
 async function checkIn(id: string | number) {
   try {
-    await checkinEvent(id as string);
+    await checkinEvent(id as string, {
+      eventId: id,
+      playerId: playerId.value,
+    });
     notify.success('Checked in successfully');
   } catch (e) {
     notify.error(e as string);
@@ -110,7 +113,10 @@ async function checkIn(id: string | number) {
 
 async function widthdraw(id: string | number) {
   try {
-    await widthdrawEvent(id as string);
+    await widthdrawEvent(id as string, {
+      eventId: id,
+      playerId: playerId.value,
+    });
     notify.success('Widthdraw event successfully');
   } catch (e) {
     notify.error(e as string);
@@ -121,7 +127,7 @@ async function signUpEvent(id: string | number) {
   try {
     await joinEvent(id as string, {
       eventId: id,
-      playerId: userId.value,
+      playerId: playerId.value,
       joinWaitList: true,
 
     });

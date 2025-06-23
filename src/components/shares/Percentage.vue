@@ -20,11 +20,11 @@
         cx="18"
         cy="18"
         r="15.9155"
-        :stroke-dasharray="`${percentage}, 100`"
+        :stroke-dasharray="`${Number(percentage).toFixed(2)}, 100`"
       />
     </svg>
     <div class="absolute text-xs inset-0 flex items-center justify-center text-green-500 font-semibold">
-      {{ percentage }}%
+      {{ Number(percentage).toFixed(2) }}%
     </div>
   </div>
 </template>
