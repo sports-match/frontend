@@ -17,7 +17,9 @@ export function useAuthentication() {
   });
 
   const assessmentStatus = computed(() => {
-    return userStore.$state.assessmentStatus.assessmentCompleted;
+    if (!isPlayer.value)
+      return true;
+    return userStore.$state.assessmentStatus?.assessmentCompleted;
   });
 
   function clearSession() {

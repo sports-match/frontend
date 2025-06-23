@@ -8,8 +8,8 @@
     </template>
 
     <div v-if="!pending" class="flex flex-col gap-4">
-      <EventCard :events="events?.content" />
-      <CalendarSection :events="events?.content" @on-date-change="dateChange" />
+      <EventCard :events="upcomingEvents?.content" />
+      <CalendarSection :events="upcomingEvents?.content" @on-date-change="dateChange" />
       <EventList :events="events?.content" :total-events="events?.totalElements" @on-fetch="searchEvents" />
     </div>
     <PendingOverlay v-if="pending" />
