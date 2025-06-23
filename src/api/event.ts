@@ -30,6 +30,8 @@ export const getSports = () => http.get('/sports');
 export const getPlayers = () => http.get('/players');
 export const getTags = () => http.get('/tags');
 
+export const sendEventReminder = (eventId: string, data: any) => http.post(`/events/${eventId}/remind`, data);
+
 export function uploadImage(file: File) {
   const formData = new FormData();
   formData.append('file', file);

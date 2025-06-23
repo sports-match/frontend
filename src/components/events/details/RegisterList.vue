@@ -32,7 +32,7 @@
     >
       <template #actions="{ row }">
         <div class="flex gap-2">
-          <ReminderDialog :event="event" :player="row.original">
+          <ReminderDialog :event="event" :player-id="row.original?.id">
             <Button class="bg-yellow-500 hover:bg-yellow-400" size="sm">
               <ClockAlert class="size-4" />
             </Button>
@@ -86,6 +86,8 @@ defineProps({
 // Dummy data for demonstration
 const data = ref([
   {
+    id: 2,
+    name: 'Lonnie Jayden',
     firstName: 'Lonnie',
     lastName: 'Jayden',
     partner: 'Tracey Keebler',
