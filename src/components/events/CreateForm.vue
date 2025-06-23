@@ -2,7 +2,7 @@
   <Dialog :focus-outside="false">
     <DialogTrigger as-child>
       <!-- Trigger button can be placed here if needed -->
-      <Button @click="() => { fetchSports(); fetchClubs(); fetchPlayers(); }">
+      <Button @click="() => { fetchSports(); fetchClubs(); fetchPlayers(); fetchTags(); }">
         Create Event
       </Button>
     </DialogTrigger>
@@ -93,8 +93,8 @@
           <MultiSelect
             v-model="form.tags"
             :options="tags"
-            value-key="value"
-            label-key="label"
+            value-key="name"
+            label-key="name"
             return-type="value"
             placeholder="Event Tags"
             class="col-span-2"
@@ -154,7 +154,7 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { createEvent, getClubs, getPlayers, getSports, uploadImage } from '@/api/event';
+import { createEvent, getClubs, getPlayers, getSports, getTags, uploadImage } from '@/api/event';
 import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -209,11 +209,11 @@ const sports: Ref<{ id: string; name: string; icon: string }[]> = ref([
 const clubs: Ref<{ id: string }[]> = ref([]);
 const players: Ref<{ id: string }[]> = ref([]);
 const tags = ref([
-  { value: 'ladder', label: 'Ladder' },
-  { value: 'mixer', label: 'Mixer' },
-  { value: 'academy', label: 'Academy' },
-  { value: 'open', label: 'Open' },
-  { value: 'league', label: 'League' },
+  { value: 'ladder', name: 'Ladder' },
+  { value: 'mixer', name: 'Mixer' },
+  { value: 'academy', name: 'Academy' },
+  { value: 'open', name: 'Open' },
+  { value: 'league', name: 'League' },
 ]);
 
 const selectedSport = ref();
@@ -242,6 +242,15 @@ const form = reactive<EventForm>({
   location: '',
 });
 const previewUrl = ref<string | null>(null);
+
+async function fetchTags() {
+  try {
+    const { data: { content } } = await getTags();
+    tags.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchClubs() {
   try {

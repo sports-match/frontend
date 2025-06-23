@@ -25,6 +25,7 @@ export const joinEvent = (eventId: string, data: any) => http.post(`/events/${ev
 export const getClubs = () => http.get('/clubs');
 export const getSports = () => http.get('/sports');
 export const getPlayers = () => http.get('/players');
+export const getTags = () => http.get('/tags');
 
 export function uploadImage(file: File) {
   const formData = new FormData();
@@ -37,4 +38,4 @@ export function uploadImage(file: File) {
 }
 export const getImage = (path: string) => http.get(`${path}`);
 
-export const generateGroups = (eventId: string) => http.patch(`/events/${eventId}/generate-groups`);
+export const generateGroups = (eventId: string) => http.post(`/events/${eventId}/generate-groups`);
