@@ -19,7 +19,7 @@
       <div v-if="!submitted" class="space-y-4">
         <div class="space-y-3 mt-2">
           <div class="flex items-center space-x-2">
-            <Switch id="public-event" v-model="form.enabled" />
+            <Switch id="public-event" v-model="form.allowSelfCheckIn" />
             <Label for="public-event" class="font-normal">This event is public and anyone can sign up</Label>
           </div>
           <div class="flex items-center space-x-2">
@@ -128,7 +128,7 @@
 
       <div v-else>
         <!-- QR Image -->
-        <QrSharing />
+        <QrSharing :event="event" />
       </div>
       <!-- Footer -->
       <DialogFooter class="flex justify-between">
@@ -190,10 +190,12 @@ type EventForm = {
   description: string;
   posterImage: string | null;
   allowWaitList: boolean;
-  enabled: boolean;
+  allowSelfCheckIn: boolean;
   image: string;
   location: string;
 };
+
+const event = ref({});
 const submitted = ref(false);
 const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
 const isLoading = ref(false);
@@ -237,7 +239,7 @@ const form = reactive<EventForm>({
   description: '',
   posterImage: '',
   allowWaitList: false,
-  enabled: false,
+  allowSelfCheckIn: false,
   image: '',
   location: '',
 });
@@ -297,11 +299,12 @@ async function submit() {
       form.posterImage = data.data[0];
     }
 
-    await createEvent({
+    const { data } = await createEvent({
       ...form,
-      eventTime: '2025-06-19 14:00:00',
+      eventTime: form.eventTime ? new Date(form.eventTime).toISOString() : null,
       clubId: selectedClub.value?.id,
     });
+    event.value = data;
     notify.success('Event created successfully');
     submitted.value = true;
   } catch (error) {
