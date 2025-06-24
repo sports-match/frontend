@@ -17,7 +17,7 @@
           <Plus class="w-5 h-5 mr-2" />
           Add Member
         </Button> -->
-        <PlayerSearchDialog />
+        <PlayerSearchDialog :event="event" />
       </div>
     </div>
 
@@ -37,10 +37,10 @@
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button variant="destructive" size="sm">
+          <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
             <Dock class="size-4" />
           </Button>
-          <Button class="bg-green-500 hover:bg-green-400" size="sm">
+          <Button class="bg-green-500 hover:bg-green-400" size="sm" @click.stop="checkIn(row.original.id)">
             <CircleCheck class="size-4" />
           </Button>
         </div>
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { checkinEvent, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
 import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
@@ -73,10 +74,11 @@ import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
+import { notify } from '@/composables/notify';
 import { ArrowLeftRight, Check, CircleCheck, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
-defineProps({
+const props = defineProps({
   event: {
     type: Object,
     required: true,
@@ -121,4 +123,27 @@ const columns = [
   { accessorKey: 'checkIn', header: 'Check In?' },
   { id: 'actions', header: 'Actions' },
 ];
+async function checkIn(playerId: string | number) {
+  try {
+    await checkinEvent(props.event?.id as string, {
+      eventId: props.event?.id,
+      playerId,
+    });
+    notify.success('Checked in successfully');
+  } catch (e) {
+    notify.error(e as string);
+  }
+}
+
+async function widthdraw(playerId: string | number) {
+  try {
+    await withdrawEvent(props.event?.id as string, {
+      eventId: props.event?.id,
+      playerId,
+    });
+    notify.success('Widthdraw event successfully');
+  } catch (e) {
+    notify.error(e as string);
+  }
+}
 </script>

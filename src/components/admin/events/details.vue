@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { getEvent } from '@/api/event';
+import { getEvent, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/details/Card.vue';
 import GroupList from '@/components/events/details/GroupList.vue';
 import RegisterList from '@/components/events/details/RegisterList.vue';

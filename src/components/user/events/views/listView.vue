@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
-import { checkinEvent, joinEvent, widthdrawEvent } from '@/api/event';
+import { checkinEvent, joinEvent, withdrawEvent } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import Percentage from '@/components/shares/Percentage.vue';
@@ -113,7 +113,7 @@ async function checkIn(id: string | number) {
 
 async function widthdraw(id: string | number) {
   try {
-    await widthdrawEvent(id as string, {
+    await withdrawEvent(id as string, {
       eventId: id,
       playerId: playerId.value,
     });

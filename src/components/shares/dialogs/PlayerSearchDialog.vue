@@ -1,6 +1,6 @@
 <template>
-  <Dialog v-model:open="open">
-    <DialogTrigger as-child @click="fetchPlayers">
+  <Dialog v-model:open="open" @update:open="(open) => { if (open) fetchPlayers() }">
+    <DialogTrigger as-child>
       <slot>
         <Button class="bg-primary text-white">
           <Plus class="w-5 h-5 mr-2" />
@@ -23,13 +23,13 @@
         >
           <CommandGroup heading="Players Name">
             <CommandItem
-              v-for="player in paginatedPlayers"
+              v-for="player in players"
               :key="player.id"
               class="cursor-pointer py-2 flex items-center"
               :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
               @click="selectPlayer(player)"
             >
-              <span class="flex-1">{{ player.name }}</span>
+              <span class="flex-1">{{ player.id }}</span>
               <span v-if="selectedPlayer?.id === player.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
             </CommandItem>
           </CommandGroup>
@@ -48,13 +48,13 @@
 </template>
 
 <script setup lang="ts">
-import { getEventPlayers, getPlayers } from '@/api/event';
+import { getEventPlayers, getPlayers, joinEvent } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
 import { notify } from '@/composables/notify';
 import { CheckIcon, Plus } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   event: {
@@ -66,18 +66,7 @@ const props = defineProps({
 const open = ref(false);
 
 // Example: Replace with your real player list (longer for demo)
-const players = ref([
-  { id: 1, name: 'Aaditya chokshi' },
-  { id: 2, name: 'Aadidev Rijosh 🔥' },
-  { id: 3, name: 'Aadit Gupta 🔥' },
-  { id: 4, name: 'Aakash Chaurasia' },
-  { id: 5, name: 'Aakash Deep' },
-  { id: 6, name: 'Aakash Khandelwal' },
-  { id: 7, name: 'Aakash Sivakumar' },
-  { id: 8, name: 'Aarav Balsu 🦅' },
-  { id: 9, name: 'aarav rajesh' },
-  // ...add more objects for real use
-]);
+const players = ref([]);
 
 const selectedPlayer = ref<null | { id: number; name: string }>(null);
 
@@ -94,8 +83,8 @@ const paginatedPlayers = computed(() =>
 
 async function fetchPlayers() {
   try {
-    const { data: content } = await getEventPlayers(props.event.id);
-    players.value = content;
+    const { data } = await getEventPlayers(props.event.id);
+    players.value = data;
   } catch (error) {
     notify.error(error as string);
   }
@@ -122,10 +111,21 @@ function selectPlayer(player: { id: number; name: string }) {
   selectedPlayer.value = player;
 }
 
-function submitPlayer() {
+async function submitPlayer() {
   if (selectedPlayer.value) {
-    // Handle submit logic here
-    // e.g. emit('select', selectedPlayer.value)
+    try {
+      const id = props.event.id;
+      await joinEvent(id as string, {
+        eventId: id,
+        playerId: selectedPlayer.value.id,
+        joinWaitList: true,
+
+      });
+      notify.success('Player joined event successfully');
+      open.value = false;
+    } catch (e) {
+      notify.error(e as string);
+    }
   }
 }
 </script>

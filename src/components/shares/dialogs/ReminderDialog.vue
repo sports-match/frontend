@@ -93,7 +93,7 @@ const props = defineProps({
   },
   playerId: {
     type: Number,
-    required: true,
+    required: false,
   },
 });
 

@@ -20,7 +20,7 @@ export const createEvent = (data: any) => http.post('/events', data);
 export const getEventPlayers = (eventId: string) => http.get(`/events/${eventId}/players`);
 export const updateEventStatus = (eventId: string, status: string) => http.patch(`/events/${eventId}/status/${status}`);
 export const checkinEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/check-in`, data);
-export const widthdrawEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
+export const withdrawEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
 export const joinEvent = (eventId: string, data: any) => http.post(`/events/${eventId}/join`, data);
 export const getEventGroups = (eventId: string) => http.get(`/events/${eventId}/groups`);
 export const getEventMatches = (eventId: string) => http.get(`/events/${eventId}/matches`);
