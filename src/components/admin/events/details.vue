@@ -34,10 +34,10 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList :event="event" />
+        <RegisterList :event="event" :players="playersInEvent" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="groups">
-        <GroupList />
+        <GroupList  />
       </TabsContent>
       <TabsContent value="results">
         <ResultList />
@@ -63,15 +63,27 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const { id } = route.params;
-const event = ref(null);
+const event = ref([]);
+const playersInEvent = ref([]);
+
 onMounted(() => {
   fetchEvent();
+  fetchPlayers();
 });
 
 async function fetchEvent() {
   try {
     const { data: content } = await getEvent(id as string);
     event.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function fetchPlayers() {
+  try {
+    const { data } = await getEventPlayers(id as string);
+    playersInEvent.value = data;
   } catch (error) {
     notify.error(error as string);
   }

@@ -247,8 +247,8 @@ const previewUrl = ref<string | null>(null);
 
 async function fetchTags() {
   try {
-    const { data: { content } } = await getTags();
-    tags.value = content;
+    const { data } = await getTags();
+    tags.value = data;
   } catch (error) {
     notify.error(error as string);
   }

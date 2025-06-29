@@ -13,18 +13,9 @@
       @on-page-change="fetchData"
       @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
     >
-      <template #partner="{ row }">
-        {{ row.original?.partner }}
-        <PlayerSearchDialog :event="event">
-          <Button variant="destructive" size="sm">
-            <User class="size-4 me-1" /> Select Partner
-          </Button>
-        </PlayerSearchDialog>
-      </template>
       <template #checkIn="{ row }">
-        <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
-          <Dock class="size-4 me-1" />Widthdraw
-        </Button>
+        <CheckCircle v-if="row.original.checkIn" class="size-6 text-green-500" />
+        <X v-else class="size-6 text-destructive" />
       </template>
     </Datatable>
   </div>
@@ -38,7 +29,7 @@ import Datatable from '@/components/shares/datatable/index.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
-import { Dock, User } from 'lucide-vue-next';
+import { CheckCircle, Dock, User, X } from 'lucide-vue-next';
 import { h, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -65,12 +56,8 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) => h(ColumnHeader, { column, title: 'Player Name' }),
   },
   {
-    accessorKey: 'partner',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Partner' }),
-  },
-  {
-    accessorKey: 'combineRate',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Combined Rating' }),
+    accessorKey: 'rating',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Rating' }),
 
   },
   {

@@ -25,6 +25,7 @@
       :data="eventList"
       @on-sort-change="fetchData"
       @on-page-change="fetchData"
+      @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
     >
       <template #signedUp="{ row }">
         <div class="flex items-center gap-2">
@@ -52,14 +53,14 @@
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem @click="$router.push({ name: 'ViewEvent', params: { id: row.original.id } })">
+            <!-- <DropdownMenuItem>
               <Eye class="size-4 mr-2" />
               View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem>
+            </DropdownMenuItem> -->
+            <!-- <DropdownMenuItem>
               <Edit class="size-4 mr-2" />
               Edit
-            </DropdownMenuItem>
+            </DropdownMenuItem> -->
             <DropdownMenuItem>
               <Check class="size-4 mr-2" />
               Complete

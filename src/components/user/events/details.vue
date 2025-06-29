@@ -19,13 +19,21 @@
         </TabsTrigger>
 
         <TabsTrigger
-          value="groups"
+          value="participants"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
           <Users2Icon class="w-5 h-5" />
           Event Participants
         </TabsTrigger>
         <TabsTrigger
+          value="matchList"
+          class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
+        >
+          <Gamepad2 class="w-5 h-5" />
+          Matches
+        </TabsTrigger>
+        <TabsTrigger
+          v-if="isCompleted"
           value="results"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -35,38 +43,47 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList :players="players" />
+        <RegisterList :event="event" :players="players" />
       </TabsContent>
-      <TabsContent value="groups">
-        <GroupList />
+      <TabsContent value="participants">
+        <EventParticipants :event="event" :players="players" />
       </TabsContent>
-      <TabsContent value="results">
-        <ResultList />
+      <TabsContent value="matchList">
+        <MatchList :matches="matches" />
+      </TabsContent>
+      <TabsContent v-if="isCompleted" value="results">
+        <ResultList :event="event" :players="players" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
-import { checkinEvent, getEvent, getEventPlayers } from '@/api/event';
+import { checkinEvent, getEvent, getEventMatches, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/details/Card.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
+import EventParticipants from '@/components/user/events/eventParticipants.vue';
+import MatchList from '@/components/user/events/matchList.vue';
 import RegisterList from '@/components/user/events/registerList.vue';
+import ResultList from '@/components/user/events/resultList.vue';
 import { notify } from '@/composables/notify';
-import { CalendarIcon, ChartSpline, CopyCheckIcon, Users2Icon } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
+import { CalendarIcon, ChartSpline, CopyCheckIcon, Gamepad2, Users2Icon } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
 const { id } = route.params;
-const event = ref(null);
-const players = ref();
+const event = ref({});
+const players = ref([]);
+const matches = ref([]);
 
+const isCompleted = computed(() => event.value?.status === 'COMPLETED');
 onMounted(() => {
   fetchEvent();
+  fetchMatchList();
 });
 
 async function fetchEvent() {
@@ -86,6 +103,15 @@ async function checkin() {
     notify.success('Checked in successfully');
   } catch (e) {
     notify.error(e as string);
+  }
+}
+
+async function fetchMatchList() {
+  try {
+    const { data: content } = await getEventMatches(id as string);
+    matches.value = content;
+  } catch (error) {
+    notify.error(error as string);
   }
 }
 </script>

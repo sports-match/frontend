@@ -22,7 +22,7 @@
             <CreditCardIcon class="size-4 me-1" />
             Widthdraw
           </Button>
-          <Button size="sm" @click.stop="checkIn(row.original.id)">
+          <Button v-if="row.original.status === 'CHECK_IN'" size="sm" @click.stop="checkIn(row.original.id)">
             <CircleCheck class="size-4 me-1" />
             Check in
           </Button>

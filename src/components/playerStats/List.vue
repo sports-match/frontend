@@ -24,7 +24,11 @@
       :data="playerStatsList"
       @on-sort-change="fetchData"
       @on-page-change="fetchData"
-    />
+    >
+      <template #sportRatings="{ row }">
+        {{ row.original.sportRatings[0]?.rateScore }}
+      </template>
+    </Datatable>
   </div>
 </template>
 
@@ -76,7 +80,7 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
   },
   {
-    accessorKey: 'doublesRating',
+    accessorKey: 'sportRatings',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Doubles Rating' }),
 
   },

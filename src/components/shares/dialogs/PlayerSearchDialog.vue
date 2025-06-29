@@ -29,7 +29,7 @@
               :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
               @click="selectPlayer(player)"
             >
-              <span class="flex-1">{{ player.id }}</span>
+              <span class="flex-1">{{ player.name }}</span>
               <span v-if="selectedPlayer?.id === player.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
             </CommandItem>
           </CommandGroup>
@@ -61,6 +61,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  getAll: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const open = ref(false);
@@ -83,8 +87,13 @@ const paginatedPlayers = computed(() =>
 
 async function fetchPlayers() {
   try {
-    const { data } = await getEventPlayers(props.event.id);
-    players.value = data;
+    if (props.getAll) {
+      const { data: { content } } = await getPlayers();
+      players.value = content;
+    } else {
+      const { data } = await getEventPlayers(props.event.id);
+      players.value = data;
+    }
   } catch (error) {
     notify.error(error as string);
   }
