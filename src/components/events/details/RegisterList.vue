@@ -6,28 +6,27 @@
         <Input v-model="search" placeholder="Search" class="w-full" />
       </form>
       <div class="flex items-center gap-2">
-        <Button variant="outline">
+        <!-- <Button variant="outline">
           <FileUp class="w-5 h-5 mr-2" /> Export
+        </Button> -->
+        <Button v-if="isAbleStartCheckIn" class="bg-primary text-white" @click="startEventCheckIn">
+          <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
-        <!-- <Button class="bg-primary text-white">
-          <Users2Icon class="w-5 h-5 mr-2" /> Generate Group
-        </Button> -->
-        <GenerateGroup />
-        <!-- <Button class="bg-primary text-white">
-          <Plus class="w-5 h-5 mr-2" />
-          Add Member
-        </Button> -->
-        <PlayerSearchDialog :event="event" />
+        <template v-else>
+          <GenerateGroup />
+          <PlayerSearchDialog :event="event" />
+        </template>
       </div>
     </div>
 
+    {{ players }}
     <!-- Table -->
     <Datatable
       ref="registerTable"
       v-model:page="page"
       :columns="columns"
-      :data="filteredData"
-      :total-records="filteredData.length"
+      :data="players"
+      :total-records="players.length"
       :page-size="10"
     >
       <template #actions="{ row }">
@@ -66,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { checkinEvent, withdrawEvent } from '@/api/event';
+import { checkinEvent, startCheckIn, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
 import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
@@ -75,7 +74,7 @@ import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
-import { ArrowLeftRight, Check, CircleCheck, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
+import { ArrowLeftRight, Check, CheckCheck, CircleCheck, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps({
@@ -83,23 +82,34 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  players: {
+    type: Array,
+    default: () => [],
+  },
 });
 
+const emit = defineEmits(['pullEvent']);
+
+const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
+
 // Dummy data for demonstration
-const data = ref([
-  {
-    id: 2,
-    name: 'Lonnie Jayden',
-    firstName: 'Lonnie',
-    lastName: 'Jayden',
-    partner: 'Tracey Keebler',
-    rating: 4900,
-    combinedRating: 6400,
-    rank: 9,
-    checkIn: 'Yes',
-  },
-  // ...repeat or map your real data here
-]);
+const data = ref(
+  JSON.parse(JSON.stringify(props.players)),
+  // [
+  //   {
+  //     id: 2,
+  //     name: 'Lonnie Jayden',
+  //     firstName: 'Lonnie',
+  //     lastName: 'Jayden',
+  //     partner: 'Tracey Keebler',
+  //     rating: 4900,
+  //     combinedRating: 6400,
+  //     rank: 9,
+  //     checkIn: 'Yes',
+  //   },
+  // // ...repeat or map your real data here
+  // ],
+);
 
 const search = ref('');
 const page = ref(1);
@@ -123,6 +133,17 @@ const columns = [
   { accessorKey: 'checkIn', header: 'Check In?' },
   { id: 'actions', header: 'Actions' },
 ];
+
+async function startEventCheckIn() {
+  try {
+    await startCheckIn(props.event?.id as string);
+    notify.success('Check in started successfully');
+    emit('pullEvent');
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
 async function checkIn(playerId: string | number) {
   try {
     await checkinEvent(props.event?.id as string, {
