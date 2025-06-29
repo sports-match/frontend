@@ -4,7 +4,7 @@
       <div class="w-full max-w-md space-y-6 rounded-xl border p-8 shadow-sm">
         <!-- Logo -->
         <div class="flex justify-center">
-          <img src="@/assets/images/main-logo.svg" alt="Logo" class="h-20 w-20 object-contain">
+          <img src="@/assets/images/main-logo.png" alt="Logo" class="h-20 w-20 object-contain">
         </div>
         <div class="flex flex-col items-center text-center">
           <h2 class="text-2xl font-semibold">

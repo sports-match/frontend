@@ -7,7 +7,7 @@
       </div>
       <div class="flex h-14 items-center lg:h-[75px]">
         <RouterLink :to="{ path: '/' }" class="w-auto h-auto">
-          <img src="@/assets/images/main-logo.svg" alt="Logo" class="h-10 w-10 object-contain">
+          <img src="@/assets/images/main-logo.png" alt="Logo" class="h-10 w-10 object-contain">
         </RouterLink>
       </div>
       <!-- <MainMenu /> -->

@@ -3,7 +3,7 @@
     <div class="space-y-12 px-4">
       <!-- Header -->
       <header class="flex justify-between items-center px-6 py-8">
-        <img src="@/assets/images/main-logo.svg" alt="SportRevive Logo" class="h-8">
+        <img src="@/assets/images/main-logo.png" alt="SportRevive Logo" class="h-16 invert">
         <div class="space-x-2">
           <Button
             variant="ghost" class="text-white border border-white"
@@ -190,7 +190,7 @@
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div class="flex items-center gap-2 mb-4">
-            <img src="@/assets/images/main-logo.svg" alt="Logo" class="h-8">
+            <img src="@/assets/images/main-logo.png" alt="Logo" class="h-12 invert">
           </div>
           <p class="font-semibold text-white">
             60455 Lime Grove, Antwanborough 51316-0006
