@@ -22,11 +22,12 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
+
+      - name: Copy .env.prod to .env
+        run: cp .env.prod .env
 
       - name: Build project
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: pnpm run build --mode prod
 
       - name: Sync to S3
