@@ -14,12 +14,11 @@
         </Button>
         <template v-else>
           <GenerateGroup />
-          <PlayerSearchDialog :event="event" />
+          <PlayerSearchDialog :event="event" getAll/>
         </template>
       </div>
     </div>
 
-    {{ players }}
     <!-- Table -->
     <Datatable
       ref="registerTable"
@@ -52,7 +51,7 @@
       <template #partner="{ row }">
         {{ row.original.partner }}
         <span class="ml-1">
-          4900
+          {{ row.original.rating }}
         </span>
         <PlayerSearchDialog :event="event">
           <Button size="sm">
