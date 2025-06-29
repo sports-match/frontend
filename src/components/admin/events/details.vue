@@ -37,7 +37,7 @@
         <RegisterList :event="event" :players="playersInEvent" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="groups">
-        <GroupList />
+        <GroupList  />
       </TabsContent>
       <TabsContent value="results">
         <ResultList />
