@@ -23,7 +23,7 @@
     "localstorage-slim": "^2.7.1",
     "lucide-vue-next": "^0.471.0",
     "nprogress": "^0.2.0",
-    "pinia": "^2.3.0",
+    "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.3.0",
     "qrcode": "^1",
     "radix-vue": "^1.9.12",
