@@ -19,15 +19,12 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Copy .env.prod to .env
-        run: cp .env.prod .env
+        run: pnpm install
 
       - name: Build project
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
-        run: npm run build
+        run: pnpm run build --mode prod
 
       - name: Sync to S3
         uses: jakejarvis/s3-sync-action@v0.5.1
