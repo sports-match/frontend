@@ -23,9 +23,9 @@
           <!-- Main Group Row -->
           <TableRow class="cursor-pointer hover:bg-muted" @click="toggleExpand(gIndex)">
             <TableCell class="p-6 flex font-medium items-center gap-2 ">
-              <Button size="xs">
+              <Button size="sm">
                 <Minus v-if="expanded[gIndex]" class="size-4" />
-                <Plus v-else class="size-4 " />
+                <Plus v-else class="size-4" />
               </Button>
               <span>
                 {{ group.name }}
@@ -123,7 +123,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import {
@@ -134,7 +134,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/shares/ui/table';
-import { ArrowLeftRight, Check, Clock, ClockAlert, Dock, Edit, Ellipsis, Eye, Minus, Plus, Trash } from 'lucide-vue-next';
+import { ArrowLeftRight, Clock, ClockAlert, Dock, Edit, Ellipsis, Eye, Minus, Plus, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const groups = [

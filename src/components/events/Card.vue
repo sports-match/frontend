@@ -2,17 +2,17 @@
   <div class="bg-black text-white rounded-2xl flex items-center justify-between shadow-lg">
     <div class="flex-1 p-6">
       <div class="flex items-center font-semibold text-2xl mb-4">
-        Today --- 8:00 PM
+        {{ event?.name }}
       </div>
       <h2 class="text-lg font-semibold mb-2">
-        May 9th Mukilteo Mixer Standard Doubles Mixer
+        {{ event?.description }}
       </h2>
       <div class="flex items-center text-sm text-gray-300 mb-4">
-        Arena Badminton & Sports Club
+        {{ event?.eventTime }}
       </div>
 
       <div class="flex space-x-2">
-        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
+        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl" @click="$router.push(`/events/${event?.id}`)">
           <Calendar class="mr-2 size-4" />
           Event Detail
         </Button>
@@ -39,7 +39,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Event } from '@/api/event';
+import type { ComputedRef, PropType } from 'vue';
 import { Button } from '@/components/shares/ui/button';
 import { Calendar, CircleAlert, ClockAlert, Link } from 'lucide-vue-next';
+import { computed } from 'vue';
+
+const props = defineProps({
+  events: {
+    type: Array as PropType<Event[]>,
+    required: false,
+  },
+});
+
+const event: ComputedRef<Event | undefined> = computed(() => props.events?.[0]);
 </script>

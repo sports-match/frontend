@@ -34,11 +34,8 @@
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem>
-          Account
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          Setting
+        <DropdownMenuItem @click="$router.push({ name: 'ProfilePage' })">
+          Profile
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
@@ -98,6 +95,7 @@
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from '@/components/shares/ui/avatar';
 import {
   DropdownMenu,
@@ -110,7 +108,7 @@ import {
 } from '@/components/shares/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/shares/ui/sidebar';
 import { useUserStore } from '@/stores/user';
-import { ChevronDown} from 'lucide-vue-next';
+import { ChevronDown } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 

@@ -12,20 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/shares/ui/avatar';
 import { Button } from '@/components/shares/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/shares/ui/dropdown-menu';
 import { Bell, MessageCircle } from 'lucide-vue-next';
 </script>

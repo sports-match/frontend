@@ -80,10 +80,10 @@ const formData = ref({
 // const isLoading = ref(false);
 async function onSubmit() {
   try {
-    const { data: { token: accessToken, user } } = await login(formData.value);
+    const { data: { token: accessToken, user, assessmentStatus, playerId } } = await login(formData.value);
     const { token } = useAuthentication();
     set(token, accessToken);
-    userStore.setUserDetails(user);
+    userStore.setUserDetails(user, assessmentStatus, playerId);
     router.push({ name: 'DashboardPage' });
     notify.success('Login successful!');
   } catch (error) {

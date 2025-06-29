@@ -20,7 +20,6 @@ const instance: AxiosInstance = Axios.create(defaultConfig);
 instance.interceptors.request.use((config) => {
   setLoading(true);
   const { getToken } = useAuthentication();
-  console.log(getToken);
 
   // Add the access token to the request
   if (getToken.value) {

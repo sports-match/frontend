@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
 import { ChevronLeft, UserIcon } from 'lucide-vue-next';
 </script>

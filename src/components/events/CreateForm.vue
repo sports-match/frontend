@@ -2,7 +2,7 @@
   <Dialog :focus-outside="false">
     <DialogTrigger as-child>
       <!-- Trigger button can be placed here if needed -->
-      <Button @click="() => { fetchSports(); fetchClubs(); }">
+      <Button @click="() => { fetchSports(); fetchClubs(); fetchPlayers(); fetchTags(); }">
         Create Event
       </Button>
     </DialogTrigger>
@@ -18,17 +18,16 @@
       <!-- Event form -->
       <div v-if="!submitted" class="space-y-4">
         <div class="space-y-3 mt-2">
-          <!-- <div class="flex flex-col"> -->
           <div class="flex items-center space-x-2">
-            <Switch id="public-event" v-model="form.enabled" />
+            <Switch id="public-event" v-model="form.allowSelfCheckIn" />
             <Label for="public-event" class="font-normal">This event is public and anyone can sign up</Label>
           </div>
           <div class="flex items-center space-x-2">
             <Switch id="waitlist" v-model="form.allowWaitList" />
             <Label for="waitlist" class="font-normal">Allow users to join a waitlist once event is full</Label>
           </div>
-        <!-- </div> -->
         </div>
+
         <!-- Sport buttons -->
         <div class="overflow-x-auto px-1">
           <div class="flex gap-3 my-4 min-w-max">
@@ -45,7 +44,7 @@
                 <img
                   v-if="sport.icon"
                   :src="`/src/assets/sportTypes/${sport.icon}.svg`"
-                  :alt="`${sport.name} icon`"
+                  :alt="`${sport.name}-icon`"
                   class="w-10 h-10 mb-1"
                 >
               </div>
@@ -81,10 +80,25 @@
           <Input v-model="form.name" placeholder="Event name" />
         </div>
         <div class="flex items-center space-x-2">
-          <MultiSelectOrganizer v-model:selected-values="selctedHostPlayers" />
+          <MultiSelect
+            v-model="form.coHostPlayers"
+            :options="players"
+            value-key="id"
+            label-key="name"
+            return-type="value"
+            placeholder="Other Orgenizers"
+          />
         </div>
         <div class="grid gap-4 mb-4">
-          <MultiSelectEventTag v-model:selected-values="selectedTags" class="col-span-2" />
+          <MultiSelect
+            v-model="form.tags"
+            :options="tags"
+            value-key="name"
+            label-key="name"
+            return-type="value"
+            placeholder="Event Tags"
+            class="col-span-2"
+          />
           <Textarea v-model="form.description" placeholder="Description" class="col-span-2" />
 
           <div class="col-span-2 ">
@@ -114,7 +128,7 @@
 
       <div v-else>
         <!-- QR Image -->
-        <QrSharing />
+        <QrSharing :event="event" />
       </div>
       <!-- Footer -->
       <DialogFooter class="flex justify-between">
@@ -123,9 +137,10 @@
             <X class="mr-2 size-4" />
             Cancel
           </Button>
-          <Button @click="submit">
+          <Button :disabled="isLoading" @click="submit">
             Public
-            <ArrowRight class="ml-2 size-4" />
+            <ArrowRight v-if="!isLoading" class="ml-2 size-4" />
+            <LucideSpinner v-if="isLoading" class="ml-2 h-4 w-4 animate-spin" />
           </Button>
         </div>
         <Button v-else @click="submitted = false">
@@ -137,10 +152,10 @@
   </Dialog>
 </template>
 
-<script setup>
-import { createEvent, getClubs, getSports } from '@/api/event';
-import MultiSelectEventTag from '@/components/events/MultiSelectEventTag.vue';
-import MultiSelectOrganizer from '@/components/events/MultiSelectOrganizer.vue';
+<script setup lang="ts">
+import type { Ref } from 'vue';
+import { createEvent, getClubs, getPlayers, getSports, getTags, uploadImage } from '@/api/event';
+import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
 import {
@@ -152,23 +167,40 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/shares/ui/dialog';
-import { Combobox } from '@/components/shares/ui/formInput';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
 import { Switch } from '@/components/shares/ui/switch';
 import { Textarea } from '@/components/shares/ui/textarea';
 import { notify } from '@/composables/notify';
-import { ArrowRight, Check, Copy, Download, Mail, MessageCircle, MessageCircleMore, Plus, Upload, X } from 'lucide-vue-next';
-import { onMounted, reactive, ref, shallowRef } from 'vue';
+import { ArrowRight, Check, Loader2 as LucideSpinner, Upload, X } from 'lucide-vue-next';
+import { reactive, ref } from 'vue';
 import SingleSelect from './SingleSelect.vue';
 
-const submitted = ref(false);
-const selectedClub = ref(null);
-const selctedHostPlayers = ref(null);
-const selectedTags = ref(null);
+type EventForm = {
+  sportId: Ref<string | null>;
+  clubId: string | null;
+  format: string;
+  eventTime: string;
+  maxParticipants: string;
+  groupCount: string;
+  name: string;
+  coHostPlayers: string[];
+  tags: string[];
+  description: string;
+  posterImage: string | null;
+  allowWaitList: boolean;
+  allowSelfCheckIn: boolean;
+  image: string;
+  location: string;
+};
 
-const sports = ref([
+const event = ref({});
+const submitted = ref(false);
+const selectedClub: Ref<{ id: string }> | Ref<null, null> = ref(null);
+const isLoading = ref(false);
+
+const sports: Ref<{ id: string; name: string; icon: string }[]> = ref([
   // { value: 'badminton', label: 'Badminton', icon: 'badminton' },
   // { value: 'soccer', label: 'Soccer', icon: 'soccer' },
   // { value: 'basketball', label: 'Basketball', icon: 'basketball' },
@@ -176,14 +208,25 @@ const sports = ref([
   // { value: 'swimming', label: 'Swimming', icon: 'swimming' },
   // Add more sports as needed
 ]);
-const clubs = ref([]);
+const clubs: Ref<{ id: string }[]> = ref([]);
+const players: Ref<{ id: string }[]> = ref([]);
+const tags = ref([
+  { value: 'ladder', name: 'Ladder' },
+  { value: 'mixer', name: 'Mixer' },
+  { value: 'academy', name: 'Academy' },
+  { value: 'open', name: 'Open' },
+  { value: 'league', name: 'League' },
+]);
 
 const selectedSport = ref();
-function selectSport(val) {
+
+function selectSport(val: string) {
   selectedSport.value = val;
 }
 
-const form = reactive({
+const inputFile = ref<File | null>(null);
+
+const form = reactive<EventForm>({
   sportId: selectedSport,
   clubId: null,
   format: '',
@@ -194,18 +237,29 @@ const form = reactive({
   coHostPlayers: [],
   tags: [],
   description: '',
-  posterImage: null,
+  posterImage: '',
   allowWaitList: false,
-  enabled: false,
+  allowSelfCheckIn: false,
+  image: '',
+  location: '',
 });
-const previewUrl = ref(null);
+const previewUrl = ref<string | null>(null);
+
+async function fetchTags() {
+  try {
+    const { data: { content } } = await getTags();
+    tags.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchClubs() {
   try {
     const { data: { content } } = await getClubs();
     clubs.value = content;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
   }
 }
 
@@ -215,29 +269,48 @@ async function fetchSports() {
     sports.value = content;
     selectedSport.value = sports.value[0]?.id || null;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
   }
 }
-function onFileChange(event) {
-  const file = event.target.files[0];
+
+async function fetchPlayers() {
+  try {
+    const { data: { content } } = await getPlayers();
+    players.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+function onFileChange(event: Event) {
+  const file = event?.target?.files[0];
   if (file && file.type.startsWith('image/')) {
-    form.posterImage = file;
+    inputFile.value = file;
+    form.posterImage = `/api/localStorage/view/Screenshotfrom2024-09-2614-50-25-20250613021428902.png`;
     previewUrl.value = URL.createObjectURL(file);
   }
 }
 
 async function submit() {
+  isLoading.value = true;
   try {
+    if (inputFile.value) {
+      const { data } = await uploadImage(inputFile.value);
+      form.posterImage = data.data[0];
+    }
+
     const { data } = await createEvent({
       ...form,
-      tags: selectedTags.value?.map(tag => tag.value) || [],
-      coHostPlayers: selctedHostPlayers.value?.map(player => player.label) || [],
+      eventTime: form.eventTime ? new Date(form.eventTime).toISOString() : null,
       clubId: selectedClub.value?.id,
     });
+    event.value = data;
     notify.success('Event created successfully');
     submitted.value = true;
   } catch (error) {
-    notify.error(error);
+    notify.error(error as string);
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

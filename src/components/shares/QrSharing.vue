@@ -16,11 +16,15 @@
         Share this link via
       </p>
       <div class="flex items-center gap-3">
-        <a :href="`mailto:?body=${publicLink}`" target="_blank" class="p-2 border rounded hover:bg-gray-100">
+        <a
+          :href="`mailto:?subject=You're invited to an event!&body=Join me at this event: ${publicLink}`"
+          target="_blank"
+          class="p-2 border rounded hover:bg-gray-100"
+        >
           <Mail class="w-4 h-4" />
         </a>
         <a
-          :href="`https://wa.me/?text=${encodeURIComponent(publicLink)}`"
+          :href="`https://wa.me/?text=${encodeURIComponent(`You're invited to an event! Join me at: ${publicLink}`)}`"
           target="_blank"
           class="p-2 border rounded hover:bg-gray-100"
         >
@@ -49,13 +53,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
+import { notify } from '@/composables/notify';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { Copy, Download, Mail, MessageCircleMore } from 'lucide-vue-next';
-import { computed, ref, shallowRef } from 'vue';
+import { computed } from 'vue';
 
-const publicLink = shallowRef('https://go.gl/xprowi2025');
+const props = defineProps({
+  event: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const publicLink = computed(() => {
+  return `${window.location.origin}/event/${props.event.id}`;
+});
 const qrcode = useQRCode(publicLink, {
   errorCorrectionLevel: 'H',
   margin: 3,
@@ -70,8 +84,8 @@ function downloadQR() {
 }
 
 function copyLink() {
-  navigator.clipboard.writeText(publicLink).then(() => {
-    // alert('Link copied!');
+  navigator.clipboard.writeText(publicLink.value).then(() => {
+    notify.success('Link copied!');
   });
 }
 </script>

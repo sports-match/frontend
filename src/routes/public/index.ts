@@ -7,6 +7,14 @@ import VerifyEmail from '@/pages/auth/verifyEmail.vue';
 
 export const publicRoutes: RouteRecordRaw[] = [
   {
+    path: '',
+    name: 'HomePage',
+    component: () => import('@/pages/public/home.vue'),
+    meta: {
+      public: true,
+    },
+  },
+  {
     path: 'auth',
     redirect: {
       name: 'AuthLoginPage',

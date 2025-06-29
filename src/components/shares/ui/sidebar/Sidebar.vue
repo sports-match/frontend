@@ -33,7 +33,7 @@
     <!-- This is what handles the sidebar gap on desktop  -->
     <div
       :class="cn(
-        'duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear',
+        'duration-200 relative h-svh w-[--sidebar-width] bg-background transition-[width] ease-linear',
         'group-data-[collapsible=offcanvas]:w-0',
         'group-data-[side=right]:rotate-180',
         variant === 'floating' || variant === 'inset'
@@ -57,7 +57,7 @@
     >
       <div
         data-sidebar="sidebar"
-        class="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+        class="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow bg-white"
       >
         <slot />
       </div>

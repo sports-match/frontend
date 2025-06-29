@@ -7,8 +7,6 @@ export const privateRoutes: RouteRecordRaw[] = [{
   path: '',
   component: Layout,
   children: [
-    ...events,
-    ...playerStats,
     {
       path: '',
       redirect: {
@@ -16,16 +14,23 @@ export const privateRoutes: RouteRecordRaw[] = [{
       },
       children: [
         {
+          path: 'profile',
+          name: 'ProfilePage',
+          component: () => import('@/pages/profile.vue'),
+        },
+        {
           path: 'skill-assessment',
           name: 'SkillAssessmentPage',
-          component: () => import('@/pages/skillAssessment/index.vue'),
+          component: () => import('@/pages/users/skillAssessment/index.vue'),
         },
         {
           path: 'dashboard',
           name: 'DashboardPage',
-          component: () => import('@/pages/dashboard/index.vue'),
+          component: () => import('@/pages/dashboard.vue'),
         },
       ],
     },
+    ...events,
+    ...playerStats,
   ],
 }];

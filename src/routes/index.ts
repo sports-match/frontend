@@ -27,14 +27,16 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   // set(isLoading, true);
-  const { isAuthenticated } = useAuthentication();
+  const { isAuthenticated, assessmentStatus } = useAuthentication();
 
-  if (!to.meta.public && !get(isAuthenticated))
-    return next({ name: 'AuthLoginPage' });
-  else if (to.meta.public && get(isAuthenticated))
+  if (!to.meta.public && !get(isAuthenticated)) {
+    return next({ name: 'HomePage' });
+  } else if (to.meta.public && get(isAuthenticated)) {
     return next({ name: 'DashboardPage' });
-  else
-    next();
+  } else if (get(isAuthenticated) && !get(assessmentStatus) && to.name !== 'SkillAssessmentPage') {
+    return next({ name: 'SkillAssessmentPage' });
+  }
+  next();
 });
 
 router.afterEach(() => {
