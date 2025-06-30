@@ -44,10 +44,16 @@
             </div>
             <div class="flex justify-between items-center gap-2">
               <div class="text-2xl font-bold">
-                5990
+                {{ dashboard.doubleEventRating }}
               </div>
-              <div class="text-sm text-red-500">
-                -90
+              <div
+                class="text-sm"
+                :class="{
+                  'text-green-500': dashboard.singleEventRatingChanges > 0,
+                  'text-red-500': dashboard.singleEventRatingChanges < 0,
+                }"
+              >
+                {{ dashboard.doubleEventRatingChanges }}
               </div>
             </div>
           </div>
@@ -65,10 +71,16 @@
             </div>
             <div class="flex justify-between items-center gap-2">
               <div class="text-2xl font-bold">
-                5990
+                {{ dashboard.singleEventRating }}
               </div>
-              <div class="text-sm text-green-500">
-                +2450
+              <div
+                class="text-sm"
+                :class="{
+                  'text-green-500': dashboard.singleEventRatingChanges > 0,
+                  'text-red-500': dashboard.singleEventRatingChanges < 0,
+                }"
+              >
+                {{ dashboard.singleEventRatingChanges }}
               </div>
             </div>
           </div>
@@ -85,7 +97,7 @@
             Total Events
           </div> -->
             <div class="text-2xl font-bold">
-              4
+              {{ dashboard.totalEvent }}
             </div>
             <div>
               Times
@@ -95,7 +107,7 @@
 
         <!-- Ratings Progress Chart -->
         <div class="bg-white rounded-xl">
-          <GraphView />
+          <GraphView :data="dashboard" />
         <!-- Chart component here -->
         </div>
       </div>
@@ -115,42 +127,42 @@
           </p>
         </div>
         <!-- Calendar & Events -->
-        <UpcomingCalendar />
+        <UpcomingCalendar :events="dashboard.upcomingEvents" />
       </div>
     </div>
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
-import { getEvents } from '@/api/event';
+import { playersDashboard } from '@/api/user';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
-import { Calendar } from '@/components/shares/ui/calendar';
 import UpcomingCalendar from '@/components/user/upcomingCalendar.vue';
 import { notify } from '@/composables/notify';
+import { events } from '@/routes/private/events';
 import { useUserStore } from '@/stores/user';
 import { Calendar1, User, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import GraphView from './graphView.vue';
 
-const selectedDate = ref(new Date());
 const userStore = useUserStore();
+const dashboard = ref<object>({});
+
 // const route = useRoute();
+const playerId = computed(() => userStore.playerId);
 
 // const events = ref<any[]>([]);
 // const totalEvents = ref(0);
 
-// onMounted(() => {
-//   fetchData();
-// });
+onMounted(() => {
+  fetchData();
+});
 
-// async function fetchData() {
-//   try {
-//     const { data } = await getEvents();
-//     events.value = data.content;
-//     totalEvents.value = data.totalElements;
-//   } catch (error) {
-//     notify.error(error as string);
-//   }
-// }
+async function fetchData() {
+  try {
+    const { data } = await playersDashboard(playerId.value);
+    dashboard.value = data;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 </script>

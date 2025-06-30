@@ -16,6 +16,10 @@ export function useAuthentication() {
     return userStore.$state.userDetails.user.userType === 'PLAYER';
   });
 
+  const isOrganizer = computed(() => {
+    return userStore.$state.userDetails.user.userType === 'ORGANIZER';
+  });
+
   const assessmentStatus = computed(() => {
     if (!isPlayer.value)
       return true;
@@ -30,5 +34,5 @@ export function useAuthentication() {
     set(token, null);
   }
 
-  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer, assessmentStatus };
+  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer, assessmentStatus, isOrganizer };
 }

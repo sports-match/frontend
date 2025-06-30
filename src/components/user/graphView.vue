@@ -27,6 +27,13 @@ import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, Poin
 import { computed, ref } from 'vue';
 import { Line as LineChart } from 'vue-chartjs';
 
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
 ChartJS.register(
   Title,
   Tooltip,
@@ -62,21 +69,24 @@ const allDates = [
 ];
 
 // Sample ratings data - replace with your actual data
-function generateRatings() {
-  return allDates.map((_) => {
-    // Simulate ratings between 3.0 and 5.0
-    return Number((Math.random() * 2 + 3).toFixed(1));
-  });
-}
+// function generateRatings() {
+//   return allDates.map((_) => {
+//     // Simulate ratings between 3.0 and 5.0
+//     return Number((Math.random() * 2 + 3).toFixed(1));
+//   });
+// }
 
-const doublesRatings = generateRatings();
-const singlesRatings = generateRatings();
+// const doublesRatings = generateRatings();
+// const singlesRatings = generateRatings();
+
+const doublesRatings = computed(() => props.data.doubleEventRatingHistory);
+const singlesRatings = computed(() => props.data.singleEventRatingHistory);
 
 const chartData = computed(() => ({
   labels: allDates,
   datasets: [{
     label: 'Doubles Rating',
-    data: doublesRatings,
+    data: doublesRatings.value,
     borderColor: '#22c55e', // green-500
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
     borderWidth: 2,
@@ -88,7 +98,7 @@ const chartData = computed(() => ({
     fill: true,
   }, {
     label: 'Singles Rating',
-    data: singlesRatings,
+    data: singlesRatings.value,
     borderColor: '#3b82f6', // blue-500
     backgroundColor: 'rgba(34, 197, 94, 0.1)',
     borderWidth: 2,

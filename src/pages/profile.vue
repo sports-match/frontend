@@ -70,8 +70,17 @@
 </template>
 
 <script setup lang="ts">
+import { playersDashboard } from '@/api/user';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
+import { useUserStore } from '@/stores';
 import { CircleCheck, MapPin } from 'lucide-vue-next';
+import { computed, onMounted } from 'vue';
 
-// No logic needed for this static card
+const userStore = useUserStore();
+
+const playerId = computed(() => userStore.playerId || null);
+
+onMounted(async () => {
+  await playersDashboard(playerId.value);
+});
 </script>

@@ -18,3 +18,5 @@ export const verifyEmail = (data?: { code: string; email: string }) => http.post
 
 export const selfAssessmentQuestions = () => http.get(`/questions/self-assessment`);
 export const answerSelfAssessment = (data: any) => http.post(`/player-answers/submit-assessment`, data);
+
+export const playersDashboard = (playerId: string) => http.get(`/players/${playerId}/dashboard`);
