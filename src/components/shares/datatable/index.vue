@@ -134,7 +134,10 @@ const table = useVueTable({
 async function setPagination(updaterOrValue: Updater<any>) {
   const newPageInfo = updaterOrValue(table.getState().pagination);
   await table.setState((updater: Updater<unknown>) => ({ ...updater, pagination: newPageInfo }));
-  emits('onPageChange');
+  emits('onPageChange', {
+    pageIndex: newPageInfo.pageIndex,
+    pageSize: newPageInfo.pageSize,
+  });
 }
 
 async function sortingChange(updaterOrValue: Updater<any>) {

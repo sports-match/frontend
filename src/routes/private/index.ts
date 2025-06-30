@@ -7,6 +7,8 @@ export const privateRoutes: RouteRecordRaw[] = [{
   path: '',
   component: Layout,
   children: [
+    ...events,
+    ...playerStats,
     {
       path: '',
       redirect: {
@@ -30,7 +32,5 @@ export const privateRoutes: RouteRecordRaw[] = [{
         },
       ],
     },
-    ...events,
-    ...playerStats,
   ],
 }];

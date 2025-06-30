@@ -7,7 +7,7 @@
       </div>
     </template>
 
-    <template #action>
+    <!-- <template #action>
       <div class="flex space-x-2">
         <Button
           v-for="item in icons"
@@ -21,7 +21,7 @@
           <component :is="item.icon" class="w-6 h-6" />
         </Button>
       </div>
-    </template>
+    </template> -->
     <Card class="bg-gradient-to-r from-gray-900 to-black p-6 pb-10 rounded-2xl flex items-end gap-4">
       <!-- Location Input -->
       <CardContent class="p-0 flex-1 flex flex-col">

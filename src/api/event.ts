@@ -14,6 +14,11 @@ export type Event = {
   status: string;
 };
 
+export type Pagination = {
+  page: number;
+  size: number;
+};
+
 export const getEvents = (query?: any) => http.get('/events', { params: query });
 export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
@@ -29,6 +34,7 @@ export const startCheckIn = (eventId: string) => http.patch(`/events/${eventId}/
 export const getClubs = () => http.get('/clubs');
 export const getSports = () => http.get('/sports');
 export const getPlayers = () => http.get('/players');
+export const getPlayersDoubleStats = (params?: Pagination) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');
 
 export const sendEventReminder = (eventId: string, data: any) => http.post(`/events/${eventId}/remind`, data);

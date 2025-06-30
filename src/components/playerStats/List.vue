@@ -22,19 +22,19 @@
       :total-records="totalRecords"
       :columns="columns"
       :data="playerStatsList"
-      @on-sort-change="fetchData"
-      @on-page-change="fetchData"
+      @on-page-change="onPageChange"
+      @on-row-click="(row) => $router.push({ name: 'ViewPayerStats', params: { id: row.original.playerId } })"
     >
-      <template #sportRatings="{ row }">
+      <!-- <template #sportRatings="{ row }">
         {{ row.original.sportRatings[0]?.rateScore }}
-      </template>
+      </template> -->
     </Datatable>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
-import { getPlayers } from '@/api/event';
+import { getPlayersDoubleStats } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -42,10 +42,6 @@ import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
 import { Search } from 'lucide-vue-next';
 import { h, onMounted, ref } from 'vue';
-
-onMounted(() => {
-  fetchData();
-});
 
 // const router = useRouter();
 const playerStatsList = ref([]);
@@ -76,11 +72,11 @@ const columns: ColumnDef<any>[] = [
   //   enableHiding: false,
   // },
   {
-    accessorKey: 'name',
+    accessorKey: 'playerName',
     header: 'Name',
   },
   {
-    accessorKey: 'sportRatings',
+    accessorKey: 'doublesRanking',
     header: 'Doubles Rating',
 
   },
@@ -89,14 +85,31 @@ const columns: ColumnDef<any>[] = [
     header: 'Games Played',
   },
   {
-    accessorKey: 'doublesRecord',
+    accessorKey: 'record',
     header: 'Doubles Record',
   },
 ];
 
+onMounted(() => {
+  fetchData();
+});
+
 async function fetchData() {
   try {
-    const { data: { content, totalElements } } = await getPlayers();
+    const { data: { content, totalElements } } = await getPlayersDoubleStats();
+    playerStatsList.value = content;
+    totalRecords.value = totalElements;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function onPageChange(pageInfo: { pageIndex: number; pageSize: number }) {
+  try {
+    const { data: { content, totalElements } } = await getPlayersDoubleStats({
+      page: pageInfo.pageIndex,
+      size: pageInfo.pageSize,
+    });
     playerStatsList.value = content;
     totalRecords.value = totalElements;
   } catch (error) {

@@ -6,16 +6,16 @@
 
 <script setup lang="ts">
 import { playersDashboard } from '@/api/user';
-import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
+import { MainContentLayout } from '@/components/shares/main-content-layout';
 import PlayerProfile from '@/components/shares/PlayerProfile.vue';
 import { notify } from '@/composables/notify';
-import { useUserStore } from '@/stores';
 import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const userStore = useUserStore();
-
-const playerId = computed(() => userStore.playerId || null);
 const dashboard = ref<object>({});
+
+const route = useRoute();
+const playerId = computed(() => route.params.id);
 
 onMounted(() => {
   fetchData();

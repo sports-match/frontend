@@ -131,26 +131,26 @@ const data = {
     avatar: '/avatars/shadcn.jpg',
   },
   navMain: [
-    {
-      title: 'Score',
-      url: '#',
-      icon: ChartLine,
-      items: [
-        {
-          title: 'List',
-          url: '#',
-        },
-      ],
-    },
+    // {
+    //   title: 'Score',
+    //   url: '#',
+    //   icon: ChartLine,
+    //   items: [
+    //     {
+    //       title: 'List',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
     {
       title: 'Events',
       url: '/evnents',
       icon: CalendarRange,
       items: [
-        {
-          title: 'List',
-          url: '/events',
-        },
+        // {
+        //   title: 'List',
+        //   url: '/events',
+        // },
         {
           title: 'Upcoming',
           url: '/events/upcoming',
