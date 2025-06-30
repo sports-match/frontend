@@ -34,10 +34,10 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList :event="event" :players="playersInEvent" @pull-event="fetchEvent" />
+        <RegisterList :event="event" :players="playersInEvent" @pull-event="fetchEvent" @pull-players="fetchPlayers" />
       </TabsContent>
       <TabsContent value="groups">
-        <GroupList  />
+        <GroupList />
       </TabsContent>
       <TabsContent value="results">
         <ResultList />

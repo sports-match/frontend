@@ -77,20 +77,20 @@ const columns: ColumnDef<any>[] = [
   // },
   {
     accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
+    header: 'Name',
   },
   {
     accessorKey: 'sportRatings',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Doubles Rating' }),
+    header: 'Doubles Rating',
 
   },
   {
     accessorKey: 'gamesPlayed',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Games Played' }),
+    header: 'Games Played',
   },
   {
     accessorKey: 'doublesRecord',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Doubles Record' }),
+    header: 'Doubles Record',
   },
 ];
 
@@ -105,7 +105,7 @@ async function fetchData() {
 }
 
 function onFilterUpdate() {
-  fetchData();
+  // fetchData();
 }
 
 // function comparePlayer(selectedRows) {

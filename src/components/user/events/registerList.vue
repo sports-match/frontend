@@ -1,9 +1,8 @@
 <template>
   <div>
     <span>
-      Who's Signed Up /Checked in ? ({{ players.totalElements }}) Teams Checked in: 0
+      Who's Signed Up /Checked in ? ({{ players.length || 0 }}) Teams Checked in: 0
     </span>
-    {{ players }}
     <Datatable
       ref="registerTable"
       :total-records="players.length"
@@ -15,14 +14,28 @@
     >
       <template #partner="{ row }">
         {{ row.original?.partner }}
-        <PlayerSearchDialog :event="event">
+        <PlayerSearchDialog
+          v-if="row.original?.player?.id === currentUserPlayerId"
+          :event="event"
+        >
           <Button variant="destructive" size="sm">
             <User class="size-4 me-1" /> Select Partner
           </Button>
         </PlayerSearchDialog>
       </template>
-      <template #checkIn="{ row }">
-        <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
+      <template #status="{ row }">
+        <div>
+          <CircleCheck
+            v-if="row.original?.status === 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId"
+            class="size-8 text-green-500"
+          />
+        </div>
+        <Button
+          v-if="row.original?.player?.id === currentUserPlayerId"
+          variant="destructive"
+          size="sm"
+          @click.stop="widthdraw(row.original.id)"
+        >
           <Dock class="size-4 me-1" />Widthdraw
         </Button>
       </template>
@@ -38,8 +51,9 @@ import Datatable from '@/components/shares/datatable/index.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
-import { Dock, User } from 'lucide-vue-next';
-import { h, ref } from 'vue';
+import { useUserStore } from '@/stores';
+import { CheckCircle, CircleCheck, Dock, User } from 'lucide-vue-next';
+import { computed, h, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -53,6 +67,10 @@ defineProps({
   },
 });
 
+const userStore = useUserStore();
+
+const currentUserPlayerId = computed(() => userStore.playerId);
+
 const route = useRoute();
 
 const { id } = route.params;
@@ -61,21 +79,21 @@ const registerTable = ref(null);
 
 const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Player Name' }),
+    accessorKey: 'player.name',
+    header: 'Player Name',
   },
   {
     accessorKey: 'partner',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Partner' }),
+    header: 'Partner',
   },
   {
     accessorKey: 'combineRate',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Combined Rating' }),
+    header: 'Combined Rating',
 
   },
   {
-    accessorKey: 'checkIn',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Check In?' }),
+    accessorKey: 'status',
+    header: 'Check In?',
   },
 ];
 

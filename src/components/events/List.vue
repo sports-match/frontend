@@ -47,7 +47,7 @@
           <ClockAlert class="size-4" />
         </Button>
         <DropdownMenu v-if="row.original.status?.toLowerCase() !== 'completed'">
-          <DropdownMenuTrigger as-child>
+          <DropdownMenuTrigger as-child @click.stop>
             <Button variant="ghost" size="sm">
               <Ellipsis class="size-4" />
             </Button>
@@ -61,11 +61,11 @@
               <Edit class="size-4 mr-2" />
               Edit
             </DropdownMenuItem> -->
-            <DropdownMenuItem>
+            <DropdownMenuItem @click.stop>
               <Check class="size-4 mr-2" />
               Complete
             </DropdownMenuItem>
-            <DropdownMenuItem class="text-destructive">
+            <DropdownMenuItem class="text-destructive" @click.stop>
               <Trash class="size-4 mr-2" />
               Delete
             </DropdownMenuItem>

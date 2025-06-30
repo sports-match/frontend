@@ -29,8 +29,8 @@
               :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
               @click="selectPlayer(player)"
             >
-              <span class="flex-1">{{ player.name }}</span>
-              <span v-if="selectedPlayer?.id === player.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
+              <span class="flex-1">{{ player?.player?.name }}</span>
+              <span v-if="selectedPlayer?.id === player?.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
@@ -54,7 +54,7 @@ import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
 import { notify } from '@/composables/notify';
 import { CheckIcon, Plus } from 'lucide-vue-next';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   event: {
@@ -126,7 +126,7 @@ async function submitPlayer() {
       const id = props.event.id;
       await joinEvent(id as string, {
         eventId: id,
-        playerId: selectedPlayer.value.id,
+        playerId: selectedPlayer.value.player?.id,
         joinWaitList: true,
 
       });

@@ -14,7 +14,7 @@
         </Button>
         <template v-else>
           <GenerateGroup />
-          <PlayerSearchDialog :event="event" getAll/>
+          <PlayerSearchDialog :event="event" get-all />
         </template>
       </div>
     </div>
@@ -35,10 +35,10 @@
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
+          <Button v-if="row.original.status === 'CHECKED_IN'" variant="destructive" size="sm" @click.stop="widthdraw(row.original?.player?.id)">
             <Dock class="size-4" />
           </Button>
-          <Button class="bg-green-500 hover:bg-green-400" size="sm" @click.stop="checkIn(row.original.id)">
+          <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="sm" @click.stop="checkIn(row.original?.player?.id)">
             <CircleCheck class="size-4" />
           </Button>
         </div>
@@ -58,6 +58,11 @@
             <ArrowLeftRight class="size-4" />
           </Button>
         </PlayerSearchDialog>
+      </template>
+      <template #status="{ row }">
+        <span :class="row.original.status === 'CHECKED_IN' ? 'text-green-500' : 'text-red-500'">
+          {{ row.original.status === 'CHECKED_IN' ? 'Yes' : 'No' }}
+        </span>
       </template>
     </Datatable>
   </div>
@@ -87,7 +92,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['pullEvent']);
+const emit = defineEmits(['pullEvent', 'pullPlayers']);
 
 const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
 
@@ -123,13 +128,11 @@ const filteredData = computed(() =>
 );
 
 const columns = [
-  { accessorKey: 'firstName', header: 'First Name' },
-  { accessorKey: 'lastName', header: 'Last Name' },
+  { accessorKey: 'player.name', header: 'Name' },
   { accessorKey: 'partner', header: 'Partner' },
   { accessorKey: 'rating', header: 'Combined Rating' },
-  { accessorKey: 'combinedRating', header: 'Combined Rating' },
   { accessorKey: 'rank', header: 'Rank' },
-  { accessorKey: 'checkIn', header: 'Check In?' },
+  { accessorKey: 'status', header: 'Check In?' },
   { id: 'actions', header: 'Actions' },
 ];
 
@@ -150,6 +153,7 @@ async function checkIn(playerId: string | number) {
       playerId,
     });
     notify.success('Checked in successfully');
+    emit('pullPlayers');
   } catch (e) {
     notify.error(e as string);
   }
@@ -162,6 +166,7 @@ async function widthdraw(playerId: string | number) {
       playerId,
     });
     notify.success('Widthdraw event successfully');
+    emit('pullPlayers');
   } catch (e) {
     notify.error(e as string);
   }
