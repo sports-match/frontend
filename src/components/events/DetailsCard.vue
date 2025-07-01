@@ -50,7 +50,7 @@ import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { useAuthentication } from '@/composables';
 import { notify } from '@/composables/notify';
-import { CircleAlert, ClockAlert, Copy, Link, Share } from 'lucide-vue-next';
+import { ClockAlert, Copy } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -64,8 +64,14 @@ const { isPlayer } = useAuthentication();
 const link = computed(() => `${window.location.origin}/event/${props.event?.id}`);
 
 function copyLink() {
-  navigator.clipboard.writeText(link.value).then(() => {
-    notify.success('Link copied!');
-  });
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link.value).then(() => {
+      notify.success('Link copied!');
+    }).catch(() => {
+      console.error('Failed to copy link');
+    });
+  } else {
+    console.error('Clipboard API not supported');
+  }
 }
 </script>

@@ -59,8 +59,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
 import { checkinEvent, getEvent, getEventMatches, getEventPlayers } from '@/api/event';
-import EventCard from '@/components/events/details/Card.vue';
+import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
@@ -76,7 +77,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const { id } = route.params;
-const event = ref({});
+const event = ref<Event>();
 const players = ref([]);
 const matches = ref([]);
 
