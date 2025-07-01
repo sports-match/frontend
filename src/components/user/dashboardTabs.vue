@@ -41,51 +41,93 @@
         <div>
           <Datatable
             :columns="groupColumns"
-            :data="groups"
-            :total-records="groups.length"
+            :data="matches"
+            :total-records="matches.length"
+            :expanded-row-keys="expandedKeys"
+            class="bg-white rounded-md border"
           >
-            <template #group="{ row }">
-              <div class="flex items-start flex-col gap-2">
-                <!-- Expand Button + Group Name -->
-                <div class="flex items-center gap-2">
-                  <button
-                    class="w-6 h-6 flex items-center justify-center border rounded"
-                    @click.stop="toggleExpand(row.original.id)"
-                  >
-                    <Minus v-if="expanded[row.original.id]" class="size-4" />
-                    <Plus v-else class="size-4" />
-                  </button>
-                  <span class="font-medium">{{ row.original.name }}</span>
+            <!-- Custom Date Column with expand toggle -->
+            <template #date="{ row }">
+              <div class="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  @click.stop="toggleExpand(row.original.id)"
+                >
+                  <Minus v-if="expanded[row.original.id]" class="size-4" />
+                  <Plus v-else class="size-4" />
+                </Button>
+                <div>
+                  {{ row.original.date }}
+                </div>
+              </div>
+            </template>
+
+            <!-- Expanded Row Slot -->
+            <template #expanded-row="{ row }">
+              <div class="px-4 flex justify-between">
+                <div class="text-muted-foreground mb-2 pe-4 flex flex-col items-center gap-2">
+                  <span class="flex items-center gap-2">
+                    <CircleAlert class="text-red-500 size-4" />
+                    Wins: {{ row.original.summary.wins }},
+                    Losses: {{ row.original.summary.losses }}
+                  </span>
+                  <div>
+                    (<span class="font-medium">{{ row.original.summary.eloStart }}</span> →
+                    <span class="font-medium">{{ row.original.summary.eloEnd }}</span>)
+                  </div>
                 </div>
 
-                <!-- Expanded Player List -->
-                <TableRow v-if="expanded[row.original.id]" class="bg-muted/50">
-                  <TableCell :colspan="columns.length" class="p-4">
-                    <div class="rounded border bg-white text-sm">
-                      <div class="grid grid-cols-6 font-semibold bg-muted px-4 py-2 border-b">
-                        <span class="col-span-3">Player Name</span>
-                        <span>Rank</span>
-                        <span class="col-span-2 text-right">Actions</span>
-                      </div>
-                      <div
-                        v-for="(player, i) in row.original.playersList"
-                        :key="i"
-                        class="grid grid-cols-6 px-4 py-2 border-b last:border-none"
-                      >
-                        <span class="col-span-3">{{ player.name }}</span>
-                        <span>{{ player.rank }}</span>
-                        <div class="col-span-2 flex justify-end gap-2">
-                          <Button variant="ghost" size="sm">
-                            <ClockAlert class="text-yellow-500 size-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash class="text-red-500 size-4" />
-                          </Button>
+                <Table>
+                  <TableHeader>
+                    <TableRow class="bg-muted">
+                      <TableHead class="px-2 py-1" colspan="2">
+                        Players Name
+                      </TableHead>
+                      <TableHead class="px-2 py-1 text-center">
+                        Score
+                      </TableHead>
+                      <TableHead class="px-2 py-1" colspan="2">
+                        Players Name
+                      </TableHead>
+                      <TableHead class="px-2 py-1 text-center">
+                        Score
+                      </TableHead>
+                      <TableHead class="px-2 py-1 text-right">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow
+                      v-for="(match, i) in row.original.games"
+                      :key="i"
+                      class="border-t"
+                    >
+                      <TableCell class="px-2 py-1" colspan="2">
+                        <div v-for="player in match.team1" :key="player.name">
+                          {{ player.name }} ({{ player.elo }})
                         </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                      </TableCell>
+                      <TableCell class="px-2 py-1 text-center font-semibold">
+                        {{ match.score1 }}
+                      </TableCell>
+                      <TableCell class="px-2 py-1" colspan="2">
+                        <div v-for="player in match.team2" :key="player.name">
+                          {{ player.name }} ({{ player.elo }})
+                        </div>
+                      </TableCell>
+                      <TableCell class="px-2 py-1 text-center font-semibold">
+                        {{ match.score2 }}
+                      </TableCell>
+                      <TableCell class="px-2 py-1 text-right">
+                        <Button class="text-primary" variant="ghost" size="icon">
+                          <FileEditIcon class="size-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </template>
           </Datatable>
@@ -99,9 +141,10 @@
 import type { ColumnDef } from '@tanstack/vue-table';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
-import { Calendar, ClipboardList, ClockAlert, Minus, Plus, Trash } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { Calendar, CircleAlert, ClipboardList, FileEditIcon, Minus, Plus, Trash } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 
 defineProps({
   events: {
@@ -135,63 +178,70 @@ const completedColumns = [
   },
 ];
 
-// ---
 
-type Player = {
-  name: string;
-  rank: number;
-};
-
-type GroupRow = {
+// Dummy match data structure
+type Player = { name: string; elo: number };
+type Match = {
   id: string;
-  name: string;
-  matches: number;
-  court: number;
-  time: string;
-  players: number;
-  playersList: Player[];
+  date: string;
+  event: string;
+  location: string;
+  signedUp: string;
+  courts: number;
+  status: string;
+  summary: { wins: number; losses: number; eloStart: number; eloEnd: number };
+  games: {
+    team1: Player[];
+    score1: number;
+    team2: Player[];
+    score2: number;
+  }[];
 };
 
-const groups = ref<GroupRow[]>([
+const matches = ref<Match[]>([
   {
-    id: 'group-a',
-    name: 'Group A',
-    matches: 25,
-    court: 3,
-    time: '7:00 PM',
-    players: 10,
-    playersList: [
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 1 },
-      { name: 'Another Team', rank: 2 },
+    id: 'match1',
+    date: '2025-04-26T00:42:00Z',
+    event: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
+    location: 'BBC-Mukilteo',
+    signedUp: '25/24',
+    courts: 4,
+    status: 'Completed',
+    summary: { wins: 1, losses: 4, eloStart: 6648.0, eloEnd: 6608.09 },
+    games: [
+      {
+        team1: [
+          { name: 'Surya Prakash Gummadi', elo: 6588.9 },
+          { name: 'Vamsi Krishna', elo: 6648.0 },
+        ],
+        score1: 16,
+        team2: [
+          { name: 'Mohit Bansal', elo: 6065.36 },
+          { name: 'Sivaprasadu Raju', elo: 7382.23 },
+        ],
+        score2: 21,
+      },
+      // Add more games here
     ],
-  },
-  {
-    id: 'group-b',
-    name: 'Group B',
-    matches: 20,
-    court: 2,
-    time: '8:00 PM',
-    players: 8,
-    playersList: [],
   },
 ]);
 
-const expanded = ref<Record<string, boolean>>({}); // keyed by group id
+const expanded = ref<Record<string, boolean>>({});
+const expandedKeys = computed(() =>
+  Object.keys(expanded.value).filter(key => expanded.value[key]),
+);
 
-function toggleExpand(groupId: string) {
-  expanded.value[groupId] = !expanded.value[groupId];
+function toggleExpand(id: string) {
+  expanded.value[id] = !expanded.value[id];
 }
 
-const groupColumns: ColumnDef<GroupRow>[] = [
-  {
-    accessorKey: 'name',
-    id: 'group',
-    header: 'Group',
-    cell: () => null, // render using slot
-  },
-  { accessorKey: 'matches', header: 'Matches' },
-  { accessorKey: 'court', header: 'Court' },
-  { accessorKey: 'time', header: 'Time' },
-  { accessorKey: 'players', header: 'Players' },
+const groupColumns: ColumnDef<Match>[] = [
+  { accessorKey: 'date', header: 'Date', cell: () => null },
+  { accessorKey: 'event', header: 'Event Name' },
+  { accessorKey: 'location', header: 'Location' },
+  { accessorKey: 'signedUp', header: 'Signed up' },
+  { accessorKey: 'courts', header: 'Courts' },
+  { accessorKey: 'status', header: 'Status' },
+  { accessorKey: 'actions', header: 'Actions', cell: () => null },
 ];
 </script>
