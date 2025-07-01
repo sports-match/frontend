@@ -25,7 +25,7 @@
       :data="eventList"
       @on-sort-change="fetchData"
       @on-page-change="fetchData"
-      @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
+      @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
     >
       <template #signedUp="{ row }">
         <div class="flex items-center gap-2">
