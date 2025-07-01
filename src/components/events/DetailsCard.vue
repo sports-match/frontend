@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
+import type { PropType } from 'vue';
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -55,10 +57,11 @@ import { computed } from 'vue';
 
 const props = defineProps({
   event: {
-    type: Object,
+    type: Object as PropType<Event>,
     required: true,
   },
 });
+
 const { isPlayer } = useAuthentication();
 
 const link = computed(() => `${window.location.origin}/event/${props.event?.id}`);

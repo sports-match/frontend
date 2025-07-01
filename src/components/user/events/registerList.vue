@@ -44,16 +44,17 @@
 </template>
 
 <script setup lang="ts">
+import type { Player } from '@/schemas/players';
 import type { ColumnDef } from '@tanstack/vue-table';
+import type { PropType } from 'vue';
 import { withdrawEvent } from '@/api/event';
-import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores';
-import { CheckCircle, CircleCheck, Dock, User } from 'lucide-vue-next';
-import { computed, h, ref } from 'vue';
+import { CircleCheck, Dock, User } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -62,7 +63,7 @@ defineProps({
     default: () => ({}),
   },
   players: {
-    type: Array,
+    type: Array as PropType<Player[]>,
     default: () => [],
   },
 });

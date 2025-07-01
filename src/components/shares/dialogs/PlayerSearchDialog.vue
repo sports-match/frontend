@@ -25,6 +25,7 @@
             <CommandItem
               v-for="player in players"
               :key="player.id"
+              :value="player"
               class="cursor-pointer py-2 flex items-center"
               :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
               @click="selectPlayer(player)"
@@ -48,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Player } from '@/schemas/players';
 import { getEventPlayers, getPlayers, joinEvent } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
@@ -69,10 +71,9 @@ const props = defineProps({
 
 const open = ref(false);
 
-// Example: Replace with your real player list (longer for demo)
-const players = ref([]);
+const players = ref<{ id: number; name: string; player: Player }[]>([]);
 
-const selectedPlayer = ref<null | { id: number; name: string }>(null);
+const selectedPlayer = ref<null | { id: number; name: string; player: Player }>(null);
 
 // Pagination state
 const pageSize = 20;
@@ -116,7 +117,7 @@ function onScroll(e: Event) {
   }
 }
 
-function selectPlayer(player: { id: number; name: string }) {
+function selectPlayer(player: { id: number; name: string; player: Player }) {
   selectedPlayer.value = player;
 }
 

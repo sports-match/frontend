@@ -1,6 +1,6 @@
 <template>
   <MainContentLayout>
-    <EventCard :event="event" />
+    <EventCard v-if="event" :event="event" />
 
     <div class="flex justify-end">
       <Button @click="checkin">
@@ -43,10 +43,10 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList :event="event" :players="players" />
+        <RegisterList v-if="event" :event="event" :players="players" />
       </TabsContent>
       <TabsContent value="participants">
-        <EventParticipants :event="event" :players="players" />
+        <EventParticipants v-if="event" :event="event" :players="players" />
       </TabsContent>
       <TabsContent value="matchList">
         <MatchList :matches="matches" />
@@ -60,6 +60,7 @@
 
 <script setup lang="ts">
 import type { Event } from '@/schemas/events';
+import type { Player } from '@/schemas/players';
 import { checkinEvent, getEvent, getEventMatches, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
@@ -77,8 +78,8 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const { id } = route.params;
-const event = ref<Event>();
-const players = ref([]);
+const event = ref<Event | null>(null);
+const players = ref<Player[]>([]);
 const matches = ref([]);
 
 const isCompleted = computed(() => event.value?.status === 'COMPLETED');
