@@ -20,8 +20,8 @@
 
 <script setup lang="ts">
 import { getEvents } from '@/api/event';
+import EventList from '@/components/admin/events/List.vue';
 import CreateEvent from '@/components/events/CreateForm.vue';
-import EventList from '@/components/events/List.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { notify } from '@/composables/notify';
 import { computed, onMounted, ref, watch } from 'vue';
