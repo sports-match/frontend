@@ -37,7 +37,7 @@
         </TableBody>
       </Table>
     </div>
-    <DataTablePagination :table="table" :page-sizes="pageSizes" />
+    <DataTablePagination v-if="!hidePagination" :table="table" :page-sizes="pageSizes" />
   </div>
 </template>
 
@@ -80,6 +80,7 @@ type DataTableProps = {
   manualPagination?: boolean;
   manualSorting?: boolean;
   manualFiltering?: boolean;
+  hidePagination?: boolean;
 };
 const {
   columns,
@@ -89,6 +90,7 @@ const {
   manualPagination = true,
   manualSorting = true,
   manualFiltering = true,
+  hidePagination = false,
 } = defineProps<DataTableProps>();
 
 const emits = defineEmits(['onPageChange', 'onSortChange', 'onRowClick']);
