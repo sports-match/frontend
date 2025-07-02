@@ -32,15 +32,14 @@
 
         <!-- All Players Switch -->
         <div class="flex items-center gap-2 mb-4">
-          <Switch v-model:checked="formData.allPlayers" />
+          <Switch v-model:checked="formData.allPlayers" :model-value="formData.allPlayers" :disabled="allPlayers" />
           <span class="text-sm font-medium">All Players</span>
         </div>
 
         <!-- Select Players Input -->
         <div class="mb-4">
-          <!-- <span class="text-muted-foreground text-sm flex-1">Select Players</span>
-        <Plus class="w-4 h-4 cursor-pointer" /> -->
           <MultiSelect
+            v-if="!formData.allPlayers"
             v-model="formData.player"
             :options="players"
             value-key="id"
@@ -55,6 +54,7 @@
           v-model="formData.message"
           placeholder="Message"
           class="mb-6 h-40"
+          required
         />
 
         <!-- Footer Button -->
@@ -95,14 +95,16 @@ const props = defineProps({
     type: Number,
     required: false,
   },
+  allPlayers: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const open = ref(false);
 const method = ref<string>('email');
-// const allPlayers = ref(false);
-// const message = ref('');
 const formData = ref({
-  allPlayers: false,
+  allPlayers: props.allPlayers,
   player: [],
   message: '',
 });

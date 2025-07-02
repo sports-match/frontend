@@ -27,7 +27,7 @@
 
         <SharesDialog :event="event" />
         <template v-if="!isPlayer">
-          <ReminderDialog :event="event">
+          <ReminderDialog :event="event" all-players>
             <Button variant="outline" size="sm" class="bg-black text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-white rounded-xl">
               <ClockAlert class="size-4" />
             </Button>

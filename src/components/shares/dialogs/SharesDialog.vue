@@ -1,10 +1,12 @@
 <template>
   <Dialog>
     <DialogTrigger as-child>
-      <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
-        <Link class="mr-2 size-4" />
-        Share
-      </Button>
+      <slot name="trigger">
+        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl">
+          <Link class="mr-2 size-4" />
+          Share
+        </Button>
+      </slot>
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>

@@ -37,15 +37,21 @@
         <StatusIndicator :status="row.original.status" />
       </template>
       <template #actions="{ row }">
-        <Button variant="ghost" size="sm">
-          <QrCode class="size-4" />
-        </Button>
-        <Button variant="ghost" size="sm">
+        <SharesDialog>
+          <template #trigger>
+            <Button variant="ghost" size="sm" @click.stop>
+              <QrCode class="size-4" />
+            </Button>
+          </template>
+        </SharesDialog>
+        <!-- <Button variant="ghost" size="sm">
           <Files class="size-4" />
-        </Button>
-        <Button v-if="row.original.status?.toLowerCase() !== 'completed'" variant="ghost" size="sm">
-          <ClockAlert class="size-4" />
-        </Button>
+        </Button> -->
+        <ReminderDialog :event="row.original" all-players>
+          <Button v-if="row.original.status?.toLowerCase() !== 'completed'" variant="ghost" size="sm" @click.stop>
+            <ClockAlert class="size-4" />
+          </Button>
+        </ReminderDialog>
         <DropdownMenu v-if="row.original.status?.toLowerCase() !== 'completed'">
           <DropdownMenuTrigger as-child @click.stop>
             <Button variant="ghost" size="sm">
@@ -80,6 +86,8 @@
 import type { ColumnDef } from '@tanstack/vue-table';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
+import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
+import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import Percentage from '@/components/shares/Percentage.vue';
 import StatusIndicator from '@/components/shares/StatusIndicator.vue';
 import { Button } from '@/components/shares/ui/button';
