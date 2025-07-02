@@ -37,7 +37,7 @@
         <StatusIndicator :status="row.original.status" />
       </template>
       <template #actions="{ row }">
-        <SharesDialog>
+        <SharesDialog :event="row.original">
           <template #trigger>
             <Button variant="ghost" size="sm" @click.stop>
               <QrCode class="size-4" />

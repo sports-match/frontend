@@ -47,7 +47,10 @@ instance.interceptors.response.use((response) => {
     notify.error('Session Expired');
     useUserStore().$reset();
     clearSession();
-    return router.push({ name: 'AuthLoginPage' });
+    return router.push({
+      name: 'AuthLoginPage',
+      query: { redirect: router.currentRoute.value.path },
+    });
   }
 
   // handle expired token by refresh the token

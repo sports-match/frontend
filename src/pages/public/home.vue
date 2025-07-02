@@ -11,7 +11,7 @@
           >
             Sign Up
           </Button>
-          <Button @click="$router.push({ name: 'AuthLoginPage' })">
+          <Button @click="$router.push({ name: 'AuthLoginPage', query: { redirect: $route.query.redirect } })">
             Sign In
           </Button>
         </div>

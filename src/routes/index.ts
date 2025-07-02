@@ -36,7 +36,7 @@ router.beforeEach((to, _, next) => {
   const { isAuthenticated, assessmentStatus } = useAuthentication();
 
   if (!to.meta.public && !get(isAuthenticated)) {
-    return next({ name: 'HomePage' });
+    return next({ name: 'HomePage', query: { redirect: to.fullPath } });
   } else if (to.meta.public && get(isAuthenticated)) {
     return next({ name: 'DashboardPage' });
   } else if (get(isAuthenticated) && !get(assessmentStatus) && to.name !== 'SkillAssessmentPage') {

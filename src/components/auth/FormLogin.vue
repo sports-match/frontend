@@ -80,11 +80,12 @@ const formData = ref({
 // const isLoading = ref(false);
 async function onSubmit() {
   try {
+    const { query: { redirect } } = router.currentRoute.value;
     const { data: { token: accessToken, user, assessmentStatus, playerId } } = await login(formData.value);
     const { token } = useAuthentication();
     set(token, accessToken);
     userStore.setUserDetails(user, assessmentStatus, playerId);
-    router.push({ name: 'DashboardPage' });
+    router.push({ path: redirect?.toString() || '/dashboard' });
     notify.success('Login successful!');
   } catch (error) {
     notify.error(error as string);
