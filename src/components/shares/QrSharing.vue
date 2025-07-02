@@ -56,8 +56,10 @@
 <script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
+import { useClipboard } from '@vueuse/core';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { Copy, Download, Mail, MessageCircleMore } from 'lucide-vue-next';
+
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -83,8 +85,10 @@ function downloadQR() {
   link.click();
 }
 
+const { copy } = useClipboard();
+
 function copyLink() {
-  navigator.clipboard.writeText(publicLink.value).then(() => {
+  copy(publicLink.value).then(() => {
     notify.success('Link copied!');
   });
 }
