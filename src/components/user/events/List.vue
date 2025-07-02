@@ -100,7 +100,11 @@
       </Button>
     </Card>
 
-    <component :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :events="events" :selected-location="selectedPlace" />
+    <component
+      :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :events="events"
+      :selected-location="selectedPlace"
+      @on-fetch="fetchEvents"
+    />
   </MainContentLayout>
 </template>
 
@@ -158,18 +162,7 @@ onMounted(() => {
 
 watch(
   () => route.name,
-  (newVal) => {
-    switch (newVal) {
-      case 'eventsPage':
-        eventTimeFilter.value = '';
-        break;
-      case 'UpcomingEvents':
-        eventTimeFilter.value = 'UPCOMING';
-        break;
-      case 'PastEvents':
-        eventTimeFilter.value = 'PAST';
-        break;
-    }
+  () => {
     fetchEvents();
   },
 );
@@ -179,13 +172,22 @@ watch(
 //   router.push({ query: { ...route.query, icon } });
 // }
 
-async function fetchEvents() {
+async function fetchEvents(pageInfo?: { pageIndex: number; pageSize: number }) {
   try {
+    switch (route.name) {
+      case 'UpcomingEvents':
+        eventTimeFilter.value = 'UPCOMING';
+        break;
+      case 'PastEvents':
+        eventTimeFilter.value = 'PAST';
+        break;
+    }
     const { data: content } = await getEvents({
       eventTimeFilter: eventTimeFilter.value,
       location: selectedPlace.value?.display_name,
       date: date.value,
       status: status.value,
+      ...pageInfo,
     });
     events.value = content;
   } catch (error) {

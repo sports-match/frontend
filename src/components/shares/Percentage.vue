@@ -14,6 +14,7 @@
       <!-- Progress circle -->
       <circle
         class="text-green-500 transition-all duration-500"
+        :class="getColor"
         stroke="currentColor"
         stroke-width="4"
         fill="none"
@@ -30,10 +31,32 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   percentage: {
     type: [Number, String],
     default: 0,
   },
+  status: {
+    type: String,
+    default: 'default',
+  },
+});
+
+const statusColor = computed(() => {
+  return {
+    publish: 'bg-green-100 dark:bg-green-900',
+    private: 'bg-red-100 dark:bg-red-900',
+    pending: 'bg-yellow-100 dark:bg-yellow-900',
+    indigo: 'bg-indigo-100 dark:bg-indigo-900',
+    warning: 'bg-orange-100 dark:bg-orange-900',
+    completed: 'bg-blue-100 dark:bg-blue-900',
+    default: 'bg-gray-100 dark:bg-gray-900',
+  };
+});
+
+const getColor = computed(() => {
+  return statusColor.value[props.status.value] || statusColor.value.default;
 });
 </script>
