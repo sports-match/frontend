@@ -1,7 +1,7 @@
 <template>
   <MainContentLayout>
     <div>
-      <Button variant="ghost" size="sm" @click="$router.push('/events')">
+      <Button variant="ghost" size="sm" @click="$router.back()">
         <ChevronLeft class="mr-2 size-4" />
         Back
       </Button>

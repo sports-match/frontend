@@ -22,7 +22,7 @@
       :total-records="totalRecords"
       :columns="columns"
       :data="playerStatsList"
-      @on-page-change="onPageChange"
+      @on-page-change="fetchData"
       @on-row-click="(row) => $router.push({ name: 'ViewPayerStats', params: { id: row.original.playerId } })"
     >
       <!-- <template #sportRatings="{ row }">
@@ -94,22 +94,13 @@ onMounted(() => {
 });
 
 async function fetchData() {
+  const { table } = playerStatsTable.value;
+  const { pagination: { pageIndex, pageSize } } = table?.getState();
   try {
     const { data: { content, totalElements } } = await getPlayersDoubleStats({
       name: searchKey.value,
-    });
-    playerStatsList.value = content;
-    totalRecords.value = totalElements;
-  } catch (error) {
-    notify.error(error as string);
-  }
-}
-
-async function onPageChange(pageInfo: { pageIndex: number; pageSize: number }) {
-  try {
-    const { data: { content, totalElements } } = await getPlayersDoubleStats({
-      page: pageInfo.pageIndex,
-      size: pageInfo.pageSize,
+      page: pageIndex,
+      size: pageSize,
     });
     playerStatsList.value = content;
     totalRecords.value = totalElements;
