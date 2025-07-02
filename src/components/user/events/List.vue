@@ -22,6 +22,7 @@
         </Button>
       </div>
     </template> -->
+
     <Card class="bg-gradient-to-r from-gray-900 to-black p-6 pb-10 rounded-2xl flex items-end gap-4">
       <!-- Location Input -->
       <CardContent class="p-0 flex-1 flex flex-col">
@@ -87,29 +88,34 @@
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem v-for="option in statusOptions" :key="option" :value="option">
-              {{ option }}
+            <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value">
+              {{ option.text }}
             </SelectItem>
           </SelectContent>
         </Select>
       </CardContent>
 
       <!-- Search Button -->
-      <Button class="bg-blue-500 text-white hover:bg-blue-600 rounded-lg px-6 py-4">
+      <Button v-if="searchQuery || date || status" class="bg-transparent text-white hover:text-white/75 rounded-lg" type="reset" @click="clearFilters">
+        Clear
+      </Button>
+      <Button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 rounded-lg px-6 py-4" @click="fetchData">
         <Search class="mr-2 w-4 h-4" /> Search
       </Button>
     </Card>
 
     <component
-      :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView" :events="events"
+      :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView"
+      :events="events"
+      :total-events="totalEvents"
       :selected-location="selectedPlace"
-      @on-fetch="fetchEvents"
+      @on-fetch="fetchData"
     />
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
-import { getEvents } from '@/api/event';
+import type { EventParams } from '@/schemas/events';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import { Button } from '@/components/shares/ui/button';
 import { Calendar } from '@/components/shares/ui/calendar';
@@ -121,7 +127,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import GridView from '@/components/user/events/views/gridView.vue';
 import ListView from '@/components/user/events/views/listView.vue';
 import mapView from '@/components/user/events/views/mapView.vue';
-import { notify } from '@/composables/notify';
+import { events, fetchEvents, totalEvents } from '@/composables/events';
 import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -134,11 +140,18 @@ import { useRoute } from 'vue-router';
 
 const date = ref();
 const status = ref();
-const statusOptions = ref(['Open', 'Closed']);
+const statusOptions = ref([
+  { value: 'DRAFT', text: 'Draft' },
+  { value: 'CHECK_IN', text: 'Check-in' },
+  { value: 'IN_PROGRESS', text: 'In progress' },
+  { value: 'CLOSED', text: 'Closed' },
+  { value: 'PUBLISHED', text: 'Published' },
+  { value: 'DELETED', text: 'Deleted' },
+  { value: 'COMPLETED', text: 'Completed' },
+]);
 
 const route = useRoute();
 const selectedIcon = ref(route.query.icon || 'list');
-const events = ref<Record<string, any>>();
 
 const searchQuery = ref('');
 const suggestions = ref<{ display_name: string; place_id: number }[]>([]);
@@ -157,42 +170,44 @@ const pageTitle = computed(() => {
 const eventTimeFilter = ref('');
 
 onMounted(() => {
-  fetchEvents();
+  fetchData();
 });
 
 watch(
   () => route.name,
   () => {
-    fetchEvents();
+    fetchData();
   },
 );
-
+function clearFilters() {
+  searchQuery.value = '';
+  date.value = '';
+  status.value = '';
+  fetchData();
+}
 // function selectIcon(icon: string) {
 //   selectedIcon.value = icon;
 //   router.push({ query: { ...route.query, icon } });
 // }
 
-async function fetchEvents(pageInfo?: { pageIndex: number; pageSize: number }) {
-  try {
-    switch (route.name) {
-      case 'UpcomingEvents':
-        eventTimeFilter.value = 'UPCOMING';
-        break;
-      case 'PastEvents':
-        eventTimeFilter.value = 'PAST';
-        break;
-    }
-    const { data: content } = await getEvents({
-      eventTimeFilter: eventTimeFilter.value,
-      location: selectedPlace.value?.display_name,
-      date: date.value,
-      status: status.value,
-      ...pageInfo,
-    });
-    events.value = content;
-  } catch (error) {
-    notify.error(error as string);
+async function fetchData(params: EventParams = {}) {
+  const { pageIndex, pageSize } = params;
+  switch (route.name) {
+    case 'UpcomingEvents':
+      eventTimeFilter.value = 'UPCOMING';
+      break;
+    case 'PastEvents':
+      eventTimeFilter.value = 'PAST';
+      break;
   }
+  fetchEvents({
+    eventTimeFilter: eventTimeFilter.value,
+    location: selectedPlace.value?.display_name,
+    eventTime: date.value ? new Date(date.value).toISOString().split('T')[0] : undefined,
+    status: status.value,
+    pageIndex,
+    pageSize,
+  });
 }
 
 // location search
@@ -206,24 +221,24 @@ function handleInput() {
     isLoading.value = false;
     return;
   }
-  isLoading.value = true;
+  // isLoading.value = true;
   debounceTimer = setTimeout(() => {
-    fetchSuggestions();
+    // fetchSuggestions();
   }, 1000);
 }
 
-async function fetchSuggestions() {
-  try {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&addressdetails=1&limit=5`;
-    const response = await fetch(url);
-    const data = await response.json();
-    suggestions.value = data;
-  } catch (error) {
-    notify.error(`Error fetching suggestions: ${error}`);
-  } finally {
-    isLoading.value = false;
-  }
-}
+// async function fetchSuggestions() {
+//   try {
+//     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&addressdetails=1&limit=5`;
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     suggestions.value = data;
+//   } catch (error) {
+//     notify.error(`Error fetching suggestions: ${error}`);
+//   } finally {
+//     isLoading.value = false;
+//   }
+// }
 
 function selectSuggestion(place: { display_name: string; place_id: number }) {
   selectedPlace.value = place;

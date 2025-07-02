@@ -15,8 +15,12 @@ export type Event = {
 };
 
 export type Pagination = {
-  page: number;
-  size: number;
+  page?: number;
+  size?: number;
+};
+
+export type PaginationWithPlayerName = Pagination & {
+  name?: string;
 };
 
 export const getEvents = (query?: any) => http.get('/events', { params: query });
@@ -35,7 +39,8 @@ export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign
 export const getClubs = () => http.get('/clubs');
 export const getSports = () => http.get('/sports');
 export const getPlayers = () => http.get('/players');
-export const getPlayersDoubleStats = (params?: Pagination) => http.get('/players/doubles-stats', { params });
+
+export const getPlayersDoubleStats = (params?: PaginationWithPlayerName) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');
 
 export const sendEventReminder = (eventId: string, data: any) => http.post(`/events/${eventId}/remind`, data);

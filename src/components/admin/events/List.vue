@@ -44,9 +44,6 @@
             </Button>
           </template>
         </SharesDialog>
-        <!-- <Button variant="ghost" size="sm">
-          <Files class="size-4" />
-        </Button> -->
         <ReminderDialog :event="row.original" all-players>
           <Button v-if="row.original.status?.toLowerCase() !== 'completed'" variant="ghost" size="sm" @click.stop>
             <ClockAlert class="size-4" />
@@ -59,14 +56,6 @@
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <!-- <DropdownMenuItem>
-              <Eye class="size-4 mr-2" />
-              View Details
-            </DropdownMenuItem> -->
-            <!-- <DropdownMenuItem>
-              <Edit class="size-4 mr-2" />
-              Edit
-            </DropdownMenuItem> -->
             <DropdownMenuItem @click.stop>
               <Check class="size-4 mr-2" />
               Complete
@@ -93,7 +82,7 @@ import StatusIndicator from '@/components/shares/StatusIndicator.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
-import { Check, ClockAlert, Edit, Ellipsis, Eye, Files, Filter, QrCode, Search, Trash } from 'lucide-vue-next';
+import { Check, ClockAlert, Ellipsis, QrCode, Search, Trash } from 'lucide-vue-next';
 import { computed, h, ref } from 'vue';
 
 const props = defineProps({
@@ -146,6 +135,8 @@ const eventTable = ref();
 
 const searchKey = ref('');
 function fetchData() {
-  emit('onFetch', searchKey.value);
+  const { table } = eventTable.value;
+  const { pagination: { pageIndex, pageSize } } = table?.getState();
+  emit('onFetch', { name: searchKey.value, pageIndex, pageSize });
 }
 </script>

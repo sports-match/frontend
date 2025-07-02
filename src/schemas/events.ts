@@ -28,6 +28,16 @@ export type Event = {
   updateTime: string;
 };
 
+export type EventParams = {
+  eventTime?: string;
+  eventTimeFilter?: string;
+  location?: string;
+  name?: string;
+  pageIndex?: number;
+  pageSize?: number;
+  status?: string;
+};
+
 export const eventSchema = z.object({
   allowSelfCheckIn: z.boolean(),
   allowWaitList: z.boolean(),

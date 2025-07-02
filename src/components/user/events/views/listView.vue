@@ -2,9 +2,9 @@
   <div class="flex flex-col gap-4">
     <Datatable
       ref="eventTable"
-      :total-records="totalRecords"
+      :total-records="totalEvents"
       :columns="columns"
-      :data="eventList"
+      :data="events"
       @on-page-change="onPageChange"
       @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
     >
@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import type { EventParams } from '@/schemas/events';
 import type { ColumnDef } from '@tanstack/vue-table';
 import { checkinEvent, joinEvent, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
@@ -57,18 +58,20 @@ import { useUserStore } from '@/stores/user';
 import { CalendarPlus, CircleCheck, CreditCardIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
-const props = defineProps({
+defineProps({
   events: {
-    type: Object,
-    default: () => ({}),
+    type: Array,
+    default: () => [],
+  },
+  totalEvents: {
+    type: Number,
+    default: 0,
   },
 });
 const emit = defineEmits(['onFetch']);
 
 const userStore = useUserStore();
 
-const eventList = computed(() => props.events?.content || []);
-const totalRecords = computed(() => props.events?.totalElements || 0);
 const eventTable = ref();
 const playerId = computed(() => userStore.playerId || null);
 
@@ -104,11 +107,11 @@ const columns: ColumnDef<any>[] = [
   },
 ];
 
-function onPageChange(pageInfo: { pageIndex: number; pageSize: number }) {
+function onPageChange(pageInfo: EventParams) {
   fetchData(pageInfo);
 }
 
-function fetchData(pageInfo?: { pageIndex: number; pageSize: number }) {
+function fetchData(pageInfo?: EventParams) {
   emit('onFetch', pageInfo);
 }
 

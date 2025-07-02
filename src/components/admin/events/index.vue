@@ -19,24 +19,21 @@
 </template>
 
 <script setup lang="ts">
-import { getEvents } from '@/api/event';
+import type { EventParams } from '@/schemas/events';
 import EventList from '@/components/admin/events/List.vue';
 import CreateEvent from '@/components/events/CreateForm.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
-import { notify } from '@/composables/notify';
+import { events, fetchEvents, totalEvents } from '@/composables/events';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const events = ref<any[]>([]);
-const totalEvents = ref(0);
 const eventTimeFilter = ref('');
 
 const pageTitle = computed(() => {
   if (route.name === 'eventsPage')
     return 'Events';
-  // Insert a space before every capital letter except the first
   return typeof route.name === 'string'
     ? route.name.replace(/([A-Z])/g, ' $1').replace(/^ /, '')
     : route.name;
@@ -48,32 +45,26 @@ onMounted(() => {
 
 watch(
   () => route.name,
-  (newVal) => {
-    switch (newVal) {
-      case 'eventsPage':
-        eventTimeFilter.value = '';
-        break;
-      case 'UpcomingEvents':
-        eventTimeFilter.value = 'UPCOMING';
-        break;
-      case 'PastEvents':
-        eventTimeFilter.value = 'PAST';
-        break;
-    }
+  () => {
     fetchData();
   },
 );
 
-async function fetchData(searchName = '') {
-  try {
-    const { data } = await getEvents({
-      eventTimeFilter: eventTimeFilter.value,
-      name: searchName,
-    });
-    events.value = data.content;
-    totalEvents.value = data.totalElements;
-  } catch (error) {
-    notify.error(error as string);
+async function fetchData(params: EventParams = {}) {
+  const { name, pageIndex, pageSize } = params;
+  switch (route.name) {
+    case 'UpcomingEvents':
+      eventTimeFilter.value = 'UPCOMING';
+      break;
+    case 'PastEvents':
+      eventTimeFilter.value = 'PAST';
+      break;
   }
+  fetchEvents({
+    eventTimeFilter: eventTimeFilter.value,
+    name,
+    pageIndex,
+    pageSize,
+  });
 }
 </script>

@@ -35,13 +35,12 @@
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
 import { getPlayersDoubleStats } from '@/api/event';
-import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
 import { Search } from 'lucide-vue-next';
-import { h, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 // const router = useRouter();
 const playerStatsList = ref([]);
@@ -96,7 +95,9 @@ onMounted(() => {
 
 async function fetchData() {
   try {
-    const { data: { content, totalElements } } = await getPlayersDoubleStats();
+    const { data: { content, totalElements } } = await getPlayersDoubleStats({
+      name: searchKey.value,
+    });
     playerStatsList.value = content;
     totalRecords.value = totalElements;
   } catch (error) {
