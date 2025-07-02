@@ -1,62 +1,54 @@
 <template>
   <Dialog :focus-outside="false">
     <DialogTrigger as-child>
-      <!-- Trigger button can be placed here if needed -->
-      <Button @click="() => { fetchSports(); fetchClubs(); fetchPlayers(); fetchTags(); }">
+      <Button @click="openDialog">
         Create Event
       </Button>
     </DialogTrigger>
     <DialogContent class="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>
-          <span v-if="!submitted">Select sport type</span>
-          <span v-else>Event Sharing</span>
-        </DialogTitle>
+        <DialogTitle>{{ submitted ? 'Event Sharing' : 'Select sport type' }}</DialogTitle>
         <DialogDescription />
       </DialogHeader>
 
-      <!-- Event form -->
       <div v-if="!submitted" class="space-y-4">
+        <!-- Settings -->
         <div class="space-y-3 mt-2">
           <div class="flex items-center space-x-2">
             <Switch id="public-event" v-model="form.allowSelfCheckIn" />
-            <Label for="public-event" class="font-normal">This event is public and anyone can sign up</Label>
+            <Label for="public-event">Public event - anyone can sign up</Label>
           </div>
           <div class="flex items-center space-x-2">
             <Switch id="waitlist" v-model="form.allowWaitList" />
-            <Label for="waitlist" class="font-normal">Allow users to join a waitlist once event is full</Label>
+            <Label for="waitlist">Allow waitlist</Label>
           </div>
         </div>
 
-        <!-- Sport buttons -->
+        <!-- Sport selection -->
         <div class="overflow-x-auto px-1">
           <div class="flex gap-3 my-4 min-w-max">
             <Button
               v-for="sport in sports"
               :key="sport.id"
               variant="outline"
-              class="flex flex-col items-center py-2 min-w-[110px] border transition-all h-auto"
+              class="flex flex-col items-center py-2 min-w-[110px] h-auto"
               :class="selectedSport === sport.id ? 'border-primary ring-1 ring-primary' : ''"
               type="button"
               @click="selectSport(sport.id)"
             >
-              <div>
-                <img
-                  v-if="sport.icon"
-                  :src="`/src/assets/sportTypes/${sport.icon}.svg`"
-                  :alt="`${sport.name}-icon`"
-                  class="w-10 h-10 mb-1"
-                >
-              </div>
+              <img
+                v-if="sport.icon"
+                :src="getIconUrl(sport.icon)"
+                :alt="`${sport.name}-icon`"
+                class="w-10 h-10 mb-1"
+              >
               <span class="text-xs">{{ sport.name }}</span>
             </Button>
           </div>
         </div>
 
         <!-- Form Fields -->
-        <div>
-          <SingleSelect v-model="selectedClub" :options="clubs" placeholder="Select Club" />
-        </div>
+        <SingleSelect v-model="selectedClub" :options="clubs" placeholder="Select Club" />
 
         <div class="grid grid-cols-2 gap-4">
           <Select v-model="form.format">
@@ -72,80 +64,69 @@
           </Select>
           <Input v-model="form.eventTime" class="flex flex-col justify-between" placeholder="Date" type="datetime-local" />
         </div>
+
         <div class="grid grid-cols-2 gap-4">
           <Input v-model="form.maxParticipants" type="number" placeholder="Max players" />
           <Input v-model="form.groupCount" type="number" placeholder="Number of group" />
         </div>
-        <div>
-          <Input v-model="form.name" placeholder="Event name" />
-        </div>
-        <div class="flex items-center space-x-2">
-          <MultiSelect
-            v-model="form.coHostPlayers"
-            :options="players"
-            value-key="id"
-            label-key="name"
-            return-type="value"
-            placeholder="Other Orgenizers"
-          />
-        </div>
-        <div class="grid gap-4 mb-4">
-          <MultiSelect
-            v-model="form.tags"
-            :options="tags"
-            value-key="name"
-            label-key="name"
-            return-type="value"
-            placeholder="Event Tags"
-            class="col-span-2"
-          />
-          <Textarea v-model="form.description" placeholder="Description" class="col-span-2" />
 
-          <div class="col-span-2 ">
-            <div>
-              <label
-                for="image-upload"
-                class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-gray-400 transition duration-150 ease-in-out"
-              >
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/png, image/jpeg, image/webp"
-                  class="hidden"
-                  @change="onFileChange"
-                >
-                <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="h-48 w-full p-2 rounded-lg border object-contain">
-                <div v-else class="flex flex-col items-center justify-center h-full">
-                  <Upload class="w-6 h-6 text-gray-500 mb-2" />
-                  <p class="text-sm text-gray-500">Drop your image here, or browse</p>
-                  <p class="text-xs text-gray-400 mt-1">Support: PNG, JPG, JPEG, WEBP</p>
-                </div>
-              </label>
-            </div>
+        <Input v-model="form.name" placeholder="Event name" />
+
+        <MultiSelect
+          v-model="form.coHostPlayers"
+          :options="players"
+          value-key="id"
+          label-key="name"
+          return-type="value"
+          placeholder="Other Organizers"
+        />
+
+        <MultiSelect
+          v-model="form.tags"
+          :options="tags"
+          value-key="name"
+          label-key="name"
+          return-type="value"
+          placeholder="Event Tags"
+        />
+
+        <Textarea v-model="form.description" placeholder="Description" />
+
+        <!-- Image Upload -->
+        <label for="image-upload" class="upload-box">
+          <input
+            id="image-upload"
+            type="file"
+            accept="image/*"
+            class="hidden"
+            @change="onFileChange"
+          >
+          <img v-if="previewUrl" :src="previewUrl" alt="Preview" class="preview-img">
+          <div v-else class="upload-placeholder">
+            <Upload class="icon" />
+            <p>Drop image or browse</p>
+            <p class="text-xs">Supported: PNG, JPG, JPEG, WEBP</p>
           </div>
-        </div>
+        </label>
       </div>
 
       <div v-else>
-        <!-- QR Image -->
         <QrSharing :event="event" />
       </div>
-      <!-- Footer -->
-      <DialogFooter class="flex justify-between">
-        <div v-if="!submitted" class="flex justify-between space-x-2 w-full">
-          <Button variant="destructive">
-            <X class="mr-2 size-4" />
-            Cancel
+
+      <DialogFooter>
+        <div v-if="!submitted" class="flex justify-between w-full space-x-2">
+          <Button variant="destructive" @click="closeDialog">
+            <X class="mr-2 size-4" /> Cancel
           </Button>
           <Button :disabled="isLoading" @click="submit">
             Public
             <ArrowRight v-if="!isLoading" class="ml-2 size-4" />
-            <LucideSpinner v-if="isLoading" class="ml-2 h-4 w-4 animate-spin" />
+            <LucideSpinner v-else class="ml-2 h-4 w-4 animate-spin" />
           </Button>
         </div>
         <Button v-else @click="submitted = false">
-          <Check class="mr-2 size-4" />
-          Done
+          <Check class="mr-2 size-4" /> Done
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -158,15 +139,7 @@ import { createEvent, getClubs, getPlayers, getSports, getTags, uploadImage } fr
 import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/shares/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shares/ui/dialog';
 import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shares/ui/select';
@@ -194,6 +167,11 @@ type EventForm = {
   image: string;
   location: string;
 };
+
+const images = import.meta.glob('@/assets/images/*.svg', { eager: true, as: 'url' });
+function getIconUrl(icon: string) {
+  return images[`/src/assets/images/${icon}.svg`] || '';
+}
 
 const event = ref({});
 const submitted = ref(false);
@@ -282,6 +260,14 @@ async function fetchPlayers() {
   }
 }
 
+async function openDialog() {
+  await Promise.all([fetchSports(), fetchClubs(), fetchPlayers(), fetchTags()]);
+}
+
+function closeDialog() {
+  submitted.value = false;
+}
+
 function onFileChange(event: Event) {
   const file = event?.target?.files[0];
   if (file && file.type.startsWith('image/')) {
@@ -292,6 +278,11 @@ function onFileChange(event: Event) {
 }
 
 async function submit() {
+  // if (!form.name || !form.eventTime || !form.format) {
+  //   notify.error('Please fill all required fields');
+  //   return;
+  // }
+
   isLoading.value = true;
   try {
     if (inputFile.value) {
@@ -304,6 +295,7 @@ async function submit() {
       eventTime: form.eventTime ? new Date(form.eventTime).toISOString() : null,
       clubId: selectedClub.value?.id,
     });
+
     event.value = data;
     notify.success('Event created successfully');
     submitted.value = true;
@@ -314,3 +306,18 @@ async function submit() {
   }
 }
 </script>
+
+<style scoped>
+.upload-box {
+  @apply flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-gray-400 transition;
+}
+.preview-img {
+  @apply h-48 w-full p-2 rounded-lg border object-contain;
+}
+.upload-placeholder {
+  @apply flex flex-col items-center justify-center h-full text-gray-500;
+}
+.icon {
+  @apply w-6 h-6 mb-2;
+}
+</style>

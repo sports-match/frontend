@@ -89,7 +89,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   options: any[];
-  modelValue: any[];
+  modelValue: string[] | undefined;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
