@@ -1,6 +1,6 @@
-import ComparePlayerPage from '@/pages/admin/playerStats/compare.vue';
-import PlayerStatsPage from '@/pages/admin/playerStats/index.vue';
-import ViewPlayerProfilePage from '@/pages/admin/playerStats/view.vue';
+import ComparePlayerPage from '@/pages/playerStats/compare.vue';
+import PlayerStatsPage from '@/pages/playerStats/index.vue';
+import ViewPlayerProfilePage from '@/pages/playerStats/view.vue';
 
 export const playerStats = [
   {

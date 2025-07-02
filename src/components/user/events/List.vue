@@ -120,20 +120,19 @@ import mapView from '@/components/user/events/views/mapView.vue';
 import { notify } from '@/composables/notify';
 import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
-const icons = [
-  { value: 'list', icon: Grid3x3 },
-  { value: 'grid', icon: LayoutGrid },
-  { value: 'map', icon: MapPinned },
-];
+// const icons = [
+//   { value: 'list', icon: Grid3x3 },
+//   { value: 'grid', icon: LayoutGrid },
+//   { value: 'map', icon: MapPinned },
+// ];
 
 const date = ref();
 const status = ref();
 const statusOptions = ref(['Open', 'Closed']);
 
 const route = useRoute();
-const router = useRouter();
 const selectedIcon = ref(route.query.icon || 'list');
 const events = ref<Record<string, any>>();
 
@@ -175,10 +174,10 @@ watch(
   },
 );
 
-function selectIcon(icon: string) {
-  selectedIcon.value = icon;
-  router.push({ query: { ...route.query, icon } });
-}
+// function selectIcon(icon: string) {
+//   selectedIcon.value = icon;
+//   router.push({ query: { ...route.query, icon } });
+// }
 
 async function fetchEvents() {
   try {

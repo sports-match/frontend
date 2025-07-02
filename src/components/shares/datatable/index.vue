@@ -12,18 +12,32 @@
         </TableHeader>
         <TableBody>
           <template v-if="table.getRowModel().rows?.length">
-            <TableRow
-              v-for="row in table.getRowModel().rows"
-              :key="row.id"
-              :data-state="row.getIsSelected() && 'selected'"
-              @click="$emit('onRowClick', row)"
-            >
-              <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                <slot :name="cell.column.id" :row="row" :cell="cell">
-                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-                </slot>
-              </TableCell>
-            </TableRow>
+            <template v-for="row in table.getRowModel().rows" :key="row.id">
+              <!-- Main Row -->
+              <TableRow
+                :data-state="row.getIsSelected() && 'selected'"
+                @click="$emit('onRowClick', row)"
+              >
+                <TableCell
+                  v-for="cell in row.getVisibleCells()"
+                  :key="cell.id"
+                >
+                  <slot :name="cell.column.id" :row="row" :cell="cell">
+                    <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                  </slot>
+                </TableCell>
+              </TableRow>
+
+              <!-- Expanded Row Slot -->
+              <TableRow
+                v-if="expandedRowKeys?.includes(row.original.id)"
+                class="bg-muted/50"
+              >
+                <TableCell :colspan="columns.length" class="p-4">
+                  <slot name="expanded-row" :row="row" />
+                </TableCell>
+              </TableRow>
+            </template>
           </template>
 
           <TableRow v-else>
@@ -37,7 +51,7 @@
         </TableBody>
       </Table>
     </div>
-    <DataTablePagination :table="table" :page-sizes="pageSizes" />
+    <DataTablePagination v-if="!hidePagination" :table="table" :page-sizes="pageSizes" />
   </div>
 </template>
 
@@ -80,6 +94,8 @@ type DataTableProps = {
   manualPagination?: boolean;
   manualSorting?: boolean;
   manualFiltering?: boolean;
+  hidePagination?: boolean;
+  expandedRowKeys?: string[]; // or number[] depending on your `id`
 };
 const {
   columns,
@@ -89,6 +105,7 @@ const {
   manualPagination = true,
   manualSorting = true,
   manualFiltering = true,
+  hidePagination = false,
 } = defineProps<DataTableProps>();
 
 const emits = defineEmits(['onPageChange', 'onSortChange', 'onRowClick']);

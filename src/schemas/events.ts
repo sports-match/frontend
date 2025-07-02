@@ -1,0 +1,27 @@
+export type Event = {
+  allowSelfCheckIn: boolean;
+  allowWaitList: boolean;
+  canSignUp: boolean;
+  checkInEnd: string;
+  checkInStart: string;
+  clubId: number;
+  coHostPlayers: any[];
+  createBy: number;
+  createTime: string;
+  currentParticipants: number;
+  description: string;
+  eventTime: string;
+  format: string;
+  groupCount: number;
+  id: number;
+  image: string;
+  joined: boolean;
+  location: string;
+  maxParticipants: number;
+  name: string;
+  posterImage: string;
+  sportId: number;
+  status: string;
+  tags: any[];
+  updateTime: string;
+};

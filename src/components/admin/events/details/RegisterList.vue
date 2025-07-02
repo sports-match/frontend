@@ -6,22 +6,18 @@
         <Input v-model="search" placeholder="Search" class="w-full" />
       </form>
       <div class="flex items-center gap-2">
-        <!-- <Button variant="outline">
-          <FileUp class="w-5 h-5 mr-2" /> Export
-        </Button> -->
         <Button v-if="isAbleStartCheckIn" class="bg-primary text-white" @click="startEventCheckIn">
           <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
         <template v-else>
           <GenerateGroup />
-          <PlayerSearchDialog :event="event" get-all />
+          <AddMemberDialog :event="event" />
         </template>
       </div>
     </div>
 
     <!-- Table -->
     <Datatable
-      ref="registerTable"
       v-model:page="page"
       :columns="columns"
       :data="players"
@@ -75,11 +71,11 @@ import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import { Button } from '@/components/shares/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
-import { ArrowLeftRight, Check, CheckCheck, CircleCheck, ClockAlert, Dock, Edit, Ellipsis, Eye, Files, FileUp, Plus, Trash, Users2Icon } from 'lucide-vue-next';
+import { ArrowLeftRight, CheckCheck, CircleCheck, ClockAlert, Dock } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import AddMemberDialog from './AddMemberDialog.vue';
 
 const props = defineProps({
   event: {
@@ -96,36 +92,8 @@ const emit = defineEmits(['pullEvent', 'pullPlayers']);
 
 const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
 
-// Dummy data for demonstration
-const data = ref(
-  JSON.parse(JSON.stringify(props.players)),
-  // [
-  //   {
-  //     id: 2,
-  //     name: 'Lonnie Jayden',
-  //     firstName: 'Lonnie',
-  //     lastName: 'Jayden',
-  //     partner: 'Tracey Keebler',
-  //     rating: 4900,
-  //     combinedRating: 6400,
-  //     rank: 9,
-  //     checkIn: 'Yes',
-  //   },
-  // // ...repeat or map your real data here
-  // ],
-);
-
 const search = ref('');
 const page = ref(1);
-
-const filteredData = computed(() =>
-  data.value.filter(
-    row =>
-      row.firstName.toLowerCase().includes(search.value.toLowerCase())
-      || row.lastName.toLowerCase().includes(search.value.toLowerCase())
-      || row.partner.toLowerCase().includes(search.value.toLowerCase()),
-  ),
-);
 
 const columns = [
   { accessorKey: 'player.name', header: 'Name' },

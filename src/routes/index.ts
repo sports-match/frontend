@@ -1,7 +1,8 @@
 import { useAuthentication } from '@/composables';
 import { get, set } from '@vueuse/core';
 import { useNProgress } from '@vueuse/integrations/useNProgress';
-import { createRouter, createWebHistory } from 'vue-router';
+import { defineAsyncComponent } from 'vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import { privateRoutes } from './private';
 import { publicRoutes } from './public';
 
@@ -10,7 +11,7 @@ const { isLoading } = useNProgress(null, {
 });
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_BASE),
+  history: createWebHashHistory(import.meta.env.VITE_BASE),
   routes: [
     {
       path: '/',
@@ -21,6 +22,11 @@ const router = createRouter({
         ...publicRoutes,
         ...privateRoutes,
       ],
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'NotFoundPage',
+      component: defineAsyncComponent(() => import('@/pages/notFound.vue')),
     },
   ],
 });

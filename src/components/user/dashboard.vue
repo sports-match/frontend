@@ -130,28 +130,29 @@
         <UpcomingCalendar :events="dashboard.upcomingEvents" />
       </div>
     </div>
+    <div class="mt-6">
+      <DashboardTabs :events="playerEvents" />
+    </div>
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
-import { playersDashboard } from '@/api/user';
+import type { Dashboard } from '@/schemas/dashboard';
+import { getPlayerEvents, playersDashboard } from '@/api/user';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
+import DashboardTabs from '@/components/user/dashboardTabs.vue';
+import GraphView from '@/components/user/graphView.vue';
 import UpcomingCalendar from '@/components/user/upcomingCalendar.vue';
 import { notify } from '@/composables/notify';
-import { events } from '@/routes/private/events';
 import { useUserStore } from '@/stores/user';
 import { Calendar1, User, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
-import GraphView from './graphView.vue';
 
 const userStore = useUserStore();
-const dashboard = ref<object>({});
+const dashboard = ref<Partial<Dashboard>>({});
 
-// const route = useRoute();
 const playerId = computed(() => userStore.playerId);
-
-// const events = ref<any[]>([]);
-// const totalEvents = ref(0);
+const playerEvents = ref<any[]>([]);
 
 onMounted(() => {
   fetchData();
@@ -160,6 +161,8 @@ onMounted(() => {
 async function fetchData() {
   try {
     const { data } = await playersDashboard(playerId.value);
+    const { data: eventSummary } = await getPlayerEvents(playerId.value);
+    playerEvents.value = eventSummary;
     dashboard.value = data;
   } catch (error) {
     notify.error(error as string);

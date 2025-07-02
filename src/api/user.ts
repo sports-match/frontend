@@ -20,3 +20,4 @@ export const selfAssessmentQuestions = () => http.get(`/questions/self-assessmen
 export const answerSelfAssessment = (data: any) => http.post(`/player-answers/submit-assessment`, data);
 
 export const playersDashboard = (playerId: string) => http.get(`/players/${playerId}/dashboard`);
+export const getPlayerEvents = (playerId: string) => http.get(`/players/${playerId}/events-summary`);

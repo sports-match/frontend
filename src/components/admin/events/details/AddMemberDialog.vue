@@ -30,7 +30,7 @@
               :class="selectedPlayer?.id === player.id ? 'bg-blue-100 text-primary font-semibold' : ''"
               @click="selectPlayer(player)"
             >
-              <span class="flex-1">{{ player?.player?.name }}</span>
+              <span class="flex-1">{{ player?.name }}</span>
               <span v-if="selectedPlayer?.id === player?.id" class="ml-2 text-primary"><CheckIcon class="w-4 h-4" /></span>
             </CommandItem>
           </CommandGroup>
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { Player } from '@/schemas/players';
-import { getEventPlayers, getPlayers, joinEvent } from '@/api/event';
+import { getPlayers, joinEvent } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
@@ -63,17 +63,14 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  getAll: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const open = ref(false);
 
-const players = ref<{ id: number; name: string; player: Player }[]>([]);
+// Example: Replace with your real player list (longer for demo)
+const players = ref<Player[]>([]);
 
-const selectedPlayer = ref<null | { id: number; name: string; player: Player }>(null);
+const selectedPlayer = ref<null | { id: number; name: string }>(null);
 
 // Pagination state
 const pageSize = 20;
@@ -88,13 +85,8 @@ const paginatedPlayers = computed(() =>
 
 async function fetchPlayers() {
   try {
-    if (props.getAll) {
-      const { data: { content } } = await getPlayers();
-      players.value = content;
-    } else {
-      const { data } = await getEventPlayers(props.event.id);
-      players.value = data;
-    }
+    const { data: { content } } = await getPlayers();
+    players.value = content;
   } catch (error) {
     notify.error(error as string);
   }
@@ -117,7 +109,7 @@ function onScroll(e: Event) {
   }
 }
 
-function selectPlayer(player: { id: number; name: string; player: Player }) {
+function selectPlayer(player: { id: number; name: string }) {
   selectedPlayer.value = player;
 }
 
@@ -127,7 +119,7 @@ async function submitPlayer() {
       const id = props.event.id;
       await joinEvent(id as string, {
         eventId: id,
-        playerId: selectedPlayer.value.player?.id,
+        playerId: selectedPlayer.value?.id,
         joinWaitList: true,
 
       });

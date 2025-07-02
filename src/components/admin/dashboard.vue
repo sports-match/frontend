@@ -21,7 +21,7 @@ import { getEvents } from '@/api/event';
 import CalendarSection from '@/components/events/CalendarSection.vue';
 import EventCard from '@/components/events/Card.vue';
 import CreateEvent from '@/components/events/CreateForm.vue';
-import EventList from '@/components/events/List.vue';
+import EventList from '@/components/admin/events/List.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import PendingOverlay from '@/components/shares/PendingOverlay.vue';
 import { notify } from '@/composables/notify';

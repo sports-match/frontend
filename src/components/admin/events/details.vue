@@ -48,10 +48,10 @@
 
 <script setup lang="ts">
 import { getEvent, getEventPlayers } from '@/api/event';
-import EventCard from '@/components/events/details/Card.vue';
-import GroupList from '@/components/events/details/GroupList.vue';
-import RegisterList from '@/components/events/details/RegisterList.vue';
-import ResultList from '@/components/events/details/ResultList.vue';
+import EventCard from '@/components/events/DetailsCard.vue';
+import GroupList from '@/components/admin/events/details/GroupList.vue';
+import RegisterList from '@/components/admin/events/details/RegisterList.vue';
+import ResultList from '@/components/admin/events/details/ResultList.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
