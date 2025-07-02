@@ -20,9 +20,9 @@
         <Profile />
       </div>
     </header>
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-y-auto">
       <SideMenu />
-      <SidebarInset class="text-foreground">
+      <SidebarInset class="text-foreground overflow-y-scroll">
         <div class="flex items-center gap-2 px-4 py-2">
           <!-- <Breadcrumb /> -->
         </div>
