@@ -178,7 +178,6 @@ const completedColumns = [
   },
 ];
 
-
 // Dummy match data structure
 type Player = { name: string; elo: number };
 type Match = {
