@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { Player } from '@/schemas/players';
-import { getEventPlayers, getPlayers, joinEvent } from '@/api/event';
+import { getEventPlayers, getPlayers, joinEvent, teamPlayerAssign } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
@@ -67,14 +67,19 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  playerId: {
+    type: Number,
+    required: false,
+  },
 });
+
+const emit = defineEmits(['onSubmit']);
 
 const open = ref(false);
 
 const players = ref<{ id: number; name: string; player: Player }[]>([]);
 
 const selectedPlayer = ref<null | { id: number; name: string; player: Player }>(null);
-
 // Pagination state
 const pageSize = 20;
 const page = ref(1);
@@ -93,7 +98,7 @@ async function fetchPlayers() {
       players.value = content;
     } else {
       const { data } = await getEventPlayers(props.event.id);
-      players.value = data;
+      players.value = data.filter((item: { player: Player }) => item.player?.id !== props.playerId);
     }
   } catch (error) {
     notify.error(error as string);
@@ -125,13 +130,22 @@ async function submitPlayer() {
   if (selectedPlayer.value) {
     try {
       const id = props.event.id;
-      await joinEvent(id as string, {
-        eventId: id,
-        playerId: selectedPlayer.value.player?.id,
-        joinWaitList: true,
+      if (props.getAll) {
+        await joinEvent(id as string, {
+          eventId: id,
+          playerId: selectedPlayer.value.player?.id,
+          joinWaitList: true,
 
-      });
-      notify.success('Player joined event successfully');
+        });
+        notify.success('Player joined event successfully');
+      } else {
+        await teamPlayerAssign({
+          targetTeamId: selectedPlayer.value.player?.id,
+          teamPlayerId: props.playerId,
+        });
+        notify.success('Player assign successfully');
+      }
+      emit('onSubmit');
       open.value = false;
     } catch (e) {
       notify.error(e as string);

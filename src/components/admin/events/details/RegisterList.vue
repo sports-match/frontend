@@ -6,13 +6,13 @@
         <Input v-model="search" placeholder="Search" class="w-full" />
       </form>
       <div class="flex items-center gap-2">
-        <Button v-if="isAbleStartCheckIn" class="bg-primary text-white" @click="startEventCheckIn">
+        <Button class="bg-primary text-white" @click="startEventCheckIn">
           <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
-        <template v-else>
-          <GenerateGroup />
-          <AddMemberDialog :event="event" />
-        </template>
+        <!-- <template> -->
+        <GenerateGroup />
+        <AddMemberDialog :event="event" />
+        <!-- </template> -->
       </div>
     </div>
 
@@ -49,7 +49,11 @@
         <span class="ml-1">
           {{ row.original.rating }}
         </span>
-        <PlayerSearchDialog :event="event">
+        <PlayerSearchDialog
+          :event="event"
+          :player-id="row.original?.player?.id"
+          @on-submit="getPlayers"
+        >
           <Button size="sm">
             <ArrowLeftRight class="size-4" />
           </Button>
@@ -90,7 +94,7 @@ const props = defineProps({
 
 const emit = defineEmits(['pullEvent', 'pullPlayers']);
 
-const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
+// const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
 
 const search = ref('');
 const page = ref(1);
@@ -103,6 +107,10 @@ const columns = [
   { accessorKey: 'status', header: 'Check In?' },
   { id: 'actions', header: 'Actions' },
 ];
+
+function getPlayers() {
+  emit('pullPlayers');
+}
 
 async function startEventCheckIn() {
   try {
