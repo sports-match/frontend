@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { CircleHelp } from 'lucide-vue-next';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/shares/ui/form';
 import { Input } from '@/components/shares/ui/input';
 

@@ -102,7 +102,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/shares/ui/collapsible';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import {
   Sidebar,
   SidebarContent,
@@ -116,11 +115,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-  SidebarTrigger,
 } from '@/components/shares/ui/sidebar';
 import { useSidebar } from '@/components/shares/ui/sidebar/utils';
 import router from '@/routes';
-import { BadgeCheck, Banknote, Bell, CalendarRange, ChartLine, Check, ChevronRight, ChevronsUpDown, CircleHelp, Command, CreditCard, FileText, Folder, Forward, GalleryVerticalEnd, House, Landmark, LogOut, Mailbox, Medal, MoreHorizontal, Plus, Settings, Sparkles, Trash2 } from 'lucide-vue-next';
+import { CalendarRange, ChevronRight, CircleHelp, House, Mailbox, Medal } from 'lucide-vue-next';
 
 const { open } = useSidebar();
 

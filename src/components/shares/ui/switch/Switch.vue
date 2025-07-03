@@ -1,24 +1,3 @@
-<script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import {
-  SwitchRoot,
-  type SwitchRootEmits,
-  type SwitchRootProps,
-  SwitchThumb,
-  useForwardPropsEmits,
-} from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-
-const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>()
-
-const emits = defineEmits<SwitchRootEmits>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
-</script>
-
 <template>
   <SwitchRoot
     v-bind="forwarded"
@@ -34,3 +13,24 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     </SwitchThumb>
   </SwitchRoot>
 </template>
+
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import {
+  SwitchRoot,
+  type SwitchRootEmits,
+  type SwitchRootProps,
+  SwitchThumb,
+  useForwardPropsEmits,
+} from 'reka-ui';
+
+const props = defineProps<SwitchRootProps & { class?: HTMLAttributes['class'] }>();
+
+const emits = defineEmits<SwitchRootEmits>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwarded = useForwardPropsEmits(delegatedProps, emits);
+</script>

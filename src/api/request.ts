@@ -40,7 +40,7 @@ instance.interceptors.response.use((response) => {
   // const originalRequest: AxiosRequestConfig = error.config;
 
   setLoading(false);
-  const { getToken, clearSession, isAuthenticated } = useAuthentication();
+  const { clearSession, isAuthenticated } = useAuthentication();
 
   // handle expired token in case the refresh token is invalid
   if (error.response?.status === 400 && error.response?.data?.error === 'invalid_grant' && isAuthenticated.value) {

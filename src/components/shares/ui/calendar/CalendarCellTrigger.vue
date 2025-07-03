@@ -1,17 +1,3 @@
-<script lang="ts" setup>
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { CalendarCellTrigger, type CalendarCellTriggerProps, useForwardProps } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-import { buttonVariants } from '@/components/shares/ui/button'
-
-const props = defineProps<CalendarCellTriggerProps & { class?: HTMLAttributes['class'] }>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwardedProps = useForwardProps(delegatedProps)
-</script>
-
 <template>
   <CalendarCellTrigger
     :class="cn(
@@ -33,3 +19,17 @@ const forwardedProps = useForwardProps(delegatedProps)
     <slot />
   </CalendarCellTrigger>
 </template>
+
+<script lang="ts" setup>
+import type { HTMLAttributes } from 'vue';
+import { buttonVariants } from '@/components/shares/ui/button';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import { CalendarCellTrigger, type CalendarCellTriggerProps, useForwardProps } from 'reka-ui';
+
+const props = defineProps<CalendarCellTriggerProps & { class?: HTMLAttributes['class'] }>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwardedProps = useForwardProps(delegatedProps);
+</script>

@@ -1,18 +1,3 @@
-<script lang="ts" setup>
-import type { StepperIndicatorProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-
-import { StepperIndicator, useForwardProps } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-
-const props = defineProps<StepperIndicatorProps & { class?: HTMLAttributes['class'] }>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwarded = useForwardProps(delegatedProps)
-</script>
-
 <template>
   <StepperIndicator
     v-bind="forwarded"
@@ -30,3 +15,18 @@ const forwarded = useForwardProps(delegatedProps)
     <slot />
   </StepperIndicator>
 </template>
+
+<script lang="ts" setup>
+import type { StepperIndicatorProps } from 'reka-ui';
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+
+import { reactiveOmit } from '@vueuse/core';
+import { StepperIndicator, useForwardProps } from 'reka-ui';
+
+const props = defineProps<StepperIndicatorProps & { class?: HTMLAttributes['class'] }>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwarded = useForwardProps(delegatedProps);
+</script>

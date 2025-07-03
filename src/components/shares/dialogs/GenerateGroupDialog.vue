@@ -70,7 +70,7 @@ import {
   DialogTrigger,
 } from '@/components/shares/ui/dialog';
 import { notify } from '@/composables/notify';
-import { Users2Icon, X } from 'lucide-vue-next';
+import { Users2Icon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -78,20 +78,20 @@ const route = useRoute();
 const { id } = route.params;
 
 // Example group data
-const groups = [
+const groups = ref([
   { name: 'Group A', courts: [1, 2, 3] },
   { name: 'Group B', courts: [4, 5, 6] },
   { name: 'Group C', courts: [7, 8, 9] },
   { name: 'Group D', courts: [7, 8, 9] },
   { name: 'Group E', courts: [7, 8, 9] },
-];
+]);
 
 const open = ref(false);
 
 async function generateGroup() {
   try {
     const { data } = await generateGroups(id as string);
-    console.log(data);
+    groups.value = data;
   } catch (error) {
     notify.error (error as string);
   }

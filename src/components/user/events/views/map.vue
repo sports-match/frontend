@@ -143,7 +143,7 @@ onMounted(() => {
   });
 
   initialMap.value.on('locationerror', () => {
-    alert('Unable to retrieve your location.');
+    console.error('Unable to retrieve your location.');
   });
 
   // Initialize suggestions for current view

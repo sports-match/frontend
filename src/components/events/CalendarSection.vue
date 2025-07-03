@@ -68,7 +68,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DateValue } from 'reka-ui';
 import { Calendar } from '@/components/shares/ui/calendar';
 import { Separator } from '@/components/shares/ui/separator';
 import { MapPinned } from 'lucide-vue-next';

@@ -4,7 +4,9 @@
       <!-- Table Header -->
       <TableHeader>
         <TableRow>
-          <TableHead class="w-[200px]">Group</TableHead>
+          <TableHead class="w-[200px]">
+            Group
+          </TableHead>
           <TableHead>Matches</TableHead>
           <TableHead>Court</TableHead>
           <TableHead>Time</TableHead>
@@ -108,7 +110,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
 import { Button } from '@/components/shares/ui/button';
 import {
   DropdownMenu,
@@ -136,20 +137,21 @@ import {
   Plus,
   Trash,
 } from 'lucide-vue-next';
+import { ref, watchEffect } from 'vue';
 
-interface Player {
+type Player = {
   name: string;
   rank: number;
-}
+};
 
-interface Group {
+type Group = {
   name: string;
   matches: number;
   court: number;
   time: string;
   players: number;
   playersList: Player[];
-}
+};
 
 const props = defineProps<{
   groups: Group[];

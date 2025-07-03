@@ -6,9 +6,9 @@
 
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
 import { useId } from 'reka-ui';
 import { provide } from 'vue';
-import { cn } from '@/utils/shadcn';
 import { FORM_ITEM_INJECTION_KEY } from './injectionKeys';
 
 const props = defineProps<{

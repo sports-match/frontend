@@ -1,34 +1,3 @@
-<script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import {
-  SelectContent,
-  type SelectContentEmits,
-  type SelectContentProps,
-  SelectPortal,
-  SelectViewport,
-  useForwardPropsEmits,
-} from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-import { SelectScrollDownButton, SelectScrollUpButton } from '.'
-
-defineOptions({
-  inheritAttrs: false,
-})
-
-const props = withDefaults(
-  defineProps<SelectContentProps & { class?: HTMLAttributes['class'] }>(),
-  {
-    position: 'popper',
-  },
-)
-const emits = defineEmits<SelectContentEmits>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
-</script>
-
 <template>
   <SelectPortal>
     <SelectContent
@@ -48,3 +17,34 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     </SelectContent>
   </SelectPortal>
 </template>
+
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import {
+  SelectContent,
+  type SelectContentEmits,
+  type SelectContentProps,
+  SelectPortal,
+  SelectViewport,
+  useForwardPropsEmits,
+} from 'reka-ui';
+import { SelectScrollDownButton, SelectScrollUpButton } from '.';
+
+defineOptions({
+  inheritAttrs: false,
+});
+
+const props = withDefaults(
+  defineProps<SelectContentProps & { class?: HTMLAttributes['class'] }>(),
+  {
+    position: 'popper',
+  },
+);
+const emits = defineEmits<SelectContentEmits>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwarded = useForwardPropsEmits(delegatedProps, emits);
+</script>

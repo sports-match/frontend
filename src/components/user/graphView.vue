@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import type { TooltipItem } from 'chart.js';
 import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip } from 'chart.js';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { Line as LineChart } from 'vue-chartjs';
 
 const props = defineProps({
@@ -46,7 +46,7 @@ ChartJS.register(
   TimeSeriesScale,
 );
 
-const activeTab = ref('Doubles');
+// const activeTab = ref('Doubles');
 
 // Sample data - replace with your actual data
 const allDates = [

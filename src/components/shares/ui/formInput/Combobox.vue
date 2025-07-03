@@ -92,7 +92,7 @@ import type { Ref } from 'vue';
 import Button from '@/components/shares/ui/button/Button.vue';
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from '@/components/shares/ui/combobox';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/shares/ui/form';
-import { Check, ChevronDown, CircleHelp, Search } from 'lucide-vue-next';
+import { Check, ChevronDown, Search } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = withDefaults(defineProps<{
@@ -116,7 +116,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits(['onSelect']);
-const { itemKey, itemTitle, placeholder, description, label, name, multiple } = props;
+const { itemKey, itemTitle, placeholder, label, name, multiple } = props;
 const selectedValue: Ref<Record<string, any> | Array<Record<string, any>>> = ref([]);
 
 function displayValue(value: Record<string, any> | Array<Record<string, any>>) {

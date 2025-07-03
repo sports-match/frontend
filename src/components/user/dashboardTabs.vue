@@ -143,7 +143,7 @@ import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
-import { Calendar, CircleAlert, ClipboardList, FileEditIcon, Minus, Plus, Trash } from 'lucide-vue-next';
+import { Calendar, CircleAlert, ClipboardList, FileEditIcon, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 defineProps({

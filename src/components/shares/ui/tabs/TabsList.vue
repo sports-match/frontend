@@ -1,14 +1,3 @@
-<script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { TabsList, type TabsListProps } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-
-const props = defineProps<TabsListProps & { class?: HTMLAttributes['class'] }>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-</script>
-
 <template>
   <TabsList
     v-bind="delegatedProps"
@@ -20,3 +9,14 @@ const delegatedProps = reactiveOmit(props, 'class')
     <slot />
   </TabsList>
 </template>
+
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import { TabsList, type TabsListProps } from 'reka-ui';
+
+const props = defineProps<TabsListProps & { class?: HTMLAttributes['class'] }>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+</script>

@@ -128,7 +128,7 @@ import GridView from '@/components/user/events/views/gridView.vue';
 import ListView from '@/components/user/events/views/listView.vue';
 import mapView from '@/components/user/events/views/mapView.vue';
 import { events, fetchEvents, totalEvents } from '@/composables/events';
-import { CalendarIcon, Grid3x3, LayoutGrid, Loader2, LocateFixed, MapPinned, Search } from 'lucide-vue-next';
+import { CalendarIcon, Loader2, LocateFixed, Search } from 'lucide-vue-next';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 

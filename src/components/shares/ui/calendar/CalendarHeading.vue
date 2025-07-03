@@ -1,20 +1,3 @@
-<script lang="ts" setup>
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { CalendarHeading, type CalendarHeadingProps, useForwardProps } from 'reka-ui'
-import { cn } from '@/utils/shadcn'
-
-const props = defineProps<CalendarHeadingProps & { class?: HTMLAttributes['class'] }>()
-
-defineSlots<{
-  default: (props: { headingValue: string }) => any
-}>()
-
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwardedProps = useForwardProps(delegatedProps)
-</script>
-
 <template>
   <CalendarHeading
     v-slot="{ headingValue }"
@@ -26,3 +9,20 @@ const forwardedProps = useForwardProps(delegatedProps)
     </slot>
   </CalendarHeading>
 </template>
+
+<script lang="ts" setup>
+import type { HTMLAttributes } from 'vue';
+import { cn } from '@/utils/shadcn';
+import { reactiveOmit } from '@vueuse/core';
+import { CalendarHeading, type CalendarHeadingProps, useForwardProps } from 'reka-ui';
+
+const props = defineProps<CalendarHeadingProps & { class?: HTMLAttributes['class'] }>();
+
+defineSlots<{
+  default: (props: { headingValue: string }) => any;
+}>();
+
+const delegatedProps = reactiveOmit(props, 'class');
+
+const forwardedProps = useForwardProps(delegatedProps);
+</script>

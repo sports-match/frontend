@@ -71,7 +71,6 @@
 
 <script setup lang="ts">
 import { sendEventReminder } from '@/api/event';
-import MultiSelect from '@/components/shares/MultiSelect.vue';
 import { Button } from '@/components/shares/ui/button';
 import {
   Dialog,
