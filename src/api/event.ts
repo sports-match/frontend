@@ -57,3 +57,5 @@ export function uploadImage(file: File) {
 export const getImage = (path: string) => http.get(`${path}`);
 
 export const generateGroups = (eventId: string) => http.post(`/events/${eventId}/generate-groups`);
+
+export const organizersClub = (params?: any) => http.get(`organizers/club`, { params });
