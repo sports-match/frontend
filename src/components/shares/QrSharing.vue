@@ -59,7 +59,6 @@ import { notify } from '@/composables/notify';
 import { useClipboard } from '@vueuse/core';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { Copy, Download, Mail, MessageCircleMore } from 'lucide-vue-next';
-
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -70,7 +69,7 @@ const props = defineProps({
 });
 
 const publicLink = computed(() => {
-  return `${window.location.origin}/event/${props.event.id}`;
+  return `${window.location.origin}/#/events/${props.event.id}`;
 });
 const qrcode = useQRCode(publicLink, {
   errorCorrectionLevel: 'H',

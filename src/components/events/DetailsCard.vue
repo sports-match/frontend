@@ -85,7 +85,7 @@ const props = defineProps({
 
 const { isPlayer } = useAuthentication();
 
-const link = computed(() => `${window.location.origin}/event/${props.event?.id}`);
+const link = computed(() => `${window.location.origin}/#/events/${props.event?.id}`);
 
 function copyLink() {
   const { copy, isSupported } = useClipboard();
