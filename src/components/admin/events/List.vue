@@ -56,7 +56,7 @@
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem @click.stop>
+            <DropdownMenuItem @click.stop="completeEvent(row.original.id)">
               <Check class="size-4 mr-2" />
               Complete
             </DropdownMenuItem>
@@ -73,6 +73,7 @@
 
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
+import { updateEventStatus } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
@@ -82,6 +83,7 @@ import StatusIndicator from '@/components/shares/StatusIndicator.vue';
 import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
+import { notify } from '@/composables/notify';
 import { Check, ClockAlert, Ellipsis, QrCode, Search, Trash } from 'lucide-vue-next';
 import { computed, h, ref } from 'vue';
 
@@ -138,5 +140,14 @@ function fetchData() {
   const { table } = eventTable.value;
   const { pagination: { pageIndex, pageSize } } = table?.getState();
   emit('onFetch', { name: searchKey.value, pageIndex, pageSize });
+}
+
+async function completeEvent(id: string) {
+  try {
+    await updateEventStatus(id, 'COMPLETED');
+    fetchData();
+  } catch (error) {
+    notify.error(error as string);
+  }
 }
 </script>

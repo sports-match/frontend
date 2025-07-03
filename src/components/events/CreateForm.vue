@@ -1,5 +1,5 @@
 <template>
-  <Dialog :focus-outside="false">
+  <Dialog v-model:open="open" :focus-outside="false">
     <DialogTrigger as-child>
       <Button @click="openDialog">
         Create Event
@@ -62,7 +62,13 @@
               </SelectItem>
             </SelectContent>
           </Select>
-          <Input v-model="form.eventTime" class="flex flex-col justify-between" placeholder="Date" type="datetime-local" />
+          <Input
+            v-model="form.eventTime"
+            class="flex flex-col justify-between"
+            placeholder="Date"
+            type="datetime-local"
+            :min="new Date().toISOString().split('T')[0]"
+          />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -125,7 +131,7 @@
             <LucideSpinner v-else class="ml-2 h-4 w-4 animate-spin" />
           </Button>
         </div>
-        <Button v-else @click="submitted = false">
+        <Button v-else @click="closeDialog">
           <Check class="mr-2 size-4" /> Done
         </Button>
       </DialogFooter>
@@ -168,10 +174,13 @@ type EventForm = {
   location: string;
 };
 
+const emit = defineEmits(['onSubmitted']);
 const images = import.meta.glob('@/assets/images/*.svg', { eager: true, as: 'url' });
 function getIconUrl(icon: string) {
   return images[`/src/assets/images/${icon}.svg`] || '';
 }
+
+const open = ref(false);
 
 const event = ref({});
 const submitted = ref(false);
@@ -209,7 +218,6 @@ const form = reactive<EventForm>({
   location: '',
 });
 const previewUrl = ref<string | null>(null);
-
 async function fetchTags() {
   try {
     const { data } = await getTags();
@@ -253,6 +261,7 @@ async function openDialog() {
 
 function closeDialog() {
   submitted.value = false;
+  open.value = false;
 }
 
 function onFileChange(event: Event) {
@@ -285,6 +294,7 @@ async function submit() {
 
     event.value = data;
     notify.success('Event created successfully');
+    emit('onSubmitted');
     submitted.value = true;
   } catch (error) {
     notify.error(error as string);

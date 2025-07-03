@@ -5,7 +5,7 @@
     </template>
 
     <template #action>
-      <CreateEvent />
+      <CreateEvent @on-submitted="fetchData" />
     </template>
 
     <div class="flex flex-col gap-4">
