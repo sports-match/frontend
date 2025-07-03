@@ -140,8 +140,8 @@ async function submitPlayer() {
         notify.success('Player joined event successfully');
       } else {
         await teamPlayerAssign({
-          targetTeamId: selectedPlayer.value.player?.id,
-          teamPlayerId: props.playerId,
+          targetTeamId: props.playerId,
+          teamPlayerId: selectedPlayer.value.player?.id,
         });
         notify.success('Player assign successfully');
       }

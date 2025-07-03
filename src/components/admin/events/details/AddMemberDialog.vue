@@ -65,6 +65,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['pullPlayers']);
+
 const open = ref(false);
 
 // Example: Replace with your real player list (longer for demo)
@@ -112,7 +114,6 @@ function onScroll(e: Event) {
 function selectPlayer(player: { id: number; name: string }) {
   selectedPlayer.value = player;
 }
-
 async function submitPlayer() {
   if (selectedPlayer.value) {
     try {
@@ -125,6 +126,7 @@ async function submitPlayer() {
       });
       notify.success('Player joined event successfully');
       open.value = false;
+      emit('pullPlayers');
     } catch (e) {
       notify.error(e as string);
     }

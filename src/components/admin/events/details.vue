@@ -52,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import type { EventParams } from '@/schemas/events';
 import { getEvent, getEventPlayers } from '@/api/event';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import RegisterList from '@/components/admin/events/details/RegisterList.vue';
@@ -85,9 +86,9 @@ async function fetchEvent() {
   }
 }
 
-async function fetchPlayers() {
+async function fetchPlayers(params?: EventParams) {
   try {
-    const { data } = await getEventPlayers(id as string);
+    const { data } = await getEventPlayers(id as string, params);
     playersInEvent.value = data;
   } catch (error) {
     notify.error(error as string);

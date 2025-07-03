@@ -2,7 +2,7 @@
   <div class="bg-white rounded-2xl p-4 shadow flex flex-col gap-4">
     <!-- Top bar -->
     <div class="flex items-center justify-between gap-4">
-      <form class="flex items-center w-full max-w-md" @submit.prevent>
+      <form class="flex items-center w-full max-w-md" @submit.prevent="getPlayers">
         <Input v-model="search" placeholder="Search" class="w-full" />
       </form>
       <div class="flex items-center gap-2">
@@ -11,18 +11,19 @@
         </Button>
         <!-- <template> -->
         <GenerateGroup />
-        <AddMemberDialog :event="event" />
+        <AddMemberDialog :event="event" @pull-players="getPlayers" />
         <!-- </template> -->
       </div>
     </div>
 
     <!-- Table -->
     <Datatable
+      ref="registerTable"
       v-model:page="page"
       :columns="columns"
       :data="players"
       :total-records="players.length"
-      :page-size="10"
+      @on-page-change="getPlayers"
     >
       <template #actions="{ row }">
         <div class="flex gap-2">
@@ -43,6 +44,9 @@
         <span :class="row.original.checkIn === 'Yes' ? 'text-green-500' : 'text-red-500'">
           {{ row.original.checkIn }}
         </span>
+      </template>
+      <template #playerName="{ row }">
+        {{ row.original?.player?.name }} ({{ row.original?.player?.playerSportRating[0]?.rateScore }})
       </template>
       <template #partner="{ row }">
         {{ row.original.partner }}
@@ -96,20 +100,33 @@ const emit = defineEmits(['pullEvent', 'pullPlayers']);
 
 // const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
 
+const registerTable = ref();
 const search = ref('');
 const page = ref(1);
 
-const columns = [
-  { accessorKey: 'player.name', header: 'Name' },
-  { accessorKey: 'partner', header: 'Partner' },
-  { accessorKey: 'rating', header: 'Combined Rating' },
+const columns = computed(() => [
+  { accessorKey: 'playerName', header: 'Player Name' },
+  ...props.event?.format === 'DOUBLE'
+    ? [
+        {
+          accessorKey: 'partner',
+          header: 'Partner',
+        },
+        {
+          accessorKey: 'rating',
+          header: 'Combined Rating',
+        },
+      ]
+    : [],
   { accessorKey: 'rank', header: 'Rank' },
   { accessorKey: 'status', header: 'Check In?' },
   { id: 'actions', header: 'Actions' },
-];
+]);
 
 function getPlayers() {
-  emit('pullPlayers');
+  const { table } = registerTable.value;
+  const { pagination: { pageIndex, pageSize } } = table?.getState();
+  emit('pullPlayers', { name: search.value, pageIndex, pageSize });
 }
 
 async function startEventCheckIn() {
@@ -129,7 +146,7 @@ async function checkIn(playerId: string | number) {
       playerId,
     });
     notify.success('Checked in successfully');
-    emit('pullPlayers');
+    getPlayers();
   } catch (e) {
     notify.error(e as string);
   }
@@ -142,7 +159,7 @@ async function widthdraw(playerId: string | number) {
       playerId,
     });
     notify.success('Widthdraw event successfully');
-    emit('pullPlayers');
+    getPlayers();
   } catch (e) {
     notify.error(e as string);
   }
