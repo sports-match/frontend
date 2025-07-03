@@ -67,7 +67,7 @@
             class="flex flex-col justify-between"
             placeholder="Date"
             type="datetime-local"
-            :min="new Date().toISOString().split('T')[0]"
+            :min="minDate"
           />
         </div>
 
@@ -173,8 +173,8 @@ type EventForm = {
   image: string;
   location: string;
 };
-
 const emit = defineEmits(['onSubmitted']);
+const minDate = new Date().toISOString().slice(0, new Date().toISOString().lastIndexOf(':'));
 const images = import.meta.glob('@/assets/images/*.svg', { eager: true, as: 'url' });
 function getIconUrl(icon: string) {
   return images[`/src/assets/images/${icon}.svg`] || '';
