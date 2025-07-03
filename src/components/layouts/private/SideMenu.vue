@@ -71,7 +71,7 @@
     </SidebarContent>
     <SidebarFooter
       v-if="open"
-      class="bg-background opacity-70"
+      class="bg-background"
     >
       <SidebarMenu>
         <SidebarMenuItem class="row items-end justify-end">
