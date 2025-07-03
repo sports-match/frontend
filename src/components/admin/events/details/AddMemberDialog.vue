@@ -12,6 +12,7 @@
     <DialogContent class="max-w-lg w-full p-0">
       <!-- Search -->
       <div class="flex items-center px-4 pt-4 pb-2 border-b">
+        <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <input
           type="text"
           placeholder="Search"
@@ -75,7 +76,7 @@ import { Button } from '@/components/shares/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
 import { notify } from '@/composables/notify';
 import { useInfiniteScroll } from '@vueuse/core';
-import { CheckIcon, Plus } from 'lucide-vue-next';
+import { CheckIcon, Plus, Search } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
