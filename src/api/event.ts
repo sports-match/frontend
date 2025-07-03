@@ -38,7 +38,7 @@ export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign
 
 export const getClubs = () => http.get('/clubs');
 export const getSports = () => http.get('/sports');
-export const getPlayers = () => http.get('/players');
+export const getPlayers = (params?: PaginationWithPlayerName) => http.get('/players', { params });
 
 export const getPlayersDoubleStats = (params?: PaginationWithPlayerName) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');

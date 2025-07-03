@@ -31,13 +31,13 @@
         </div>
 
         <!-- All Players Switch -->
-        <div class="flex items-center gap-2 mb-4">
+        <div v-if="allPlayers" class="flex items-center gap-2 mb-4">
           <Switch v-model:checked="formData.allPlayers" :model-value="formData.allPlayers" :disabled="allPlayers" />
           <span class="text-sm font-medium">All Players</span>
         </div>
 
         <!-- Select Players Input -->
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <MultiSelect
             v-if="!formData.allPlayers"
             v-model="formData.player"
@@ -47,7 +47,7 @@
             return-type="value"
             placeholder="Select Players"
           />
-        </div>
+        </div> -->
 
         <!-- Message Input -->
         <Textarea
@@ -109,7 +109,7 @@ const formData = ref({
   message: '',
 });
 
-const players = ref([]);
+// const players = ref([]);
 
 async function sendReminder() {
   try {
