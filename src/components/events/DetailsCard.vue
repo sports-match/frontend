@@ -33,8 +33,8 @@
           class="bg-black text-white border-white rounded-xl w-full sm:w-auto"
           @click="copyLink"
         >
-          <Copy class="mr-2 size-4" />
-          <span class="truncate">{{ link }}</span>
+          <Copy class="md:mr-2 size-4" />
+          <span class="truncate sm:block hidden xs:block">{{ link }}</span>
         </Button>
 
         <!-- Share Dialog -->

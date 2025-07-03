@@ -1,18 +1,20 @@
 <template>
   <div class="bg-white rounded-2xl p-4 shadow flex flex-col gap-4">
     <!-- Top bar -->
-    <div class="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
-      <form class="flex items-center  max-w-md sm:max-w-full" @submit.prevent="getPlayers">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+      <!-- Search Form -->
+      <form class="w-full sm:max-w-md" @submit.prevent="getPlayers">
         <Input v-model="search" placeholder="Search" class="w-full" />
       </form>
-      <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row items-end gap-2 sm:gap-4">
-        <Button class="bg-primary text-white sm:w-auto w-full" @click="startEventCheckIn">
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
+        <Button class="bg-primary text-white w-full sm:w-auto" @click="startEventCheckIn">
           <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
-        <!-- <template> -->
-        <GenerateGroup class="sm:mt-0 mt-4" />
-        <AddMemberDialog :event="event" class="sm:mt-0 mt-4" @pull-players="getPlayers" />
-        <!-- </template> -->
+
+        <GenerateGroup class="w-full sm:w-auto" />
+        <AddMemberDialog :event="event" class="w-full sm:w-auto" @pull-players="getPlayers" />
       </div>
     </div>
 
