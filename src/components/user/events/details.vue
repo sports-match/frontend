@@ -1,5 +1,6 @@
 <template>
-  <MainContentLayout>
+  <PreviewEvent v-if="isPreview" :event />
+  <MainContentLayout v-else>
     <EventCard v-if="event" :event="event" />
 
     <div class="flex justify-end">
@@ -68,6 +69,7 @@ import { Button } from '@/components/shares/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
 import EventParticipants from '@/components/user/events/eventParticipants.vue';
 import MatchList from '@/components/user/events/matchList.vue';
+import PreviewEvent from '@/components/user/events/preview.vue';
 import RegisterList from '@/components/user/events/registerList.vue';
 import ResultList from '@/components/user/events/resultList.vue';
 import { notify } from '@/composables/notify';
@@ -77,6 +79,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
+const isPreview = ref(false);
 const { id } = route.params;
 const event = ref<Event | null>(null);
 const players = ref<Player[]>([]);

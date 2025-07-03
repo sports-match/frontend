@@ -117,7 +117,7 @@ const router = useRouter();
 const user = computed(() => userStore.userDetails?.user);
 
 const getFistletter = (name: string) => name?.charAt(0).toUpperCase();
-const avatarPath = computed(() => import.meta.env.VITE_BASE_URL + userStore.userDetails?.user?.avatarName || '');
+const avatarPath = computed(() => import.meta.env.VITE_API_URL + userStore.userDetails?.user?.avatarName || '');
 function logout() {
   userStore.Logout();
   router.push({ name: 'AuthLoginPage' });

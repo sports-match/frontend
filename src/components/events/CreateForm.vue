@@ -82,7 +82,7 @@
           v-model="form.coHostOrganizers"
           :options="organizers"
           value-key="id"
-          label-key="name"
+          label-key="user.username"
           return-type="value"
           placeholder="Other Organizers"
         />

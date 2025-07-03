@@ -107,7 +107,16 @@ const searchPlaceholder = props.searchPlaceholder ?? 'Search...';
 const emptyText = props.emptyText ?? 'Not found';
 
 function getOptionLabel(item: any) {
-  return props.labelKey ? item[props.labelKey] : item.label ?? item.name ?? String(item);
+  console.log();
+
+  const keys = props.labelKey?.split('.');
+  if (keys?.length === 1) {
+    return item[keys[0]];
+  }
+  if (keys?.length === 2) {
+    return item[keys[0]]?.[keys[1]];
+  }
+  return item.label ?? item.name ?? String(item);
 }
 function getOptionValue(item: any) {
   return props.valueKey ? item[props.valueKey] : item.value ?? item.id ?? String(item);

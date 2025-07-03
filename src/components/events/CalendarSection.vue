@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white rounded-2xl border py-2 px-1 flex items-start max-w-full">
     <!-- Calendar Section -->
-    <div class="">
+    <div class="hidden sm:block">
       <Calendar
         v-model="date"
         initial-focus
@@ -10,7 +10,7 @@
     </div>
 
     <!-- Divider -->
-    <Separator orientation="vertical" class="mx-4 h-auto" />
+    <Separator orientation="vertical" class="mx-4 h-auto hidden sm:block" />
 
     <!-- Upcoming Events Section -->
     <div class="flex-1 pt-4">
@@ -43,26 +43,6 @@
           </div>
         </div>
       </div>
-      <!-- Event 2 -->
-      <!-- <div class="flex gap-4">
-        <div class="text-gray-400 text-sm flex-shrink-0">
-          <div>7:00 PM to</div>
-          <div>9:00 PM</div>
-        </div>
-        <div class="flex-1">
-          <h3 class="font-semibold text-lg">
-            Friday Courts 1, 9-11 Standard Doubles Mixer
-          </h3>
-          <div class="flex gap-2 mt-2">
-            <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">Alex Chu</span>
-          </div>
-          <div class="flex items-center gap-2 mt-2 text-gray-500 text-sm">
-            <MapPinned class="size-4" />
-            <span>BBC - Redmond</span>
-            <span>#Courts(4)</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -85,6 +65,6 @@ const date = ref();
 
 const onlyTwoEvents = computed(() => props.events?.slice(0, 2));
 function handleDateChange() {
-  emit('onDateChange', date.value);
+  // emit('onDateChange', date.value);
 }
 </script>

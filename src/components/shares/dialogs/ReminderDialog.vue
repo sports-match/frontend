@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { sendEventReminder } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import {
@@ -87,7 +88,7 @@ import { ref } from 'vue';
 
 const props = defineProps({
   event: {
-    type: Object,
+    type: Object as PropType<Event>,
     required: true,
   },
   playerId: {

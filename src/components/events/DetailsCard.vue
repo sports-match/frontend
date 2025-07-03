@@ -1,34 +1,53 @@
 <template>
-  <div class="bg-black text-white rounded-2xl flex items-center justify-between shadow-lg">
-    <div class="flex-1 p-6">
-      <h2 class="text-xl font-semibold mb-2">
+  <div class="bg-black text-white rounded-2xl flex items-center justify-between shadow-lg md:flex-row flex-col-reverse">
+    <div class="flex-1 p-4 md:p-6 md:order-1 order-2">
+      <!-- Event Title -->
+      <h2 class="text-lg md:text-xl font-semibold mb-2 leading-snug break-words">
         {{ event?.name }}
-        <!-- NWBA - Bel-Red - NWBA - Bel-Red Fixed Partner Rotary Doubles Mixer -->
       </h2>
-      <div class="flex items-center text-sm text-gray-300 mb-4">
+
+      <!-- Date Info -->
+      <div class="flex items-center text-sm text-gray-400 mb-4">
         <svg
-          class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" stroke-width="2"
+          class="w-4 h-4 mr-2 text-white shrink-0"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
           viewBox="0 0 24 24"
         >
           <path
-            stroke-linecap="round" stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-linejoin="round"
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>
-        <!-- Thu May 15, 2025, 8:00 PM -->
-        {{ event?.eventTime }}
+        <span class="truncate">{{ event?.eventTime }}</span>
       </div>
 
-      <div class="flex space-x-2">
-        <Button variant="outline" size="sm" class="bg-black text-white border-white rounded-xl" @click="copyLink">
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-2 sm:space-y-0">
+        <!-- Copy Link -->
+        <Button
+          variant="outline"
+          size="sm"
+          class="bg-black text-white border-white rounded-xl w-full sm:w-auto"
+          @click="copyLink"
+        >
           <Copy class="mr-2 size-4" />
-          <span>{{ link }}</span>
+          <span class="truncate">{{ link }}</span>
         </Button>
 
+        <!-- Share Dialog -->
         <SharesDialog :event="event" />
+
+        <!-- Reminder (if not player) -->
         <template v-if="!isPlayer">
           <ReminderDialog :event="event" all-players>
-            <Button variant="outline" size="sm" class="bg-black text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-white rounded-xl">
+            <Button
+              variant="outline"
+              size="sm"
+              class="bg-black text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-white rounded-xl w-full sm:w-auto"
+            >
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
@@ -36,7 +55,7 @@
       </div>
     </div>
 
-    <div class="flex items-center">
+    <div class="hidden md:flex md:items-center md:order-2 order-1">
       <img
         src="@/assets/images/racket.svg" alt="racket"
       >
