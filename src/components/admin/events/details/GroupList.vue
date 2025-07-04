@@ -14,7 +14,7 @@
         </Button>
 
         <Button class="bg-primary text-white w-full sm:w-auto" @click="finalizeGroup">
-          <Gamepad class="w-5 h-5 mr-2" />Finalize Group
+          <ListTree class="w-5 h-5 mr-2" />Finalize Group
         </Button>
       </div>
     </div>
@@ -150,7 +150,7 @@ import type { Group } from '@/schemas/events';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
-import { Clock, Edit, Gamepad, Minus, Plus } from 'lucide-vue-next';
+import { Clock, Edit, Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps<{
