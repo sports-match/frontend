@@ -113,6 +113,9 @@ const formData = ref({
 
 async function sendReminder() {
   try {
+    if (props.playerId) {
+      formData.value.player = [props.playerId];
+    }
     await sendEventReminder(props.event?.id, {
       playerId: props.playerId,
       ...formData.value,

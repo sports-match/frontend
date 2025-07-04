@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-white rounded-2xl border py-2 px-1 flex items-start max-w-full">
+  <div
+    v-if="onlyTwoEvents?.length"
+    class="bg-white rounded-2xl border py-2 px-1 flex items-start max-w-full"
+  >
     <!-- Calendar Section -->
     <div class="hidden sm:block">
       <Calendar
