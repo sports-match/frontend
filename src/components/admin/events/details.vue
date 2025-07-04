@@ -26,6 +26,13 @@
           Groups
         </TabsTrigger>
         <TabsTrigger
+          value="matches"
+          class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
+        >
+          <ChartSpline class="w-5 h-5" />
+          Generated Matches
+        </TabsTrigger>
+        <TabsTrigger
           value="results"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -44,11 +51,14 @@
           @pull-groups="fetchGroups"
         />
       </TabsContent>
-      <TabsContent value="groups">
-        <GroupList :groups="groups" />
+      <TabsContent v-if="groups?.length" value="groups">
+        <GroupList :groups="groups" @generate-matches="generatingMatches" />
+      </TabsContent>
+      <TabsContent value="matches">
+        <MatchesList :groups="groups" />
       </TabsContent>
       <TabsContent value="results">
-        <ResultList />
+        <ResultList :groups="groups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>
@@ -57,8 +67,9 @@
 <script setup lang="ts">
 import type { Event, EventParams } from '@/schemas/events';
 import type { Ref } from 'vue';
-import { getEvent, getEventGroups, getEventPlayers } from '@/api/event';
+import { generateMatches, getEvent, getEventGroups, getEventMatches, getEventPlayers } from '@/api/event';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
+import MatchesList from '@/components/admin/events/details/MatchesList.vue';
 import RegisterList from '@/components/admin/events/details/RegisterList.vue';
 import ResultList from '@/components/admin/events/details/ResultList.vue';
 import EventCard from '@/components/events/DetailsCard.vue';
@@ -76,11 +87,13 @@ const { id } = route.params;
 const event: Ref<Event> = ref({} as Event);
 const playersInEvent = ref([]);
 const groups = ref([]);
+const matches = ref([]);
 
 onMounted(() => {
   fetchEvent();
   fetchPlayers();
   fetchGroups();
+  getMatches();
 });
 
 async function fetchEvent() {
@@ -107,6 +120,25 @@ async function fetchGroups() {
     groups.value = data;
   } catch (error) {
     notify.error (error as string);
+  }
+}
+
+async function generatingMatches() {
+  try {
+    const { data } = await generateMatches(id as string);
+    notify.success(data.message);
+    getMatches();
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function getMatches() {
+  try {
+    const { data } = await getEventMatches(id as string);
+    matches.value = data;
+  } catch (error) {
+    notify.error(error as string);
   }
 }
 </script>

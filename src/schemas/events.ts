@@ -96,7 +96,18 @@ export type Group = {
   courtNumbers: string;
   groupTeamSize: number;
   id: number;
-  matches: any[]; // Replace with a proper match type if available
+  matches: Match[];
   name: string;
   teams: Team[];
+};
+
+export type Match = {
+  id: number;
+  scoreA: number;
+  scoreB: number;
+  scoreVerified: boolean;
+  teamA: Team;
+  teamAWin: boolean;
+  teamB: Team;
+  teamBWin: boolean;
 };
