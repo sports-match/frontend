@@ -43,7 +43,7 @@ export const getPlayers = (params?: PaginationWithPlayerName) => http.get('/play
 export const getPlayersDoubleStats = (params?: PaginationWithPlayerName) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');
 
-export const sendEventReminder = (eventId: string, data: any) => http.post(`/events/${eventId}/remind`, data);
+export const sendEventReminder = (eventId: number, data: any) => http.post(`/events/${eventId}/remind`, data);
 
 export function uploadImage(file: File) {
   const formData = new FormData();

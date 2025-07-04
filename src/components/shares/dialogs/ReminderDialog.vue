@@ -12,7 +12,7 @@
       </DialogHeader>
       <form @submit.prevent="sendReminder">
         <!-- Toggle Email / SMS -->
-        <div class="flex gap-3 mb-4">
+        <!-- <div class="flex gap-3 mb-4">
           <Button
             v-for="opt in [
               { key: 'email', icon: Mail, label: 'Email' },
@@ -28,7 +28,7 @@
           >
             <span>{{ opt.label }}</span>
           </Button>
-        </div>
+        </div> -->
 
         <!-- All Players Switch -->
         <div v-if="allPlayers" class="flex items-center gap-2 mb-4">
@@ -51,10 +51,9 @@
 
         <!-- Message Input -->
         <Textarea
-          v-model="formData.message"
+          v-model="formData.content"
           placeholder="Message"
           class="mb-6 h-40"
-          required
         />
 
         <!-- Footer Button -->
@@ -70,7 +69,8 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
+import type { Event } from '@/schemas/events';
+import type { PropType, Ref } from 'vue';
 import { sendEventReminder } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import {
@@ -83,7 +83,7 @@ import {
 import { Switch } from '@/components/shares/ui/switch';
 import { Textarea } from '@/components/shares/ui/textarea';
 import { notify } from '@/composables/notify';
-import { Mail, Send, Smartphone } from 'lucide-vue-next';
+import { Send } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -102,27 +102,21 @@ const props = defineProps({
 });
 
 const open = ref(false);
-const method = ref<string>('email');
-const formData = ref({
+// const method = ref<string>('email');
+const formData: Ref<{ allPlayers: boolean; players: number[]; content: string }> = ref({
   allPlayers: props.allPlayers,
-  player: [],
-  message: '',
+  players: [],
+  content: '',
 });
-
-// const players = ref([]);
 
 async function sendReminder() {
   try {
     if (props.playerId) {
-      formData.value.player = [props.playerId];
+      formData.value.players = [props.playerId];
     }
-    await sendEventReminder(props.event?.id, {
-      playerId: props.playerId,
-      ...formData.value,
-      method: method.value,
-    });
+    const { data: { data } } = await sendEventReminder(props.event?.id, formData.value);
     open.value = false;
-    notify.success('Reminder sent successfully');
+    notify.success(data.message);
   } catch (error) {
     notify.error(error as string);
   }
