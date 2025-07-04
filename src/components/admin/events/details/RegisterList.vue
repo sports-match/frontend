@@ -13,7 +13,11 @@
           <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
 
-        <GenerateGroup class="w-full sm:w-auto" />
+        <GenerateGroup
+          class="w-full sm:w-auto"
+          :groups="groups"
+          @pull-groups="fetchGroups"
+        />
         <AddMemberDialog :event="event" class="w-full sm:w-auto" @pull-players="getPlayers" />
       </div>
     </div>
@@ -75,6 +79,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
+import type { Player } from '@/schemas/players';
 import { checkinEvent, startCheckIn, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
 import GenerateGroup from '@/components/shares/dialogs/GenerateGroupDialog.vue';
@@ -87,18 +93,13 @@ import { ArrowLeftRight, CheckCheck, CircleCheck, ClockAlert, Dock } from 'lucid
 import { computed, ref } from 'vue';
 import AddMemberDialog from './AddMemberDialog.vue';
 
-const props = defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
-  players: {
-    type: Array,
-    default: () => [],
-  },
-});
+const props = defineProps<{
+  event: Event;
+  players: Player[];
+  groups: { name: string; courtNumbers: string }[];
+}>();
 
-const emit = defineEmits(['pullEvent', 'pullPlayers']);
+const emit = defineEmits(['pullEvent', 'pullPlayers', 'pullGroups']);
 
 // const isAbleStartCheckIn = computed(() => props.event.status === 'PUBLISHED');
 
@@ -125,6 +126,10 @@ const columns = computed(() => [
   { id: 'actions', header: 'Actions' },
 ]);
 
+function fetchGroups() {
+  emit('pullGroups');
+}
+
 function getPlayers() {
   const { table } = registerTable.value;
   const { pagination: { pageIndex, pageSize } } = table?.getState();
@@ -133,7 +138,7 @@ function getPlayers() {
 
 async function startEventCheckIn() {
   try {
-    await startCheckIn(props.event?.id as string);
+    await startCheckIn(props.event?.id);
     notify.success('Check in started successfully');
     emit('pullEvent');
   } catch (error) {
@@ -143,7 +148,7 @@ async function startEventCheckIn() {
 
 async function checkIn(playerId: string | number) {
   try {
-    await checkinEvent(props.event?.id as string, {
+    await checkinEvent(props.event?.id, {
       eventId: props.event?.id,
       playerId,
     });
@@ -156,7 +161,7 @@ async function checkIn(playerId: string | number) {
 
 async function widthdraw(playerId: string | number) {
   try {
-    await withdrawEvent(props.event?.id as string, {
+    await withdrawEvent(props.event?.id, {
       eventId: props.event?.id,
       playerId,
     });

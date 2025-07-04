@@ -28,12 +28,12 @@ export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, {
 export const createEvent = (data: any) => http.post('/events', data);
 export const getEventPlayers = (eventId: string, params?: PaginationWithPlayerName) => http.get(`/events/${eventId}/players`, { params });
 export const updateEventStatus = (eventId: string, status: string) => http.patch(`/events/${eventId}/status/${status}`);
-export const checkinEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/check-in`, data);
-export const withdrawEvent = (eventId: string, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
+export const checkinEvent = (eventId: number, data?: any) => http.post(`/events/${eventId}/check-in`, data);
+export const withdrawEvent = (eventId: number, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
 export const joinEvent = (eventId: string, data: any) => http.post(`/events/${eventId}/join`, data);
 export const getEventGroups = (eventId: string) => http.get(`/events/${eventId}/groups`);
 export const getEventMatches = (eventId: string) => http.get(`/events/${eventId}/matches`);
-export const startCheckIn = (eventId: string) => http.patch(`/events/${eventId}/status/CHECK_IN`);
+export const startCheckIn = (eventId: number) => http.patch(`/events/${eventId}/status/CHECK_IN`);
 export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign', data);
 
 export const getClubs = () => http.get('/clubs');

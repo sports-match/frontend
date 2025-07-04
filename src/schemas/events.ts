@@ -57,3 +57,46 @@ export const eventSchema = z.object({
 });
 
 export type EventForm = z.infer<typeof eventSchema>;
+
+export type PlayerSportRating = {
+  createTime: string;
+  format: string;
+  id: number;
+  provisional: boolean;
+  rateScore: number;
+  sportId: number;
+  updateTime: string;
+};
+
+export type Player = {
+  createTime: string;
+  description: string;
+  id: number;
+  name: string;
+  playerSportRating: PlayerSportRating[];
+  updateTime: string;
+  userId: number;
+};
+
+export type TeamPlayer = {
+  id: number;
+  player: Player;
+  status: string;
+};
+
+export type Team = {
+  averageScore: number;
+  id: number;
+  name: string;
+  teamPlayers: TeamPlayer[];
+  teamSize: number;
+};
+
+export type Group = {
+  courtNumbers: string;
+  groupTeamSize: number;
+  id: number;
+  matches: any[]; // Replace with a proper match type if available
+  name: string;
+  teams: Team[];
+};

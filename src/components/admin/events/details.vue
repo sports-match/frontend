@@ -18,6 +18,7 @@
         </TabsTrigger>
 
         <TabsTrigger
+          v-if="groups?.length"
           value="groups"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -37,12 +38,14 @@
         <RegisterList
           :event="event"
           :players="playersInEvent"
+          :groups="groups"
           @pull-event="fetchEvent"
           @pull-players="fetchPlayers"
+          @pull-groups="fetchGroups"
         />
       </TabsContent>
       <TabsContent value="groups">
-        <GroupList />
+        <GroupList :groups="groups" />
       </TabsContent>
       <TabsContent value="results">
         <ResultList />
@@ -52,8 +55,9 @@
 </template>
 
 <script setup lang="ts">
-import type { EventParams } from '@/schemas/events';
-import { getEvent, getEventPlayers } from '@/api/event';
+import type { Event, EventParams } from '@/schemas/events';
+import type { Ref } from 'vue';
+import { getEvent, getEventGroups, getEventPlayers } from '@/api/event';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import RegisterList from '@/components/admin/events/details/RegisterList.vue';
 import ResultList from '@/components/admin/events/details/ResultList.vue';
@@ -69,12 +73,14 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const { id } = route.params;
-const event = ref([]);
+const event: Ref<Event> = ref({} as Event);
 const playersInEvent = ref([]);
+const groups = ref([]);
 
 onMounted(() => {
   fetchEvent();
   fetchPlayers();
+  fetchGroups();
 });
 
 async function fetchEvent() {
@@ -92,6 +98,15 @@ async function fetchPlayers(params?: EventParams) {
     playersInEvent.value = data;
   } catch (error) {
     notify.error(error as string);
+  }
+}
+
+async function fetchGroups() {
+  try {
+    const { data } = await getEventGroups(id as string);
+    groups.value = data;
+  } catch (error) {
+    notify.error (error as string);
   }
 }
 </script>

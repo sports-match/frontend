@@ -34,7 +34,7 @@
             <TableCell class="items-center p-2">
               <div class="flex items-center justify-between">
                 <span>
-                  {{ group.matches }}
+                  {{ group.matches?.length }}
                 </span>
                 <Button variant="outline" size="sm">
                   <Edit class="size-3 text-primary" />
@@ -44,7 +44,7 @@
             <TableCell>
               <div class="flex items-center justify-between">
                 <span>
-                  {{ group.court }}
+                  {{ group.courtNumbers }}
                 </span>
                 <Button variant="outline" size="sm">
                   <Edit class="size-3 text-primary" />
@@ -73,17 +73,19 @@
                 <div class="grid grid-cols-6 font-semibold pb-2 border-b">
                   <span class="col-span-3">Players Name</span>
                   <span>Rank</span>
-                  <span class="col-span-2 text-right">Actions</span>
+                  <!-- <span class="col-span-2 text-right">Actions</span> -->
                 </div>
 
                 <div
-                  v-for="(player, pIndex) in group.playersList"
+                  v-for="(player, pIndex) in group.teams"
                   :key="pIndex"
                   class="grid grid-cols-6 py-2 border-b last:border-b-0 text-sm"
                 >
-                  <span class="col-span-3 p-2">{{ player.name }}</span>
+                  <span v-for="(team, tIndex) in player.teamPlayers" :key="tIndex" class="col-span-3 p-2">
+                    {{ team.player?.name }} ({{ team.player?.playerSportRating[0]?.rateScore }})
+                  </span>
                   <span class="p-2">{{ player.rank }}</span>
-                  <div class="col-span-2 flex justify-end gap-2">
+                  <!-- <div class="col-span-2 flex justify-end gap-2">
                     <Button variant="ghost" size="sm">
                       <ArrowLeftRight class="text-blue-500 size-4" />
                     </Button>
@@ -112,7 +114,7 @@
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </div>
+                  </div> -->
                 </div>
               </TableCell>
             </TableRow>
@@ -124,55 +126,52 @@
 </template>
 
 <script setup lang="ts">
+import type { Group } from '@/schemas/events';
 import { Button } from '@/components/shares/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/shares/ui/table';
-import { ArrowLeftRight, Clock, ClockAlert, Dock, Edit, Ellipsis, Eye, Minus, Plus, Trash } from 'lucide-vue-next';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
+import { Clock, Edit, Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-const groups = [
-  {
-    name: 'Group A',
-    matches: 25,
-    court: 3,
-    time: '7:00 PM',
-    players: 10,
-    playersList: [
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 1 },
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 2 },
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 3 },
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 4 },
-      { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 5 },
-    ],
-  },
-  {
-    name: 'Group B',
-    matches: 25,
-    court: 3,
-    time: '7:00 PM',
-    players: 10,
-    playersList: [],
-  },
-  {
-    name: 'Group C',
-    matches: 25,
-    court: 3,
-    time: '7:00 PM',
-    players: 10,
-    playersList: [],
-  },
-];
+const props = defineProps<{
+  groups: Group[];
+}>();
 
-const expanded = ref(groups.map(() => false));
+// const groups = [
+//   {
+//     name: 'Group A',
+//     matches: 25,
+//     court: 3,
+//     time: '7:00 PM',
+//     players: 10,
+//     playersList: [
+//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 1 },
+//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 2 },
+//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 3 },
+//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 4 },
+//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 5 },
+//     ],
+//   },
+//   {
+//     name: 'Group B',
+//     matches: 25,
+//     court: 3,
+//     time: '7:00 PM',
+//     players: 10,
+//     playersList: [],
+//   },
+//   {
+//     name: 'Group C',
+//     matches: 25,
+//     court: 3,
+//     time: '7:00 PM',
+//     players: 10,
+//     playersList: [],
+//   },
+// ];
 
-function toggleExpand(index) {
+const expanded = ref(props.groups.map(() => false));
+
+function toggleExpand(index: number) {
   expanded.value[index] = !expanded.value[index];
 }
 </script>

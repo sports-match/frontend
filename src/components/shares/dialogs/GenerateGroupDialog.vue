@@ -16,7 +16,6 @@
           Generate Groups
         </DialogTitle>
       </DialogHeader>
-
       <!-- Table -->
       <div class="overflow-auto">
         <table class="w-full text-left border rounded-md">
@@ -32,7 +31,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="(group, idx) in groups"
+              v-for="(group, idx) in currentGroups"
               :key="idx"
               class="border-b text-sm"
             >
@@ -40,7 +39,7 @@
                 {{ group.name }}
               </td>
               <td class="py-2 px-4">
-                {{ group.courts.join(' ') }}
+                {{ group.courtNumbers }}
               </td>
             </tr>
           </tbody>
@@ -60,38 +59,37 @@
 </template>
 
 <script setup lang="ts">
-import { generateGroups } from '@/api/event';
+import type { Ref } from 'vue';
+import { generateGroups, getEventGroups } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/shares/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shares/ui/dialog';
 import { notify } from '@/composables/notify';
 import { Users2Icon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+const props = defineProps<{
+  groups: { name: string; courtNumbers: string }[];
+}>();
+
+const emit = defineEmits(['pullGroups']);
 const route = useRoute();
 const { id } = route.params;
 
 // Example group data
-const groups = ref([
-  { name: 'Group A', courts: [1, 2, 3] },
-  { name: 'Group B', courts: [4, 5, 6] },
-  { name: 'Group C', courts: [7, 8, 9] },
-  { name: 'Group D', courts: [7, 8, 9] },
-  { name: 'Group E', courts: [7, 8, 9] },
-]);
+const currentGroups: Ref<{ name: string; courtNumbers: string }[]> = ref(
+  JSON.parse(JSON.stringify(props.groups)),
+);
 
 const open = ref(false);
-
 async function generateGroup() {
   try {
-    const { data } = await generateGroups(id as string);
-    groups.value = data;
+    if (props.groups.length) {
+      return;
+    }
+    const { data: { message } } = await generateGroups(id as string);
+    notify.success(message);
+    emit('pullGroups');
   } catch (error) {
     notify.error (error as string);
   }
