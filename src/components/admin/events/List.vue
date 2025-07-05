@@ -27,10 +27,13 @@
       @on-page-change="fetchData"
       @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
     >
-      <template #signedUp="{ row }">
+      <template #eventTime="{ row }">
+        {{ formatDate(row.original?.eventTime) }}
+      </template>
+      <template #currentParticipants="{ row }">
         <div class="flex items-center gap-2">
           <Percentage :percentage="(row.original?.currentParticipants * 100 / row.original.maxParticipants) || 0" />
-          {{ row.original.currentParticipants }}
+          {{ row.original.currentParticipants || 0 }}
         </div>
       </template>
       <template #status="{ row }">
@@ -85,8 +88,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
 import { useAlertDialog } from '@/composables/useAlertDialog';
+import { formatDate } from '@/utils/common';
 import { Check, ClockAlert, Ellipsis, QrCode, Search, Trash } from 'lucide-vue-next';
-
 import { computed, h, ref } from 'vue';
 
 const props = defineProps({
@@ -111,12 +114,12 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
   },
   {
-    accessorKey: 'location',
+    accessorKey: 'club.location',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Location' }),
 
   },
   {
-    accessorKey: 'signedUp',
+    accessorKey: 'currentParticipants',
     header: ({ column }) => h(ColumnHeader, { column, title: 'Signed up' }),
   },
   {
@@ -140,8 +143,9 @@ const eventTable = ref();
 const searchKey = ref('');
 function fetchData() {
   const { table } = eventTable.value;
-  const { pagination: { pageIndex, pageSize } } = table?.getState();
-  emit('onFetch', { name: searchKey.value, pageIndex, pageSize });
+  const { pagination: { pageIndex, pageSize }, sorting } = table?.getState();
+  const sort = sorting.length === 0 ? '' : `${sorting[0]?.id},${sorting[0]?.desc ? 'desc' : 'asc'}`;
+  emit('onFetch', { name: searchKey.value, pageIndex, pageSize, sort });
 }
 
 const alertDialog = useAlertDialog();

@@ -36,6 +36,7 @@ export type EventParams = {
   pageIndex?: number;
   pageSize?: number;
   status?: string;
+  sort?: string;
 };
 
 export const eventSchema = z.object({

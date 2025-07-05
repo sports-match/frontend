@@ -142,6 +142,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { createEvent, getClubs, getSports, getTags, organizersClub, uploadImage } from '@/api/event';
+import SingleSelect from '@/components/events/SingleSelect.vue';
 import MultiSelect from '@/components/shares/MultiSelect.vue';
 import QrSharing from '@/components/shares/QrSharing.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -154,7 +155,6 @@ import { Textarea } from '@/components/shares/ui/textarea';
 import { notify } from '@/composables/notify';
 import { ArrowRight, Check, Loader2 as LucideSpinner, Upload, X } from 'lucide-vue-next';
 import { reactive, ref } from 'vue';
-import SingleSelect from './SingleSelect.vue';
 
 type EventForm = {
   sportId: Ref<string | null>;
