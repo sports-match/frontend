@@ -60,7 +60,7 @@
               <Check class="size-4 mr-2" />
               Complete
             </DropdownMenuItem>
-            <DropdownMenuItem class="text-destructive" @click.stop>
+            <DropdownMenuItem class="text-destructive" @click.stop="deletingEvent(row.original.id)">
               <Trash class="size-4 mr-2" />
               Delete
             </DropdownMenuItem>
@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
-import { updateEventStatus } from '@/api/event';
+import { deleteEvent, updateEventStatus } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
@@ -84,7 +84,9 @@ import { Button } from '@/components/shares/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/shares/ui/dropdown-menu';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
+import { useAlertDialog } from '@/composables/useAlertDialog';
 import { Check, ClockAlert, Ellipsis, QrCode, Search, Trash } from 'lucide-vue-next';
+
 import { computed, h, ref } from 'vue';
 
 const props = defineProps({
@@ -142,12 +144,41 @@ function fetchData() {
   emit('onFetch', { name: searchKey.value, pageIndex, pageSize });
 }
 
+const alertDialog = useAlertDialog();
+
 async function completeEvent(id: string) {
-  try {
-    await updateEventStatus(id, 'COMPLETED');
-    fetchData();
-  } catch (error) {
-    notify.error(error as string);
+  const confirmed = await alertDialog({
+    title: 'Complete Event?',
+    description: 'Are you sure you want to complete this event?',
+    confirmText: 'Confirm',
+  });
+
+  if (confirmed) {
+    try {
+      await updateEventStatus(id, 'COMPLETED');
+      fetchData();
+    } catch (error) {
+      notify.error(error as string);
+    }
+  }
+}
+
+async function deletingEvent(id: string) {
+  const confirmed = await alertDialog({
+    title: 'Delete Event?',
+    description: 'Are you sure you want to delete this event? This cannot be undone.',
+    confirmText: 'Delete',
+    confirmVariant: 'destructive',
+  });
+
+  if (confirmed) {
+    try {
+      const { data: { data } } = await deleteEvent(id);
+      fetchData();
+      notify.success(data.success || 'Event deleted successfully');
+    } catch (error) {
+      notify.error(error as string);
+    }
   }
 }
 </script>

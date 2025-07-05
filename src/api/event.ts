@@ -26,6 +26,7 @@ export type PaginationWithName = Pagination & {
 export const getEvents = (query?: any) => http.get('/events', { params: query });
 export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
+export const deleteEvent = (id: string) => http.delete(`/events/${id}`);
 export const getEventPlayers = (eventId: string, params?: PaginationWithName) => http.get(`/events/${eventId}/players`, { params });
 export const updateEventStatus = (eventId: string, status: string) => http.patch(`/events/${eventId}/status/${status}`);
 export const checkinEvent = (eventId: number, data?: any) => http.post(`/events/${eventId}/check-in`, data);
