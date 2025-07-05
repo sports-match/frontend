@@ -133,7 +133,7 @@ function fetchGroups() {
 function getPlayers() {
   const { table } = registerTable.value;
   const { pagination: { pageIndex, pageSize } } = table?.getState();
-  emit('pullPlayers', { name: search.value, pageIndex, pageSize });
+  emit('pullPlayers', { name: search.value, page: pageIndex, size: pageSize });
 }
 
 async function startEventCheckIn() {

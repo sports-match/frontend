@@ -20,7 +20,7 @@
 
     <Datatable
       ref="eventTable"
-      :total-records="totalRecords"
+      :total-records="totalEvents"
       :columns="columns"
       :data="eventList"
       @on-sort-change="fetchData"
@@ -137,15 +137,14 @@ const columns: ColumnDef<any>[] = [
 ];
 
 const eventList = computed(() => props.events);
-const totalRecords = ref(props.totalEvents);
 const eventTable = ref();
 
 const searchKey = ref('');
 function fetchData() {
   const { table } = eventTable.value;
-  const { pagination: { pageIndex, pageSize }, sorting } = table?.getState();
+  const { pagination: { pageIndex: page, pageSize: size }, sorting } = table?.getState();
   const sort = sorting.length === 0 ? '' : `${sorting[0]?.id},${sorting[0]?.desc ? 'desc' : 'asc'}`;
-  emit('onFetch', { name: searchKey.value, pageIndex, pageSize, sort });
+  emit('onFetch', { name: searchKey.value, page, size, sort });
 }
 
 const alertDialog = useAlertDialog();

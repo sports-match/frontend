@@ -33,8 +33,8 @@ export type EventParams = {
   eventTimeFilter?: string;
   location?: string;
   name?: string;
-  pageIndex?: number;
-  pageSize?: number;
+  page?: number;
+  size?: number;
   status?: string;
   sort?: string;
 };

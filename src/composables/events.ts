@@ -12,8 +12,8 @@ async function fetchEvents(params: EventParams) {
       Object.entries(params).filter(([_, value]) => value !== null && value !== ''),
     );
 
-    const { pageIndex = 0, pageSize = 15 } = filteredParams;
-    const { data } = await getEvents({ ...filteredParams, pageIndex, pageSize });
+    const { page = 0, size = 15 } = filteredParams;
+    const { data } = await getEvents({ ...filteredParams, page, size });
     events.value = data.content;
     totalEvents.value = data.totalElements;
   } catch (error) {

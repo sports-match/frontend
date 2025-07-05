@@ -56,12 +56,12 @@ async function dateChange(date: string) {
 }
 
 async function fetchData(params: EventParams = {}) {
-  const { name, pageIndex, pageSize, sort } = params;
+  const { name, page, size, sort } = params;
   fetchEvents({
     // eventTimeFilter: eventTimeFilter.value,
     name,
-    pageIndex,
-    pageSize,
+    page,
+    size,
     sort,
   });
 }

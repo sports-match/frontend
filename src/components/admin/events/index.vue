@@ -51,7 +51,7 @@ watch(
 );
 
 async function fetchData(params: EventParams = {}) {
-  const { name, pageIndex, pageSize, sort } = params;
+  const { name, page, size, sort } = params;
   switch (route.name) {
     case 'UpcomingEvents':
       eventTimeFilter.value = 'UPCOMING';
@@ -63,8 +63,8 @@ async function fetchData(params: EventParams = {}) {
   fetchEvents({
     eventTimeFilter: eventTimeFilter.value,
     name,
-    pageIndex,
-    pageSize,
+    page,
+    size,
     sort,
   });
 }

@@ -205,8 +205,8 @@ async function fetchData(params: EventParams = {}) {
     location: selectedPlace.value?.display_name,
     eventTime: date.value ? new Date(date.value).toISOString().split('T')[0] : undefined,
     status: status.value,
-    pageIndex,
-    pageSize,
+    page: pageIndex,
+    size: pageSize,
   });
 }
 
