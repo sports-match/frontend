@@ -38,7 +38,6 @@ const showPendingForOrganizer = computed(() => {
   return isOrganizer.value && !userStore.isOrganizerVerify();
 });
 
-// const events = ref<{ content: []; totalElements: number }>();
 const upcomingEvents = ref<{ content: []; totalElements: number }>();
 
 onMounted(() => {
@@ -58,7 +57,6 @@ async function dateChange(date: string) {
 async function fetchData(params: EventParams = {}) {
   const { name, page, size, sort } = params;
   fetchEvents({
-    // eventTimeFilter: eventTimeFilter.value,
     name,
     page,
     size,
