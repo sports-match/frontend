@@ -114,7 +114,7 @@ import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 const router = useRouter();
-const user = computed(() => userStore.userDetails?.user);
+const user = computed(() => userStore.userDetails?.user?.user);
 
 const getFistletter = (name: string) => name?.charAt(0).toUpperCase();
 const avatarPath = computed(() => import.meta.env.VITE_API_URL + userStore.userDetails?.user?.avatarName || '');

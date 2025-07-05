@@ -19,14 +19,14 @@ export type Pagination = {
   size?: number;
 };
 
-export type PaginationWithPlayerName = Pagination & {
+export type PaginationWithName = Pagination & {
   name?: string;
 };
 
 export const getEvents = (query?: any) => http.get('/events', { params: query });
 export const getEvent = (id: string, query?: any) => http.get(`/events/${id}`, { params: query });
 export const createEvent = (data: any) => http.post('/events', data);
-export const getEventPlayers = (eventId: string, params?: PaginationWithPlayerName) => http.get(`/events/${eventId}/players`, { params });
+export const getEventPlayers = (eventId: string, params?: PaginationWithName) => http.get(`/events/${eventId}/players`, { params });
 export const updateEventStatus = (eventId: string, status: string) => http.patch(`/events/${eventId}/status/${status}`);
 export const checkinEvent = (eventId: number, data?: any) => http.post(`/events/${eventId}/check-in`, data);
 export const withdrawEvent = (eventId: number, data?: any) => http.post(`/events/${eventId}/withdraw`, data);
@@ -36,11 +36,11 @@ export const getEventMatches = (eventId: string) => http.get(`/events/${eventId}
 export const startCheckIn = (eventId: number) => http.patch(`/events/${eventId}/status/CHECK_IN`);
 export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign', data);
 
-export const getClubs = () => http.get('/clubs');
+export const getClubs = (params?: PaginationWithName) => http.get('/clubs', { params });
 export const getSports = () => http.get('/sports');
-export const getPlayers = (params?: PaginationWithPlayerName) => http.get('/players', { params });
+export const getPlayers = (params?: PaginationWithName) => http.get('/players', { params });
 
-export const getPlayersDoubleStats = (params?: PaginationWithPlayerName) => http.get('/players/doubles-stats', { params });
+export const getPlayersDoubleStats = (params?: PaginationWithName) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');
 
 export const sendEventReminder = (eventId: number, data: any) => http.post(`/events/${eventId}/remind`, data);
@@ -59,4 +59,5 @@ export const getImage = (path: string) => http.get(`${path}`);
 export const generateGroups = (eventId: string) => http.post(`/events/${eventId}/generate-groups`);
 export const generateMatches = (eventId: string) => http.post(`/events/${eventId}/generate-matches`);
 
-export const organizersClub = (params?: any) => http.get(`organizers/club`, { params });
+export const organizersClub = (params?: any) => http.get(`/organizers/club`, { params });
+export const addClubToOrganizer = (organizerId: number, data: { clubs: number[] }) => http.post(`organizers/${organizerId}/clubs`, data);

@@ -73,7 +73,7 @@ const emit = defineEmits(['onFetch']);
 const userStore = useUserStore();
 
 const eventTable = ref();
-const playerId = computed(() => userStore.playerId || null);
+const playerId = computed(() => userStore?.userDetails.playerId || null);
 
 const columns: ColumnDef<any>[] = [
   {
@@ -115,9 +115,9 @@ function fetchData(pageInfo?: EventParams) {
   emit('onFetch', pageInfo);
 }
 
-async function checkIn(id: string | number) {
+async function checkIn(id: number | number) {
   try {
-    await checkinEvent(id as string, {
+    await checkinEvent(id, {
       eventId: id,
       playerId: playerId.value,
     });
@@ -128,9 +128,9 @@ async function checkIn(id: string | number) {
   }
 }
 
-async function widthdraw(id: string | number) {
+async function widthdraw(id: number | number) {
   try {
-    await withdrawEvent(id as string, {
+    await withdrawEvent(id, {
       eventId: id,
       playerId: playerId.value,
     });

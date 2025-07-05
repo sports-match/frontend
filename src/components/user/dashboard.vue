@@ -151,7 +151,7 @@ import { computed, onMounted, ref } from 'vue';
 const userStore = useUserStore();
 const dashboard = ref<Partial<Dashboard>>({});
 
-const playerId = computed(() => userStore.playerId);
+const playerId = computed(() => userStore?.userDetails.playerId);
 const playerEvents = ref<any[]>([]);
 
 onMounted(() => {

@@ -1,18 +1,17 @@
 <template>
   <MainContentLayout>
     <template #title>
-      Welcome Back, {{ userStore.userDetails?.user?.username }}
+      Welcome Back, {{ userStore.userDetails?.user?.user?.username }}
     </template>
     <template #action>
       <CreateEvent />
     </template>
-
-    <div v-if="!pending" class="flex flex-col gap-4">
+    <div v-if="!showPendingForOrganizer" class="flex flex-col gap-4">
       <EventCard :events="upcomingEvents?.content" />
       <CalendarSection :events="upcomingEvents?.content" @on-date-change="dateChange" />
       <EventList :events="events?.content" :total-events="events?.totalElements" @on-fetch="searchEvents" />
     </div>
-    <PendingOverlay v-if="pending" />
+    <PendingOverlay v-if="showPendingForOrganizer" />
   </MainContentLayout>
 </template>
 
@@ -24,15 +23,18 @@ import EventCard from '@/components/events/Card.vue';
 import CreateEvent from '@/components/events/CreateForm.vue';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import PendingOverlay from '@/components/shares/PendingOverlay.vue';
+import { useAuthentication } from '@/composables';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores/user';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore();
-const route = useRoute();
 
-const { pending } = route.query;
+const { isOrganizer } = useAuthentication();
+
+const showPendingForOrganizer = computed(() => {
+  return isOrganizer.value && !userStore.isOrganizerVerify();
+});
 
 const events = ref<{ content: []; totalElements: number }>();
 const upcomingEvents = ref<{ content: []; totalElements: number }>();

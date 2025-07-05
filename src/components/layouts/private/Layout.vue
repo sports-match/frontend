@@ -21,7 +21,7 @@
       </div>
     </header>
     <div class="flex flex-1 overflow-y-auto">
-      <SideMenu />
+      <SideMenu v-if="isSidebarHidden" />
       <SidebarInset class="text-foreground overflow-y-scroll">
         <div class="flex items-center gap-2 px-4 py-2">
           <!-- <Breadcrumb /> -->
@@ -39,4 +39,10 @@ import Profile from '@/components/layouts/private/Profile.vue';
 import SideMenu from '@/components/layouts/private/SideMenu.vue';
 import { Separator } from '@/components/shares/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/shares/ui/sidebar';
+import router from '@/routes';
+import { computed } from 'vue';
+
+const isSidebarHidden = computed(() => {
+  return router.currentRoute.value.name !== 'SkillAssessmentPage' && router.currentRoute.value.name !== 'ClubSelectPage';
+});
 </script>

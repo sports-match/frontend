@@ -15,7 +15,7 @@
       <Button
         variant="link"
         class="text-white text-opacity-50"
-        @click="$router.push('/auth/login')"
+        @click="logout"
       >
         <ChevronLeft class="inline size-4 mr-1" />
         Back to Login
@@ -26,5 +26,14 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/shares/ui/button';
+import { useUserStore } from '@/stores';
 import { ChevronLeft, UserIcon } from 'lucide-vue-next';
+import { useRouter } from 'vue-router';
+
+const userStore = useUserStore();
+const router = useRouter();
+function logout() {
+  userStore.Logout();
+  router.push({ name: 'AuthLoginPage' });
+}
 </script>

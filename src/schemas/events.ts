@@ -111,3 +111,17 @@ export type Match = {
   teamB: Team;
   teamBWin: boolean;
 };
+
+export type Club = {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  enabled: boolean;
+  sort: number;
+  createTime: string;
+  updateTime: string;
+};

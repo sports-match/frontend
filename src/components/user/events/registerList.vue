@@ -70,7 +70,7 @@ defineProps({
 
 const userStore = useUserStore();
 
-const currentUserPlayerId = computed(() => userStore.playerId);
+const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
 
 const route = useRoute();
 

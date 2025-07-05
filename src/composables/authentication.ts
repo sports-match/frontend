@@ -13,17 +13,27 @@ export function useAuthentication() {
   });
 
   const isPlayer = computed(() => {
-    return userStore.$state.userDetails.user.userType === 'PLAYER';
+    return userStore.$state.userDetails.user?.user?.userType === 'PLAYER';
   });
 
   const isOrganizer = computed(() => {
-    return userStore.$state.userDetails.user.userType === 'ORGANIZER';
+    return userStore.$state.userDetails?.user?.user?.userType === 'ORGANIZER';
+  });
+
+  const isAdmin = computed(() => {
+    return userStore.isAdmin();
   });
 
   const assessmentStatus = computed(() => {
     if (!isPlayer.value)
       return true;
-    return userStore.$state.assessmentStatus?.assessmentCompleted;
+    return userStore.$state?.userDetails?.assessmentStatus?.assessmentCompleted;
+  });
+
+  const completedClubSelectionStatus = computed(() => {
+    if (isOrganizer.value) {
+      return userStore.$state?.userDetails?.completedClubSelection;
+    }
   });
 
   function clearSession() {
@@ -34,5 +44,5 @@ export function useAuthentication() {
     set(token, null);
   }
 
-  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer, assessmentStatus, isOrganizer };
+  return { logout, token, isAuthenticated, clearSession, getToken, isPlayer, assessmentStatus, isOrganizer, completedClubSelectionStatus, isAdmin };
 }

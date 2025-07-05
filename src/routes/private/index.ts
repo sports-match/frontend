@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { Layout } from '@/components/layouts/private';
+import ClubSelect from '@/pages/auth/clubSelect.vue';
 import { events } from '@/routes/private/events';
 import { playerStats } from '@/routes/private/playerStats';
 
@@ -19,6 +20,11 @@ export const privateRoutes: RouteRecordRaw[] = [{
           path: 'profile',
           name: 'ProfilePage',
           component: () => import('@/pages/profile.vue'),
+        },
+        {
+          path: 'club-select',
+          name: 'ClubSelectPage',
+          component: ClubSelect,
         },
         {
           path: 'skill-assessment',

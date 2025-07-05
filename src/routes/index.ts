@@ -33,14 +33,16 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   // set(isLoading, true);
-  const { isAuthenticated, assessmentStatus } = useAuthentication();
+  const { isAuthenticated, assessmentStatus, completedClubSelectionStatus, isPlayer, isOrganizer } = useAuthentication();
 
   if (!to.meta.public && !get(isAuthenticated)) {
     return next({ name: 'HomePage', query: { redirect: to.fullPath } });
   } else if (to.meta.public && get(isAuthenticated)) {
     return next({ name: 'DashboardPage' });
-  } else if (get(isAuthenticated) && !get(assessmentStatus) && to.name !== 'SkillAssessmentPage') {
+  } else if (get(isAuthenticated) && !get(assessmentStatus) && get(isPlayer) && to.name !== 'SkillAssessmentPage') {
     return next({ name: 'SkillAssessmentPage' });
+  } else if (get(isAuthenticated) && !get(completedClubSelectionStatus) && get(isOrganizer) && to.name !== 'ClubSelectPage') {
+    return next({ name: 'ClubSelectPage' });
   }
   next();
 });

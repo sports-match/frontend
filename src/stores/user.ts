@@ -1,50 +1,48 @@
+import type { AssessmentStatus, AuthUser } from '@/schemas/user';
 import { useAuthentication } from '@/composables';
 import { defineStore } from 'pinia';
 
-type UserDetails = {
-  displayName: string;
-  authorities: { authority: string }[];
-  roles: string[];
-  user: {
-    avatarName: string;
-    avatarPath: string;
-    dept: { id: number; name: string };
-    email: string;
-    enabled: boolean;
-    gender: string;
-    id: number;
-    nickName: string;
-    password: string;
-    phone: string;
-    pwdResetTime: string;
-    roles: { dataScope: string; id: number; level: number; name: string }[];
-    username: string;
-    userType: string;
-  };
-};
-
-type AssessmentStatus = { assessmentCompleted: boolean; message: string };
+// type AssessmentStatus = { assessmentCompleted: boolean; message: string };
 
 export const useUserStore = defineStore('user', {
   persist: {
     storage: sessionStorage,
   },
   state: () => ({
-    userDetails: {} as UserDetails,
-    assessmentStatus: {
-      assessmentCompleted: false,
-      message: '',
-    },
-    playerId: null as number | null,
+    userDetails: {
+      assessmentStatus: {
+        assessmentCompleted: false,
+        message: '',
+      } as AssessmentStatus,
+      playerId: null as number | null,
+      completedClubSelection: false,
+      organizerId: null as number | null,
+      organizerInfo: {},
+    } as AuthUser,
   }),
   actions: {
     setAssessmentStatus(status: boolean) {
-      this.assessmentStatus.assessmentCompleted = status;
+      if (this.userDetails && this.userDetails.assessmentStatus) {
+        this.userDetails.assessmentStatus.assessmentCompleted = status;
+      }
     },
-    setUserDetails(details: UserDetails, assessmentStatus: AssessmentStatus, playerId: number | null) {
+    setCompletedClubSelection(status: boolean) {
+      if (this.userDetails) {
+        this.userDetails.completedClubSelection = status;
+      }
+    },
+    setUserDetails(details: AuthUser) {
       this.userDetails = details;
-      this.assessmentStatus = assessmentStatus;
-      this.playerId = playerId;
+    },
+    isAdmin() {
+      if (this.userDetails) {
+        return this.userDetails.user?.roles?.includes('Admin');
+      }
+    },
+    isOrganizerVerify() {
+      if (this.userDetails) {
+        return this.userDetails.organizerInfo?.verificationStatus === 'VERIFIED';
+      }
     },
     Logout() {
       const { logout } = useAuthentication();

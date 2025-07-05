@@ -167,7 +167,7 @@ async function fetchQuestions() {
   }
 }
 
-const playerId = computed(() => userStore?.playerId || null);
+const playerId = computed(() => userStore?.userDetails.playerId || null);
 
 onMounted(() => {
   fetchQuestions();

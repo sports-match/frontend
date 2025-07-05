@@ -14,7 +14,7 @@ import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore();
 
-const playerId = computed(() => userStore.playerId || null);
+const playerId = computed(() => userStore?.userDetails.playerId || null);
 const dashboard = ref<object>({});
 
 onMounted(() => {
