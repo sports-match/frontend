@@ -2,7 +2,7 @@
   <div class="flex flex-col md:flex-row gap-4">
     <!-- Left: Matchups and Scores -->
     <div class="flex-1 flex flex-col gap-4">
-      <Accordion type="multiple" class="w-full space-y-4" :default-value="groups[0].id.toString()">
+      <Accordion type="multiple" class="w-full space-y-4" :default-value="groups[0]?.id?.toString()">
         <AccordionItem v-for="group in groups" :key="group.name" :value="group.name">
           <AccordionTrigger class="bg-primary text-white px-4 py-3 rounded-xl data-[state=open]:rounded-b-none">
             {{ group.name }} Matchups and Scores

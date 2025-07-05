@@ -26,6 +26,7 @@
           Groups
         </TabsTrigger>
         <TabsTrigger
+          v-if="matches?.length"
           value="matches"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -54,7 +55,7 @@
       <TabsContent v-if="groups?.length" value="groups">
         <GroupList :groups="groups" @generate-matches="generatingMatches" />
       </TabsContent>
-      <TabsContent value="matches">
+      <TabsContent v-if="matches?.length" value="matches">
         <MatchesList :groups="groups" />
       </TabsContent>
       <TabsContent value="results">
