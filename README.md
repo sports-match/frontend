@@ -41,4 +41,4 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 ## Deploy
 
 - Deploy to S3 bucket using GitHub Actions: push to master
-- URL: http://www.sportrevive.com.s3-website-us-east-1.amazonaws.com/auth/login
+- URL: http://www.sportrevive.com.s3-website-us-east-1.amazonaws.com
