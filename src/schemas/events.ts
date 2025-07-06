@@ -7,6 +7,7 @@ export type Event = {
   checkInEnd: string;
   checkInStart: string;
   clubId: number;
+  club?: Club;
   coHostPlayers: any[];
   createBy: number;
   createTime: string;
@@ -26,6 +27,7 @@ export type Event = {
   status: string;
   tags: any[];
   updateTime: string;
+  playerStatus?: string;
 };
 
 export type EventParams = {

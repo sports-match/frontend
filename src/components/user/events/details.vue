@@ -1,10 +1,10 @@
 <template>
-  <PreviewEvent v-if="isPreview" :event />
+  <PreviewEvent v-if="isPreview" :event @on-joined-event="onEventJoined" />
   <MainContentLayout v-else>
     <EventCard v-if="event" :event="event" />
 
     <div class="flex justify-end">
-      <Button @click="checkin">
+      <Button @click="checkIn">
         <CopyCheckIcon class="mr-2 size-4" />
         Chick In
       </Button>
@@ -44,7 +44,7 @@
       </TabsList>
 
       <TabsContent value="registrations">
-        <RegisterList v-if="event" :event="event" :players="players" />
+        <RegisterList v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="participants">
         <EventParticipants v-if="event" :event="event" :players="players" />
@@ -62,6 +62,7 @@
 <script setup lang="ts">
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
+import type { Ref } from 'vue';
 import { checkinEvent, getEvent, getEventMatches, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
@@ -73,39 +74,62 @@ import PreviewEvent from '@/components/user/events/preview.vue';
 import RegisterList from '@/components/user/events/registerList.vue';
 import ResultList from '@/components/user/events/resultList.vue';
 import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores';
 import { CalendarIcon, ChartSpline, CopyCheckIcon, Gamepad2, Users2Icon } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
+const userStore = useUserStore();
 
-const isPreview = ref(false);
 const { id } = route.params;
-const event = ref<Event | null>(null);
+const event: Ref<Event> = ref({} as Event);
 const players = ref<Player[]>([]);
 const matches = ref([]);
 
+const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
 const isCompleted = computed(() => event.value?.status === 'COMPLETED');
-onMounted(() => {
-  fetchEvent();
+const isPreview = computed(() => event.value?.playerStatus === 'NOT_REGISTERED');
+
+onMounted(async () => {
+  await fetchEvent();
+  if (isPreview.value)
+    return;
+  fetchPlayers();
   fetchMatchList();
 });
+
+function onEventJoined() {
+  fetchEvent();
+  fetchPlayers();
+}
 
 async function fetchEvent() {
   try {
     const { data: content } = await getEvent(id as string);
     event.value = content;
-    const { data: registers } = await getEventPlayers(id as string);
-    players.value = registers;
   } catch (error) {
     notify.error(error as string);
   }
 }
 
-async function checkin() {
+async function fetchPlayers() {
   try {
-    await checkinEvent(id as string);
+    const { data: content } = await getEventPlayers(id as string);
+    players.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function checkIn() {
+  try {
+    await checkinEvent(event.value?.id, {
+      eventId: event.value?.id,
+      playerId: currentUserPlayerId.value,
+    });
     notify.success('Checked in successfully');
+    fetchPlayers();
   } catch (e) {
     notify.error(e as string);
   }

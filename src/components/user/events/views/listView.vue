@@ -141,9 +141,9 @@ async function widthdraw(id: number | number) {
   }
 }
 
-async function signUpEvent(id: string | number) {
+async function signUpEvent(id: number) {
   try {
-    await joinEvent(id as string, {
+    await joinEvent(id, {
       eventId: id,
       playerId: playerId.value,
       joinWaitList: true,
