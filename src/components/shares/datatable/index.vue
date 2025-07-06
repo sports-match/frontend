@@ -162,5 +162,12 @@ async function sortingChange(updaterOrValue: Updater<any>) {
   emits('onSortChange');
 }
 
-defineExpose({ table });
+function resetPagination() {
+  setPagination((prev: any) => ({
+    ...prev,
+    pageIndex: 0,
+  }));
+}
+
+defineExpose({ table, resetPagination });
 </script>

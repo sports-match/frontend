@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <form class="flex w-full max-w-xl items-center" @submit.prevent="onFilterUpdate">
         <Input id="search" v-model.trim="searchKey" type="search" placeholder="Search" />
-        <Button type="submit" @click="fetchData">
+        <Button type="submit" @click="onSearch">
           <Search class="h-4 w-4" />
         </Button>
       </form>
@@ -92,6 +92,15 @@ const columns: ColumnDef<any>[] = [
 onMounted(() => {
   fetchData();
 });
+
+function onSearch() {
+  const { table } = playerStatsTable.value;
+  const { pagination: { pageIndex: page } } = table?.getState();
+  if (page !== 0) {
+    playerStatsTable.value?.resetPagination();
+  }
+  fetchData();
+}
 
 async function fetchData() {
   const { table } = playerStatsTable.value;

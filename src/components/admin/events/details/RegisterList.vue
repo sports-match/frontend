@@ -38,7 +38,7 @@
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button v-if="row.original.status === 'CHECKED_IN'" variant="destructive" size="sm" @click.stop="widthdraw(row.original?.player?.id)">
+          <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original?.player?.id)">
             <Dock class="size-4" />
           </Button>
           <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="sm" @click.stop="checkIn(row.original?.player?.id)">

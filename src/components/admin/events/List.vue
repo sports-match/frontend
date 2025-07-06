@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex items-center justify-between">
-      <form class="flex w-full max-w-xl items-center" @submit.prevent="fetchData">
+      <form class="flex w-full max-w-xl items-center" @submit.prevent="onSearch">
         <Input id="search" v-model.trim="searchKey" type="search" placeholder="Search" />
         <Button type="submit">
           <Search class="h-4 w-4" />
@@ -138,6 +138,15 @@ const columns: ColumnDef<any>[] = [
 
 const eventList = computed(() => props.events);
 const eventTable = ref();
+
+function onSearch() {
+  const { table } = eventTable.value;
+  const { pagination: { pageIndex: page } } = table?.getState();
+  if (page !== 0) {
+    eventTable.value?.resetPagination();
+  }
+  fetchData();
+}
 
 const searchKey = ref('');
 function fetchData() {
