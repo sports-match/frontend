@@ -99,13 +99,14 @@
       <Button v-if="searchQuery || date || status" class="bg-transparent text-white hover:text-white/75 rounded-lg" type="reset" @click="clearFilters">
         Clear
       </Button>
-      <Button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 rounded-lg px-6 py-4" @click="fetchData">
+      <Button type="submit" class="bg-blue-500 text-white hover:bg-blue-600 rounded-lg px-6 py-4" @click="onSearch">
         <Search class="mr-2 w-4 h-4" /> Search
       </Button>
     </Card>
 
     <component
       :is="selectedIcon === 'grid' ? GridView : selectedIcon === 'list' ? ListView : mapView"
+      ref="eventTable"
       :events="events"
       :total-events="totalEvents"
       :selected-location="selectedPlace"
@@ -179,6 +180,18 @@ watch(
     fetchData();
   },
 );
+
+const eventTable = ref();
+
+function onSearch() {
+  const { table, resetPagination } = eventTable.value.eventTable;
+  const { pagination: { pageIndex: page } } = table?.getState();
+  if (page !== 0) {
+    resetPagination();
+  }
+  fetchData();
+}
+
 function clearFilters() {
   searchQuery.value = '';
   date.value = '';
@@ -191,7 +204,6 @@ function clearFilters() {
 // }
 
 async function fetchData(params: EventParams = {}) {
-  const { pageIndex, pageSize } = params;
   switch (route.name) {
     case 'UpcomingEvents':
       eventTimeFilter.value = 'UPCOMING';
@@ -202,11 +214,10 @@ async function fetchData(params: EventParams = {}) {
   }
   fetchEvents({
     eventTimeFilter: eventTimeFilter.value,
-    location: selectedPlace.value?.display_name,
+    location: searchQuery.value,
     eventTime: date.value ? new Date(date.value).toISOString().split('T')[0] : undefined,
     status: status.value,
-    page: pageIndex,
-    size: pageSize,
+    ...params,
   });
 }
 
