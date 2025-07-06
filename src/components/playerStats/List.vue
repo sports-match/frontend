@@ -23,6 +23,7 @@
       :columns="columns"
       :data="playerStatsList"
       @on-page-change="fetchData"
+      @on-sort-change="fetchData"
       @on-row-click="(row) => $router.push({ name: 'ViewPayerStats', params: { id: row.original.playerId } })"
     >
       <!-- <template #sportRatings="{ row }">
@@ -35,12 +36,13 @@
 <script setup lang="ts">
 import type { ColumnDef } from '@tanstack/vue-table';
 import { getPlayersDoubleStats } from '@/api/event';
+import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
 import { Search } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
+import { h, onMounted, ref } from 'vue';
 
 // const router = useRouter();
 const playerStatsList = ref([]);
@@ -72,20 +74,20 @@ const columns: ColumnDef<any>[] = [
   // },
   {
     accessorKey: 'playerName',
-    header: 'Name',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
   },
   {
     accessorKey: 'doublesRanking',
-    header: 'Doubles Rating',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Doubles Ranking' }),
 
   },
   {
     accessorKey: 'gamesPlayed',
-    header: 'Games Played',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Games Played' }),
   },
   {
     accessorKey: 'record',
-    header: 'Doubles Record',
+    header: ({ column }) => h(ColumnHeader, { column, title: 'Doubles Record' }),
   },
 ];
 
@@ -104,12 +106,14 @@ function onSearch() {
 
 async function fetchData() {
   const { table } = playerStatsTable.value;
-  const { pagination: { pageIndex, pageSize } } = table?.getState();
+  const { pagination: { pageIndex, pageSize }, sorting } = table?.getState();
+  const sort = sorting.length === 0 ? '' : `${sorting[0]?.id},${sorting[0]?.desc ? 'desc' : 'asc'}`;
   try {
     const { data: { content, totalElements } } = await getPlayersDoubleStats({
       name: searchKey.value,
       page: pageIndex,
       size: pageSize,
+      sort,
     });
     playerStatsList.value = content;
     totalRecords.value = totalElements;
