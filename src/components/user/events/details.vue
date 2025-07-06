@@ -3,7 +3,7 @@
   <MainContentLayout v-else>
     <EventCard v-if="event" :event="event" />
 
-    <div class="flex justify-end">
+    <div v-if="event.playerStatus === 'REGISTERED'" class="flex justify-end">
       <Button @click="checkIn">
         <CopyCheckIcon class="mr-2 size-4" />
         Chick In
@@ -50,7 +50,7 @@
         <EventParticipants v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" />
       </TabsContent>
       <TabsContent value="matchList">
-        <MatchList :matches="matches" />
+        <MatchList :groups="groups" />
       </TabsContent>
       <TabsContent v-if="isCompleted" value="results">
         <ResultList :event="event" :players="players" />
@@ -63,7 +63,7 @@
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
 import type { Ref } from 'vue';
-import { checkinEvent, getEvent, getEventMatches, getEventPlayers } from '@/api/event';
+import { checkinEvent, getEvent, getEventGroups, getEventMatches, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -86,6 +86,7 @@ const { id } = route.params;
 const event: Ref<Event> = ref({} as Event);
 const players = ref<Player[]>([]);
 const matches = ref([]);
+const groups = ref([]);
 
 const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
 const isCompleted = computed(() => event.value?.status === 'COMPLETED');
@@ -97,11 +98,21 @@ onMounted(async () => {
     return;
   fetchPlayers();
   fetchMatchList();
+  fetchGroups();
 });
 
 function onEventJoined() {
   fetchEvent();
   fetchPlayers();
+}
+
+async function fetchGroups() {
+  try {
+    const { data } = await getEventGroups(id as string);
+    groups.value = data;
+  } catch (error) {
+    notify.error (error as string);
+  }
 }
 
 async function fetchEvent() {
