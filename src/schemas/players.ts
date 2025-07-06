@@ -3,6 +3,7 @@ export type Player = {
   description: string;
   id: number;
   name: string;
+  status: string;
   playerSportRating: {
     createTime: string;
     format: string;

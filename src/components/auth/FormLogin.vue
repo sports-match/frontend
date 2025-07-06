@@ -85,7 +85,7 @@ async function onSubmit() {
     const { token } = useAuthentication();
     set(token, accessToken);
     userStore.setUserDetails(rest);
-    router.push({ path: redirect?.toString() || '/dashboard' });
+    router.push({ path: redirect?.toString() ?? '/dashboard', replace: true });
     notify.success('Login successful!');
   } catch (error) {
     notify.error(error as string);

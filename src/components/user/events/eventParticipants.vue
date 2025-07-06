@@ -1,7 +1,7 @@
 <template>
   <div>
     <span>
-      Who's Signed Up /Checked in ? ({{ players.length }}) Teams Checked in: 0
+      Who's Signed Up /Checked in ? ({{ players.length || 0 }}) Teams Checked in: {{ players?.filter((p) => p.status === 'CHECKED_IN')?.length || 0 }}
     </span>
     <Datatable
       ref="participantsTable"

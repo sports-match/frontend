@@ -51,7 +51,7 @@
         </SidebarMenu>
       </SidebarGroup>
 
-      <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+      <!-- <SidebarGroup class="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel>Support</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -67,7 +67,7 @@
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarGroup>
+      </SidebarGroup> -->
     </SidebarContent>
     <SidebarFooter
       v-if="open"
