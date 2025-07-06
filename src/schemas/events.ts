@@ -28,6 +28,7 @@ export type Event = {
   tags: any[];
   updateTime: string;
   playerStatus?: string;
+  isPublic?: boolean;
 };
 
 export type EventParams = {

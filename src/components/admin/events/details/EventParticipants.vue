@@ -45,6 +45,10 @@ const columns: ColumnDef<any>[] = [
     header: 'Player Name',
   },
   {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
     accessorKey: 'rating',
     header: 'Rating',
 

@@ -47,7 +47,7 @@
         <RegisterList v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="participants">
-        <EventParticipants v-if="event" :event="event" :players="players" />
+        <EventParticipants v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" />
       </TabsContent>
       <TabsContent value="matchList">
         <MatchList :matches="matches" />
