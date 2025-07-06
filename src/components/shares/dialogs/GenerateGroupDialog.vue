@@ -31,7 +31,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="(group, idx) in currentGroups"
+              v-for="(group, idx) in groups"
               :key="idx"
               class="border-b text-sm"
             >
@@ -75,11 +75,6 @@ const props = defineProps<{
 const emit = defineEmits(['pullGroups']);
 const route = useRoute();
 const { id } = route.params;
-
-// Example group data
-const currentGroups: Ref<{ name: string; courtNumbers: string }[]> = ref(
-  JSON.parse(JSON.stringify(props.groups)),
-);
 
 const open = ref(false);
 async function generateGroup() {

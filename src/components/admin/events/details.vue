@@ -129,6 +129,7 @@ async function generatingMatches() {
     const { data } = await generateMatches(id as string);
     notify.success(data.message);
     getMatches();
+    fetchGroups();
   } catch (error) {
     notify.error(error as string);
   }
