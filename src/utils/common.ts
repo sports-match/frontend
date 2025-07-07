@@ -13,7 +13,7 @@ export function formatDate(
     date = input;
   }
 
-  if (Number.isNaN(date.getTime()))
+  if (Number.isNaN(date?.getTime()))
     return 'Invalid Date';
 
   return new Intl.DateTimeFormat(locale, {

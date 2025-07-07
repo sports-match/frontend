@@ -9,7 +9,7 @@
     </span>
 
     <!-- Edit mode -->
-    <div v-else class="flex items-center gap-2">
+    <div v-else class="flex items-center gap-1">
       <Input
         ref="inputRef"
         v-model="inputValue"
@@ -19,11 +19,11 @@
         @keydown.enter="save"
         @keydown.esc="cancel"
       />
-      <Button variant="ghost" size="sm" @click="save">
-        <Check class="size-3 text-primary" />
+      <Button variant="ghost" class="text-green-500 text-sm" size="icon" @click="save">
+        <Check class="size-3" />
       </Button>
-      <Button variant="ghost" size="sm" @click="cancel">
-        <X class="size-3 text-primary" />
+      <Button variant="ghost" class="text-destructive text-sm" size="icon" @click="cancel">
+        <X class="size-3" />
       </Button>
     </div>
   </div>
@@ -69,3 +69,16 @@ function cancel() {
   editing.value = false;
 }
 </script>
+
+<style scoped>
+/* Hide input number arrows */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+</style>

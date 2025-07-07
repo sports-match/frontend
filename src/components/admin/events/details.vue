@@ -71,7 +71,7 @@
         <MatchesList :groups="groups" />
       </TabsContent>
       <TabsContent v-if="matches?.length" value="results">
-        <ResultList :groups="groups" />
+        <ResultList :groups="groups" @pull-groups="fetchGroups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>

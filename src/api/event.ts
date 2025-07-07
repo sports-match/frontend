@@ -44,6 +44,7 @@ export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign
 export const getClubs = (params?: PaginationWithName) => http.get('/clubs', { params });
 export const getSports = () => http.get('/sports');
 export const getPlayers = (params?: PaginationWithName) => http.get('/players', { params });
+export const editMatchScores = (matchId: number, data: { matchId: number; scoreA: number; scoreB: number }) => http.put(`/matches/${matchId}/score`, data);
 
 export const getPlayersDoubleStats = (params?: PaginationWithName) => http.get('/players/doubles-stats', { params });
 export const getTags = () => http.get('/tags');

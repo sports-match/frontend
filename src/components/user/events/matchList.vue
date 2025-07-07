@@ -28,12 +28,13 @@
                     <th class="px-4 py-2">
                       Scores
                     </th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(match, index) in group.matches" :key="index" class="border-t align-top">
-                    <!-- Game number and extra info -->
-                    <td class="px-4 py-2 whitespace-nowrap align-top">
+                  <tr v-for="(match, index) in group.matches" :key="match.id" class="border-t align-center">
+                    <!-- Game number -->
+                    <td class="px-4 py-2 whitespace-nowrap align-center">
                       <div class="font-semibold">
                         #{{ index + 1 }}
                       </div>
@@ -41,8 +42,9 @@
                         <!-- {{ match?.eventDate }} -->
                       </div>
                     </td>
-                    <!-- Team 1 -->
-                    <td class="px-4 py-2 align-top">
+
+                    <!-- Team A -->
+                    <td class="px-4 py-2 align-center">
                       <div class="flex items-center gap-2">
                         <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
                           #{{ match.teamA?.id }}
@@ -50,19 +52,22 @@
                         <div>
                           <div v-for="(p, i) in match.teamA.teamPlayers" :key="i" class="leading-tight">
                             <span>{{ p.player?.name }}</span>
-                            <!-- <span v-if="p.icon" class="ml-1">{{ p.icon }}</span> -->
                             <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ match.teamA.averageScore }})</span>
                           </div>
                         </div>
                       </div>
                     </td>
-                    <!-- Team 1 Score -->
-                    <td class="px-4 py-2 align-top">
-                      <span>{{ match.scoreA }}</span>
+
+                    <!-- Score A -->
+                    <td class="px-4 py-2 align-center">
+                      <div v-if="editIndex === match.id">
+                        <Input v-model.number="tempScores[match.id].scoreA" type="number" class="w-16 px-1 py-0.5" />
+                      </div>
+                      <span v-else>{{ match.scoreA }}</span>
                     </td>
 
-                    <!-- Team 2 -->
-                    <td class="px-4 py-2 align-top">
+                    <!-- Team B -->
+                    <td class="px-4 py-2 align-center">
                       <div class="flex items-center gap-2">
                         <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
                           #{{ match.teamB?.id }}
@@ -70,15 +75,37 @@
                         <div>
                           <div v-for="(p, i) in match.teamB.teamPlayers" :key="i" class="leading-tight">
                             <span>{{ p.player?.name }}</span>
-                            <!-- <span v-if="p.icon" class="ml-1">{{ p.icon }}</span> -->
-                            <span v-if="p.player?.playerSportRating" class="ml-1 text-xs text-gray-500">({{ match.teamB.averageScore }})</span>
+                            <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ match.teamB.averageScore }})</span>
                           </div>
                         </div>
                       </div>
                     </td>
-                    <!-- Team 2 Score -->
-                    <td class="px-4 py-2 align-top">
-                      <span>{{ match.scoreB }}</span>
+
+                    <!-- Score B -->
+                    <td class="px-4 py-2 align-center">
+                      <div v-if="editIndex === match.id">
+                        <Input v-model.number="tempScores[match.id].scoreB" type="number" class="w-16 px-1 py-0.5" />
+                      </div>
+                      <span v-else>{{ match.scoreB }}</span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="pe-4 align-center space-x-1">
+                      <template v-if="editIndex === match.id">
+                        <div class="flex">
+                          <Button size="icon" variant="ghost" class="text-green-500 text-sm" @click="saveEdit(match.id)">
+                            <Check class="size-3" />
+                          </Button>
+                          <Button size="icon" variant="ghost" class="text-destructive text-sm" @click="cancelEdit">
+                            <X class="size-3" />
+                          </Button>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <Button v-if="isCurrentUser(match)" size="icon" variant="outline" class="text-primary" @click="startEdit(match.id, match)">
+                          <Edit class="size-3" />
+                        </Button>
+                      </template>
                     </td>
                   </tr>
                 </tbody>
@@ -117,7 +144,7 @@
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-100">
                     <tr v-for="(result, index) in group.individualResults" :key="index">
-                      <td class="px-4 py-2 align-top">
+                      <td class="px-4 py-2 align-center">
                         <div class="flex items-center gap-2">
                           <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold">
                             {{ result.match }}
@@ -133,7 +160,7 @@
                       <td
                         v-for="n in maxScores(group.individualResults)"
                         :key="n"
-                        class="px-4 py-3 text-center align-top"
+                        class="px-4 py-3 text-center align-center"
                       >
                         <span v-if="result.scores[n - 1]">{{ result.scores[n - 1] }}</span>
                       </td>
@@ -152,11 +179,71 @@
 
 <script setup lang="ts">
 import type { Group } from '@/schemas/events';
+import { editMatchScores } from '@/api/event';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/shares/ui/accordion';
+import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
-import { CalendarIcon } from 'lucide-vue-next';
+import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores';
+import { CalendarIcon, Check, Edit, X } from 'lucide-vue-next';
+import { computed, reactive, ref } from 'vue';
 
 defineProps<{
   groups: Group[];
 }>();
+const emit = defineEmits(['pullGroups']);
+const userStore = useUserStore();
+const editIndex = ref<number | null>(null);
+const tempScores = reactive<{ [id: number]: { scoreA: number; scoreB: number } }>({});
+
+const currentUserPlayerId = computed(() => userStore.userDetails.playerId);
+
+function isCurrentUser(match: any) {
+  return match.teamA?.teamPlayers.find((p: any) => p.player?.id === currentUserPlayerId.value) || match.teamB?.teamPlayers.find((p: any) => p.player?.id === currentUserPlayerId.value);
+}
+
+// Start editing
+function startEdit(index: number, match: any) {
+  editIndex.value = index;
+  if (!tempScores[index]) {
+    tempScores[index] = {
+      scoreA: match.scoreA,
+      scoreB: match.scoreB,
+    };
+  }
+}
+
+// Save
+async function saveEdit(id: number) {
+  try {
+    await editMatchScores(id, {
+      matchId: id,
+      scoreA: tempScores[id].scoreA,
+      scoreB: tempScores[id].scoreB,
+    });
+    editIndex.value = null;
+    notify.success('Scores updated successfully');
+    emit('pullGroups');
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+// Cancel and restore old values
+function cancelEdit() {
+  editIndex.value = null;
+}
 </script>
+
+<style scoped>
+/* Hide input number arrows */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+</style>

@@ -31,9 +31,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(match, index) in group.matches" :key="index" class="border-t align-top">
+                  <tr v-for="(match, index) in group.matches" :key="index" class="border-t align-center">
                     <!-- Game number and extra info -->
-                    <td class="px-4 py-2 whitespace-nowrap align-top">
+                    <td class="px-4 py-2 whitespace-nowrap align-center">
                       <div class="font-semibold">
                         #{{ index + 1 }}
                       </div>
@@ -42,7 +42,7 @@
                       </div>
                     </td>
                     <!-- Team 1 -->
-                    <td class="px-4 py-2 align-top">
+                    <td class="px-4 py-2 align-center">
                       <div class="flex items-center gap-2">
                         <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
                           #{{ match.teamA?.id }}
@@ -57,12 +57,12 @@
                       </div>
                     </td>
                     <!-- Team 1 Score -->
-                    <td class="px-4 py-2 align-top">
+                    <td class="px-4 py-2 align-center">
                       <span>{{ match.scoreA }}</span>
                     </td>
 
                     <!-- Team 2 -->
-                    <td class="px-4 py-2 align-top">
+                    <td class="px-4 py-2 align-center">
                       <div class="flex items-center gap-2">
                         <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
                           #{{ match.teamB?.id }}
@@ -77,7 +77,7 @@
                       </div>
                     </td>
                     <!-- Team 2 Score -->
-                    <td class="px-4 py-2 align-top">
+                    <td class="px-4 py-2 align-center">
                       <span>{{ match.scoreB }}</span>
                     </td>
                   </tr>
@@ -117,7 +117,7 @@
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-100">
                     <tr v-for="(result, index) in group.individualResults" :key="index">
-                      <td class="px-4 py-2 align-top">
+                      <td class="px-4 py-2 align-center">
                         <div class="flex items-center gap-2">
                           <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold">
                             {{ result.match }}
@@ -133,7 +133,7 @@
                       <td
                         v-for="n in maxScores(group.individualResults)"
                         :key="n"
-                        class="px-4 py-3 text-center align-top"
+                        class="px-4 py-3 text-center align-center"
                       >
                         <span v-if="result.scores[n - 1]">{{ result.scores[n - 1] }}</span>
                       </td>
