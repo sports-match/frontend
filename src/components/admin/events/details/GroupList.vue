@@ -61,13 +61,14 @@
                 </div>
               </TableCell>
               <TableCell>
-                <div class="flex items-center justify-between">
-                  <span>
+                <div class="flex items-center justify-between" @click.stop>
+                  <!-- <span>
                     {{ group.courtNumbers }}
                   </span>
-                  <!-- <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm">
                     <Edit class="size-3 text-primary" />
                   </Button> -->
+                  <InlineEdit v-model="group.courtNumbers" @update:model-value="updateCourtNumber(group.courtNumbers, group.id)" />
                 </div>
               </TableCell>
               <!-- <TableCell>
@@ -147,9 +148,12 @@
 
 <script setup lang="ts">
 import type { Group } from '@/schemas/events';
+import { editCourt } from '@/api/event';
+import InlineEdit from '@/components/shares/InlineEdit.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
+import { notify } from '@/composables/notify';
 import { Clock, Edit, Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
@@ -158,41 +162,17 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['generateMatches', 'finalizeGroup']);
 const search = ref('');
-// const groups = [
-//   {
-//     name: 'Group A',
-//     matches: 25,
-//     court: 3,
-//     time: '7:00 PM',
-//     players: 10,
-//     playersList: [
-//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 1 },
-//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 2 },
-//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 3 },
-//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 4 },
-//       { name: 'Aditya Emmanuel 6148 & Nidhin Jose 6788', rank: 5 },
-//     ],
-//   },
-//   {
-//     name: 'Group B',
-//     matches: 25,
-//     court: 3,
-//     time: '7:00 PM',
-//     players: 10,
-//     playersList: [],
-//   },
-//   {
-//     name: 'Group C',
-//     matches: 25,
-//     court: 3,
-//     time: '7:00 PM',
-//     players: 10,
-//     playersList: [],
-//   },
-// ];
 
 const expanded = ref(props.groups.map(() => false));
 
+async function updateCourtNumber(courtNumber: string, groupId: number) {
+  try {
+    await editCourt(groupId, courtNumber);
+    notify.success('Court number updated successfully');
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 function toggleExpand(index: number) {
   expanded.value[index] = !expanded.value[index];
 }

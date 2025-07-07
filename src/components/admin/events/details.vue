@@ -64,7 +64,7 @@
         <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
       <TabsContent v-if="groups?.length" value="groups">
-        <GroupList :groups="groups" @generate-matches="generatingMatches" />
+        <GroupList :groups="groups" @generate-matches="generatingMatches" @finalize-group="finalizeGroup" />
       </TabsContent>
       <TabsContent v-if="matches?.length" value="matches">
         <MatchesList :groups="groups" />
@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import type { Event, EventParams } from '@/schemas/events';
 import type { Ref } from 'vue';
-import { generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
+import { finalizeGroups, generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
 import EventParticipants from '@/components/admin/events/details/EventParticipants.vue';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import MatchesList from '@/components/admin/events/details/MatchesList.vue';
@@ -144,6 +144,16 @@ async function fetchGroups() {
     groups.value = data;
   } catch (error) {
     notify.error (error as string);
+  }
+}
+
+async function finalizeGroup() {
+  try {
+    await finalizeGroups(id as number);
+    notify.success('Group Finalized successfully');
+    fetchGroups();
+  } catch (error) {
+    notify.error(error as string);
   }
 }
 
