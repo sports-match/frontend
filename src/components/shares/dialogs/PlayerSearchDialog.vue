@@ -79,7 +79,7 @@ const open = ref(false);
 
 const players = ref<{ id: number; name: string; player: Player }[]>([]);
 
-const selectedPlayer = ref<null | { id: number; name: string; player: Player }>(null);
+const selectedPlayer = ref<null | { id: number; name: string; player: Player; teamId: number }>(null);
 // Pagination state
 const pageSize = 20;
 const page = ref(1);
@@ -122,7 +122,9 @@ function onScroll(e: Event) {
   }
 }
 
-function selectPlayer(player: { id: number; name: string; player: Player }) {
+function selectPlayer(player: { id: number; name: string; player: Player; teamId: number }) {
+  console.log(player);
+
   selectedPlayer.value = player;
 }
 
@@ -131,7 +133,7 @@ async function submitPlayer() {
     try {
       const id = props.event.id;
       if (props.getAll) {
-        await joinEvent(id as string, {
+        await joinEvent(id as number, {
           eventId: id,
           playerId: selectedPlayer.value.player?.id,
           joinWaitList: true,
@@ -141,7 +143,7 @@ async function submitPlayer() {
       } else {
         await teamPlayerAssign({
           targetTeamId: props.playerId,
-          teamPlayerId: selectedPlayer.value.player?.id,
+          teamPlayerId: selectedPlayer.value.teamId,
         });
         notify.success('Player assign successfully');
       }

@@ -15,14 +15,14 @@
         {{ row.original?.player?.name }} ({{ row.original?.player?.playerSportRating[0]?.rateScore }})
       </template>
       <template #partner="{ row }">
-        {{ row.original?.partner }}
+        {{ row.original?.partner?.name }}
         <span v-if="row.original?.partner?.playerSportRating[0]?.rateScore">
           ({{ row.original?.partner?.playerSportRating[0]?.rateScore }})
         </span>
         <PlayerSearchDialog
           v-if="row.original?.player?.id === currentUserPlayerId"
           :event="event"
-          :player-id="row.original?.player?.id"
+          :player-id="row.original?.teamId"
           @on-submit="getPlayers"
         >
           <Button variant="destructive" size="sm">
@@ -87,7 +87,7 @@ const columns = computed(() => [
           header: 'Partner',
         },
         {
-          accessorKey: 'rating',
+          accessorKey: 'combinedScore',
           header: 'Combined Rating',
         },
       ]

@@ -55,19 +55,22 @@
         {{ row.original?.player?.name }} ({{ row.original?.player?.playerSportRating[0]?.rateScore }})
       </template>
       <template #partner="{ row }">
-        {{ row.original.partner }}
-        <span class="ml-1">
-          {{ row.original.rating }}
+        {{ row.original.partner?.name }}
+        <span v-if="row.original?.partner?.playerSportRating[0]?.rateScore">
+          ({{ row.original?.partner?.playerSportRating[0]?.rateScore }})
         </span>
         <PlayerSearchDialog
           :event="event"
-          :player-id="row.original?.player?.id"
+          :player-id="row.original?.teamId"
           @on-submit="getPlayers"
         >
           <Button size="sm">
             <ArrowLeftRight class="size-4" />
           </Button>
         </PlayerSearchDialog>
+      </template>
+      <template #rank="{ row }">
+        {{ Number(row.id) + 1 }}
       </template>
       <template #status="{ row }">
         <span :class="row.original.status === 'CHECKED_IN' ? 'text-green-500' : 'text-red-500'">
@@ -116,7 +119,7 @@ const columns = computed(() => [
           header: 'Partner',
         },
         {
-          accessorKey: 'rating',
+          accessorKey: 'combinedScore',
           header: 'Combined Rating',
         },
       ]
