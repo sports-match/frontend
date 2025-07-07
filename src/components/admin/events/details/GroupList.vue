@@ -1,11 +1,11 @@
 <template>
   <div class="bg-white rounded-2xl p-4 shadow flex flex-col gap-4">
     <!-- Top bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 w-full">
       <!-- Search Form -->
-      <form class="w-full sm:max-w-md" @submit.prevent>
+      <!-- <form class="w-full sm:max-w-md" @submit.prevent>
         <Input v-model="search" placeholder="Search" class="w-full" />
-      </form>
+      </form> -->
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
@@ -28,7 +28,7 @@
             </TableHead>
             <TableHead>Matches</TableHead>
             <TableHead>Court</TableHead>
-            <TableHead>Time</TableHead>
+            <!-- <TableHead>Time</TableHead> -->
             <TableHead>Players</TableHead>
           <!-- <TableHead class="text-right">
             Actions
@@ -55,9 +55,9 @@
                   <span>
                     {{ group.matches?.length }}
                   </span>
-                  <Button variant="outline" size="sm">
+                  <!-- <Button variant="outline" size="sm">
                     <Edit class="size-3 text-primary" />
-                  </Button>
+                  </Button> -->
                 </div>
               </TableCell>
               <TableCell>
@@ -65,12 +65,12 @@
                   <span>
                     {{ group.courtNumbers }}
                   </span>
-                  <Button variant="outline" size="sm">
+                  <!-- <Button variant="outline" size="sm">
                     <Edit class="size-3 text-primary" />
-                  </Button>
+                  </Button> -->
                 </div>
               </TableCell>
-              <TableCell>
+              <!-- <TableCell>
                 <div class="flex items-center justify-between">
                   <span>
                     {{ group.time }}
@@ -79,8 +79,8 @@
                     <Clock class="size-3 text-primary" />
                   </Button>
                 </div>
-              </TableCell>
-              <TableCell>{{ group.players }}</TableCell>
+              </TableCell> -->
+              <TableCell>{{ group.groupTeamSize }}</TableCell>
             <!-- <TableCell class="text-right">
             </TableCell> -->
             </TableRow>
@@ -91,7 +91,7 @@
                 <TableCell colspan="6" class="pl-14 pt-2 pb-4">
                   <div class="grid grid-cols-6 font-semibold pb-2 border-b">
                     <span class="col-span-3">Players Name</span>
-                    <span>Rank</span>
+                    <!-- <span>Rank</span> -->
                   <!-- <span class="col-span-2 text-right">Actions</span> -->
                   </div>
 
@@ -103,7 +103,7 @@
                     <span v-for="(team, tIndex) in player.teamPlayers" :key="tIndex" class="col-span-3 p-2">
                       {{ team.player?.name }} ({{ team.player?.playerSportRating[0]?.rateScore }})
                     </span>
-                    <span class="p-2">{{ player.rank }}</span>
+                    <!-- <span class="p-2">{{ player.rank }}</span> -->
                   <!-- <div class="col-span-2 flex justify-end gap-2">
                     <Button variant="ghost" size="sm">
                       <ArrowLeftRight class="text-blue-500 size-4" />
