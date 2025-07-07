@@ -1,8 +1,5 @@
 <template>
   <div>
-    <span>
-      Who's Signed Up /Checked in ? ({{ players.length }}) Teams Checked in: 0
-    </span>
     <Datatable
       ref="participantsTable"
       :total-records="players.length"
@@ -11,9 +8,6 @@
       @on-sort-change="getPlayers"
       @on-page-change="getPlayers"
     >
-      <template #rating="{ row }">
-        {{ row.original?.player?.playerSportRating[0]?.rateScore }}
-      </template>
       <template #checkIn="{ row }">
         <CircleCheck v-if="row.original.status === 'CHECKED_IN'" class="size-6 text-green-500" />
         <X v-else class="size-6 text-destructive" />
@@ -49,7 +43,7 @@ const columns: ColumnDef<any>[] = [
     header: 'Email',
   },
   {
-    accessorKey: 'rating',
+    accessorKey: 'score',
     header: 'Rating',
 
   },

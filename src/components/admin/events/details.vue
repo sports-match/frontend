@@ -61,7 +61,7 @@
         />
       </TabsContent>
       <TabsContent value="participants">
-        <EventParticipants v-if="event" :event="event" :players="playersInEvent" @pull-players="fetchPlayers" />
+        <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
       <TabsContent v-if="groups?.length" value="groups">
         <GroupList :groups="groups" @generate-matches="generatingMatches" />
@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import type { Event, EventParams } from '@/schemas/events';
 import type { Ref } from 'vue';
-import { generateMatches, getEvent, getEventGroups, getEventMatches, getEventPlayers } from '@/api/event';
+import { generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
 import EventParticipants from '@/components/admin/events/details/EventParticipants.vue';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import MatchesList from '@/components/admin/events/details/MatchesList.vue';
@@ -101,13 +101,24 @@ const event: Ref<Event> = ref({} as Event);
 const playersInEvent = ref([]);
 const groups = ref([]);
 const matches = ref([]);
+const eventParticipants = ref([]);
 
 onMounted(() => {
   fetchEvent();
   fetchPlayers();
   fetchGroups();
   getMatches();
+  fetchEventParticipants();
 });
+
+async function fetchEventParticipants() {
+  try {
+    const { data } = await getEventParticipants(id as string);
+    eventParticipants.value = data;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchEvent() {
   try {

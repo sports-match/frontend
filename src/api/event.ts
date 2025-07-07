@@ -35,6 +35,8 @@ export const joinEvent = (eventId: number, data: any) => http.post(`/events/${ev
 export const getEventGroups = (eventId: string) => http.get(`/events/${eventId}/groups`);
 export const getEventMatches = (eventId: string) => http.get(`/events/${eventId}/matches`);
 export const startCheckIn = (eventId: number) => http.patch(`/events/${eventId}/status/CHECK_IN`);
+export const getEventParticipants = (eventId: string) => http.get(`/events/${eventId}/participants`);
+
 export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign', data);
 
 export const getClubs = (params?: PaginationWithName) => http.get('/clubs', { params });

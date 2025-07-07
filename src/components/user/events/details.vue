@@ -47,7 +47,7 @@
         <RegisterList v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="participants">
-        <EventParticipants v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" />
+        <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
       <TabsContent value="matchList">
         <MatchList :groups="groups" />
@@ -63,7 +63,7 @@
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
 import type { Ref } from 'vue';
-import { checkinEvent, getEvent, getEventGroups, getEventMatches, getEventPlayers } from '@/api/event';
+import { checkinEvent, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -87,6 +87,7 @@ const event: Ref<Event> = ref({} as Event);
 const players = ref<Player[]>([]);
 const matches = ref([]);
 const groups = ref([]);
+const eventParticipants = ref([]);
 
 const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
 const isCompleted = computed(() => event.value?.status === 'COMPLETED');
@@ -99,7 +100,17 @@ onMounted(async () => {
   fetchPlayers();
   fetchMatchList();
   fetchGroups();
+  fetchEventParticipants();
 });
+
+async function fetchEventParticipants() {
+  try {
+    const { data } = await getEventParticipants(id as string);
+    eventParticipants.value = data;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 function onEventJoined() {
   fetchEvent();
