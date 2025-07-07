@@ -58,7 +58,7 @@
                   <Plus v-else class="size-4" />
                 </Button>
                 <div>
-                  {{ row.original.date }}
+                  {{ formatDate(row.original.date) }}
                 </div>
               </div>
             </template>
@@ -143,6 +143,7 @@ import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
+import { formatDate } from '@/utils/common';
 import { Calendar, CircleAlert, ClipboardList, FileEditIcon, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 

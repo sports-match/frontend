@@ -29,15 +29,16 @@
       <!-- Event 1 -->
       <div v-for="event in onlyTwoEvents" :key="event.id" class="flex gap-4 mb-6">
         <div class="text-gray-400 text-sm flex-shrink-0 pt-1">
-          {{ event.eventTime }}
+          {{ formatDate(event.eventTime) }}
         </div>
         <div class="flex-1">
           <h3 class="font-semibold text-lg">
             {{ event.name }}
           </h3>
           <div class="flex gap-2 mt-2">
-            <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">{{ event.format
-            }}</span>
+            <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">
+              {{ event.format }}
+            </span>
           </div>
           <div class="flex items-center gap-2 mt-2 text-gray-500 text-sm">
             <MapPinned class="size-4" />
@@ -51,22 +52,25 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
+import type { ComputedRef, PropType } from 'vue';
 import { Calendar } from '@/components/shares/ui/calendar';
 import { Separator } from '@/components/shares/ui/separator';
+import { formatDate } from '@/utils/common';
 import { MapPinned } from 'lucide-vue-next';
-import { computed, type PropType, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   events: {
     type: Array as PropType<Event[]>,
-    required: false,
+    default: () => [],
   },
 });
-const emit = defineEmits(['onDateChange']);
+// const emit = defineEmits(['onDateChange']);
 
 const date = ref();
 
-const onlyTwoEvents = computed(() => props.events?.slice(0, 2));
+const onlyTwoEvents: ComputedRef<Event[]> = computed(() => props.events?.slice(0, 2));
 function handleDateChange() {
   // emit('onDateChange', date.value);
 }

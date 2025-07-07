@@ -58,7 +58,7 @@
           <!-- <div>Today,</div>
           <div>7:00 PM to</div>
           <div>11:00 PM</div> -->
-          {{ event.eventTime }}
+          {{ formatDate(event.eventTime) }}
         </div>
       </div>
       <!-- Right: Event Info -->
@@ -85,11 +85,14 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
+import type { PropType } from 'vue';
+import { formatDate } from '@/utils/common';
 import { MapPinned } from 'lucide-vue-next';
 
 defineProps({
   events: {
-    type: Array,
+    type: Array as PropType<Event[]>,
     default: () => [],
   },
 });

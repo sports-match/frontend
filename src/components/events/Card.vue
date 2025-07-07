@@ -8,7 +8,7 @@
         {{ event?.description }}
       </h2>
       <div class="flex items-center text-sm text-gray-300 mb-4">
-        {{ event?.eventTime }}
+        {{ formatDate(event?.eventTime) }}
       </div>
 
       <div class="flex space-x-2">
@@ -41,7 +41,8 @@ import type { ComputedRef, PropType } from 'vue';
 import ReminderDialog from '@/components/shares/dialogs/ReminderDialog.vue';
 import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import { Button } from '@/components/shares/ui/button';
-import { Calendar, CircleAlert, ClockAlert, Link } from 'lucide-vue-next';
+import { formatDate } from '@/utils/common';
+import { Calendar, ClockAlert } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const props = defineProps({

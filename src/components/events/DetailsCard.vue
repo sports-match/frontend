@@ -21,7 +21,7 @@
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>
-        <span class="truncate">{{ event?.eventTime }}</span>
+        <span class="truncate">{{ formatDate(event?.eventTime) }}</span>
       </div>
 
       <!-- Action Buttons -->
@@ -71,9 +71,10 @@ import SharesDialog from '@/components/shares/dialogs/SharesDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { useAuthentication } from '@/composables';
 import { notify } from '@/composables/notify';
+import { formatDate } from '@/utils/common';
 import { useClipboard } from '@vueuse/core';
-import { ClockAlert, Copy } from 'lucide-vue-next';
 
+import { ClockAlert, Copy } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const props = defineProps({
