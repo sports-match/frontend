@@ -100,7 +100,7 @@ import { Input } from '@/components/shares/ui/input';
 import { Label } from '@/components/shares/ui/label';
 import { notify } from '@/composables/notify';
 import { Loader2 as LucideSpinner } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -118,6 +118,14 @@ const formData = ref({
   password: '',
   userType: user || 'PLAYER',
 });
+
+watch(
+  () => route.query.user,
+  (newVal) => {
+    formData.value.userType = newVal || 'PLAYER';
+  },
+  { immediate: true },
+);
 
 async function onSubmit(event: Event) {
   event.preventDefault();
