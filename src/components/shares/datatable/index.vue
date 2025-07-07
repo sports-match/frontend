@@ -100,7 +100,7 @@ type DataTableProps = {
 const {
   columns,
   data,
-  pageSizes = [15, 30, 50],
+  pageSizes = [20, 30, 50],
   totalRecords,
   manualPagination = true,
   manualSorting = true,
@@ -143,7 +143,7 @@ const table = useVueTable({
   initialState: {
     pagination: {
       pageIndex: 0,
-      pageSize: 15,
+      pageSize: 20,
     },
   },
 });

@@ -87,7 +87,7 @@ type DataTablePaginationProps = {
 };
 
 const props = withDefaults(defineProps<DataTablePaginationProps>(), {
-  pageSizes: () => [15, 30, 60],
+  pageSizes: () => [20, 30, 60],
 });
 defineEmits(['onPageSizeChange', 'onPreviousPage', 'onNextPage']);
 
