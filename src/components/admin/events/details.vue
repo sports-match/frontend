@@ -55,6 +55,7 @@
           :event="event"
           :players="playersInEvent"
           :groups="groups"
+          :participants="eventParticipants"
           @pull-event="fetchEvent"
           @pull-players="fetchPlayers"
           @pull-groups="fetchGroups"
@@ -69,7 +70,7 @@
       <TabsContent v-if="matches?.length" value="matches">
         <MatchesList :groups="groups" />
       </TabsContent>
-      <TabsContent value="results">
+      <TabsContent v-if="matches?.length" value="results">
         <ResultList :groups="groups" />
       </TabsContent>
     </Tabs>

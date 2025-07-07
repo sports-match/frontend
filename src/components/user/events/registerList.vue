@@ -15,14 +15,20 @@
         {{ row.original?.player?.name }} ({{ row.original?.player?.playerSportRating[0]?.rateScore }})
       </template>
       <template #partner="{ row }">
-        {{ row.original?.partner?.name }}
-        <span v-if="row.original?.partner?.playerSportRating[0]?.rateScore">
-          ({{ row.original?.partner?.playerSportRating[0]?.rateScore }})
+        <span v-if="row.original?.partner?.name">
+          {{ row.original?.partner?.name }}
+          <span v-if="row.original?.partner?.playerSportRating[0]?.rateScore">
+            ({{ row.original?.partner?.playerSportRating[0]?.rateScore }})
+          </span>
+        </span>
+        <span v-if="!row.original?.partner?.name && row.original?.player?.id !== currentUserPlayerId">
+          <span class="text-destructive">Not yet...</span>
         </span>
         <PlayerSearchDialog
           v-if="row.original?.player?.id === currentUserPlayerId"
           :event="event"
-          :player-id="row.original?.teamId"
+          :team-id="row.original?.teamId"
+          :exclude-ids="[row.original?.player?.id]"
           @on-submit="getPlayers"
         >
           <Button variant="destructive" size="sm">

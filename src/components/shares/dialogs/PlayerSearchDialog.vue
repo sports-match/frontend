@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import type { Player } from '@/schemas/players';
+import type { PropType } from 'vue';
 import { getEventPlayers, getPlayers, joinEvent, teamPlayerAssign } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/shares/ui/command';
@@ -67,9 +68,13 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  playerId: {
+  teamId: {
     type: Number,
     required: false,
+  },
+  excludeIds: {
+    type: Array as PropType<number[]>,
+    default: () => [],
   },
 });
 
@@ -95,10 +100,10 @@ async function fetchPlayers() {
   try {
     if (props.getAll) {
       const { data: { content } } = await getPlayers();
-      players.value = content;
+      players.value = content.filter((p: Player) => !props.excludeIds.includes(p.id));
     } else {
       const { data } = await getEventPlayers(props.event.id);
-      players.value = data.filter((item: { player: Player }) => item.player?.id !== props.playerId);
+      players.value = data.filter((p: Player) => !props.excludeIds.includes(p.id));
     }
   } catch (error) {
     notify.error(error as string);
@@ -108,7 +113,7 @@ async function fetchPlayers() {
 function onSearch(val: string) {
   page.value = 1;
   filteredPlayers.value = players.value.filter(p =>
-    p.name.toLowerCase().includes(val.toLowerCase()),
+    p.name?.toLowerCase()?.includes(val.toLowerCase()),
   );
 }
 
@@ -123,8 +128,6 @@ function onScroll(e: Event) {
 }
 
 function selectPlayer(player: { id: number; name: string; player: Player; teamId: number }) {
-  console.log(player);
-
   selectedPlayer.value = player;
 }
 
@@ -142,7 +145,7 @@ async function submitPlayer() {
         notify.success('Player joined event successfully');
       } else {
         await teamPlayerAssign({
-          targetTeamId: props.playerId,
+          targetTeamId: props.teamId,
           teamPlayerId: selectedPlayer.value.teamId,
         });
         notify.success('Player assign successfully');

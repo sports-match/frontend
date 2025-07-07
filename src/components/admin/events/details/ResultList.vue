@@ -35,7 +35,7 @@
                     <!-- Game number and extra info -->
                     <td class="px-4 py-2 whitespace-nowrap align-top">
                       <div class="font-semibold">
-                        {{ index + 1 }}
+                        #{{ index + 1 }}
                       </div>
                       <div class="text-xs text-gray-500">
                         <!-- {{ match?.eventDate }} -->
@@ -44,8 +44,8 @@
                     <!-- Team 1 -->
                     <td class="px-4 py-2 align-top">
                       <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold">
-                          <!-- {{ match.teamA?.teamRank }} -->
+                        <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
+                          #{{ match.teamA?.id }}
                         </span>
                         <div>
                           <div v-for="(p, i) in match.teamA.teamPlayers" :key="i" class="leading-tight">
@@ -57,15 +57,15 @@
                       </div>
                     </td>
                     <!-- Team 1 Score -->
-                    <td class="px-4 py-2 align-top text-center">
+                    <td class="px-4 py-2 align-top">
                       <span>{{ match.scoreA }}</span>
                     </td>
 
                     <!-- Team 2 -->
                     <td class="px-4 py-2 align-top">
                       <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold">
-                          <!-- {{ match.team2.teamRank }} -->
+                        <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
+                          #{{ match.teamB?.id }}
                         </span>
                         <div>
                           <div v-for="(p, i) in match.teamB.teamPlayers" :key="i" class="leading-tight">
@@ -77,7 +77,7 @@
                       </div>
                     </td>
                     <!-- Team 2 Score -->
-                    <td class="px-4 py-2 align-top text-center">
+                    <td class="px-4 py-2 align-top">
                       <span>{{ match.scoreB }}</span>
                     </td>
                   </tr>
@@ -193,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Group } from '@/schemas/events';
+import type { Group, Match } from '@/schemas/events';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/shares/ui/accordion';
 import { CalendarIcon } from 'lucide-vue-next';
 
@@ -204,4 +204,5 @@ defineProps<{
 function maxScores(results: any[]) {
   // return Math.max(...results.map(r => r.scores.length), 0);
 }
+
 </script>

@@ -71,6 +71,7 @@
 
 <script setup lang="ts">
 import type { Player } from '@/schemas/players';
+import type { PropType } from 'vue';
 import { getPlayers, joinEvent } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/shares/ui/dialog';
@@ -83,6 +84,10 @@ const props = defineProps({
   event: {
     type: Object,
     required: true,
+  },
+  excludeIds: {
+    type: Array as PropType<number[]>,
+    default: () => [],
   },
 });
 const emit = defineEmits(['pullPlayers']);
@@ -119,9 +124,9 @@ async function fetchPlayers(reset = false) {
     });
 
     if (reset) {
-      players.value = content;
+      players.value = content.filter((p: Player) => !props.excludeIds.includes(p.id));
     } else {
-      players.value = [...players.value, ...content];
+      players.value = [...players.value, ...content].filter((p: Player) => !props.excludeIds.includes(p.id));
     }
 
     hasMore.value = players.value.length < totalElements;

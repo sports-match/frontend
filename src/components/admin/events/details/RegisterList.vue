@@ -18,7 +18,7 @@
           :groups="groups"
           @pull-groups="fetchGroups"
         />
-        <AddMemberDialog :event="event" class="w-full sm:w-auto" @pull-players="getPlayers" />
+        <AddMemberDialog :exclude-ids="participants.map((p: TeamPlayer) => p?.player?.id)" :event="event" class="w-full sm:w-auto" @pull-players="getPlayers" />
       </div>
     </div>
 
@@ -34,14 +34,14 @@
       <template #actions="{ row }">
         <div class="flex gap-2">
           <ReminderDialog :event="event" :player-id="row.original?.id">
-            <Button class="bg-yellow-500 hover:bg-yellow-400" size="sm">
+            <Button class="bg-yellow-500 hover:bg-yellow-400" size="icon">
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button variant="destructive" size="sm" @click.stop="widthdraw(row.original?.player?.id)">
+          <Button variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
             <Dock class="size-4" />
           </Button>
-          <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="sm" @click.stop="checkIn(row.original?.player?.id)">
+          <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
             <CircleCheck class="size-4" />
           </Button>
         </div>
@@ -61,10 +61,11 @@
         </span>
         <PlayerSearchDialog
           :event="event"
-          :player-id="row.original?.teamId"
+          :team-id="row.original?.teamId"
+          :exclude-ids="[row.original?.player?.id]"
           @on-submit="getPlayers"
         >
-          <Button size="sm">
+          <Button size="icon">
             <ArrowLeftRight class="size-4" />
           </Button>
         </PlayerSearchDialog>
@@ -82,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Event } from '@/schemas/events';
+import type { Event, TeamPlayer } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
 import { checkinEvent, startCheckIn, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
@@ -98,8 +99,9 @@ import AddMemberDialog from './AddMemberDialog.vue';
 
 const props = defineProps<{
   event: Event;
-  players: Player[];
+  players: TeamPlayer[];
   groups: { name: string; courtNumbers: string }[];
+  participants: TeamPlayer[];
 }>();
 
 const emit = defineEmits(['pullEvent', 'pullPlayers', 'pullGroups']);
