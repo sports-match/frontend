@@ -112,7 +112,7 @@
               </table>
             </div>
             <!-- Individual Results -->
-            <div class="border-t py-2">
+            <div v-if="eventStatus === 'COMPLETED'" class="border-t py-2">
               <div class="overflow-x-auto">
                 <!-- <div class="bg-white rounded-lg border border-gray-200 overflow-auto"> -->
                 <div class="flex justify-between items-center px-4 py-3 border-b">
@@ -174,48 +174,6 @@
         </AccordionItem>
       </Accordion>
     </div>
-
-    <!-- Right: Group Players -->
-    <div class="w-full md:w-80 flex flex-col gap-4">
-      <Accordion type="multiple" class="w-full space-y-4">
-        <AccordionItem v-for="group in groups" :key="`${group.name}-players`" :value="`${group.name}-players`">
-          <AccordionTrigger class="bg-primary text-white px-4 py-3 rounded-xl data-[state=open]:rounded-b-none">
-            {{ group.name }} Players
-          </AccordionTrigger>
-          <AccordionContent class="bg-white rounded-b-lg border border-t-0 p-0">
-            <div class="overflow-x-auto">
-              <table class="min-w-full text-sm text-left">
-                <thead class="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th class="px-4 py-2">
-                      Name
-                    </th>
-                    <th class="px-4 py-2">
-                      Rank
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(player, index) in group.players" :key="index" class="border-t">
-                    <td class="px-4 py-2 whitespace-nowrap">
-                      <div v-for="(member, idx) in player.team" :key="idx" class="flex items-center gap-1">
-                        <span>{{ member.name }}</span>
-                        <span v-if="member.rating" class="text-xs text-gray-400">({{ member.rating }})</span>
-                      </div>
-                    </td>
-                    <td class="px-4 py-2">
-                      <div class="flex items">
-                        <span class="text-sm">{{ player.rank }}</span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
   </div>
 </template>
 
@@ -231,6 +189,7 @@ import { reactive, ref } from 'vue';
 
 defineProps<{
   groups: Group[];
+  eventStatus: string;
 }>();
 
 const emit = defineEmits(['pullGroups']);

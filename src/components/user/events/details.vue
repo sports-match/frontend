@@ -27,6 +27,7 @@
           Event Participants
         </TabsTrigger>
         <TabsTrigger
+          v-if="event.status === 'IN_PROGRESS'"
           value="matchList"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -49,11 +50,11 @@
       <TabsContent value="participants">
         <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
-      <TabsContent value="matchList">
-        <MatchList :groups="groups" />
+      <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matchList">
+        <MatchList :event-status="event.status" :groups="groups" />
       </TabsContent>
       <TabsContent v-if="isCompleted" value="results">
-        <ResultList :event="event" :players="players" />
+        <ResultList :event-status="event.status" :groups="groups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>

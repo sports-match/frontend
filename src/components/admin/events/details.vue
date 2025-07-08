@@ -34,7 +34,7 @@
           Groups
         </TabsTrigger>
         <TabsTrigger
-          v-if="matches?.length"
+          v-if="matches?.length && event.status === 'IN_PROGRESS'"
           value="matches"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -42,6 +42,7 @@
           Generated Matches
         </TabsTrigger>
         <TabsTrigger
+          v-if="event.status === 'COMPLETED'"
           value="results"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -67,11 +68,11 @@
       <TabsContent v-if="groups?.length" value="groups">
         <GroupList :groups="groups" @generate-matches="generatingMatches" @finalize-group="finalizeGroup" />
       </TabsContent>
-      <TabsContent v-if="matches?.length" value="matches">
-        <MatchesList :groups="groups" />
+      <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matches">
+        <MatchesList :event-status="event.status" :groups="groups" />
       </TabsContent>
-      <TabsContent v-if="matches?.length" value="results">
-        <ResultList :groups="groups" @pull-groups="fetchGroups" />
+      <TabsContent value="results">
+        <ResultList :event-status="event.status" :groups="groups" @pull-groups="fetchGroups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>

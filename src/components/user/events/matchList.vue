@@ -112,7 +112,7 @@
               </table>
             </div>
             <!-- Individual Results -->
-            <div class="border-t py-2">
+            <div v-if="eventStatus === 'COMPLETED'" class="border-t py-2">
               <div class="overflow-x-auto">
                 <!-- <div class="bg-white rounded-lg border border-gray-200 overflow-auto"> -->
                 <div class="flex justify-between items-center px-4 py-3 border-b">
@@ -190,6 +190,7 @@ import { computed, reactive, ref } from 'vue';
 
 defineProps<{
   groups: Group[];
+  eventStatus: string;
 }>();
 const emit = defineEmits(['pullGroups']);
 const userStore = useUserStore();
