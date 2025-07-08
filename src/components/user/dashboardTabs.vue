@@ -23,18 +23,44 @@
         <div class="grid grid-cols-1 md:grid-cols-[1.5fr,1fr] gap-4 mt-4">
           <Datatable
             hide-pagination
-            :total-records="events.length"
+            :total-records="upcomingEvents.length"
             :columns="columns"
-            :data="events"
-            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
-          />
+            :data="upcomingEvents"
+            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.orignal.id } })"
+          >
+            <template #name="{ row }">
+              <div class="font-semibold">
+                {{ row.original?.name }}
+              </div>
+              <div class="flex items-center gap-2 pt-2">
+                <MapPinned v-if="row.original?.club?.location" class="size-4" />
+                {{ row.original?.club?.location }}
+              </div>
+            </template>
+            <template #eventTime="{ row }">
+              {{ formatDate(row.original?.eventTime) }}
+            </template>
+            <template #status="{ row }">
+              {{ row.original?.status }}
+            </template>
+          </Datatable>
           <Datatable
             hide-pagination
-            :total-records="events.length"
+            :total-records="recentEvents.length"
             :columns="completedColumns"
-            :data="events"
-            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.id } })"
-          />
+            :data="recentEvents"
+            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.orignal.id } })"
+          >
+            <template #name="{ row }">
+              <div class="font-semibold">
+                {{ row.original?.name }}
+              </div>
+              <div class="flex items-center gap-2 pt-2">
+                <MapPinned v-if="row.original?.club?.location" class="size-4" />
+                {{ row.original?.club?.location }}
+              </div>
+            </template>
+          </Datatable>
         </div>
       </TabsContent>
       <TabsContent value="recentGames">
@@ -144,11 +170,15 @@ import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
 import { formatDate } from '@/utils/common';
-import { Calendar, CircleAlert, ClipboardList, FileEditIcon, Minus, Plus } from 'lucide-vue-next';
+import { Calendar, CircleAlert, ClipboardList, FileEditIcon, MapPinned, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 defineProps({
-  events: {
+  upcomingEvents: {
+    type: Array,
+    default: () => [],
+  },
+  recentEvents: {
     type: Array,
     default: () => [],
   },
@@ -160,7 +190,7 @@ const columns = [
     header: 'Upcomming Events',
   },
   {
-    accessorKey: 'eventDate',
+    accessorKey: 'eventTime',
     header: 'Date',
   },
   {

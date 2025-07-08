@@ -11,4 +11,5 @@ export type Dashboard = {
   singleEventRatingHistory: any[];
   totalEvent: number;
   upcomingEvents: Event[];
+  eventToday: Event | undefined;
 };

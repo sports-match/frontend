@@ -1,9 +1,12 @@
 export function formatDate(
-  input: string | Date,
+  input: string | Date | undefined,
   options?: Intl.DateTimeFormatOptions,
   locale: string = 'en-US',
 ): string {
   let date: Date;
+
+  if (!input)
+    return '';
 
   if (typeof input === 'string') {
     // Convert "2026-07-21 23:24:00" → "2026-07-21T23:24:00"

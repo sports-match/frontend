@@ -127,11 +127,11 @@
           </p>
         </div>
         <!-- Calendar & Events -->
-        <UpcomingCalendar :events="dashboard.upcomingEvents" />
+        <UpcomingCalendar :event-today="dashboard.eventToday" :events="dashboard.upcomingEvents" />
       </div>
     </div>
     <div class="mt-6">
-      <DashboardTabs :events="playerEvents" />
+      <DashboardTabs :upcoming-events="dashboard.upcomingEvents" :recent-events="dashboard.recentEvents" />
     </div>
   </MainContentLayout>
 </template>
