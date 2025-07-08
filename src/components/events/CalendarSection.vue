@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="onlyTwoEvents?.length"
     class="bg-white rounded-2xl border py-2 px-1 flex items-start max-w-full"
   >
     <!-- Calendar Section -->
@@ -21,31 +20,36 @@
         <h2 class="text-xl font-semibold">
           Upcoming Events
         </h2>
-        <span class="bg-red-100 text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">2</span>
+        <span class="bg-red-100 text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">{{ onlyTwoEvents.length }}</span>
       </div>
       <p class="text-gray-500 mb-4">
         <!-- {{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }} -->
       </p>
       <!-- Event 1 -->
-      <div v-for="event in onlyTwoEvents" :key="event.id" class="flex gap-4 mb-6">
-        <div class="text-gray-400 text-sm flex-shrink-0 pt-1">
-          {{ formatDate(event.eventTime) }}
-        </div>
-        <div class="flex-1">
-          <h3 class="font-semibold text-lg">
-            {{ event.name }}
-          </h3>
-          <div class="flex gap-2 mt-2">
-            <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">
-              {{ event.format }}
-            </span>
+      <template v-if="onlyTwoEvents.length">
+        <div v-for="event in onlyTwoEvents" :key="event.id" class="flex gap-4 mb-6">
+          <div class="text-gray-400 text-sm flex-shrink-0 pt-1">
+            {{ formatDate(event.eventTime) }}
           </div>
-          <div class="flex items-center gap-2 mt-2 text-gray-500 text-sm">
-            <MapPinned class="size-4" />
-            <span>{{ event.location }}</span>
-            <span>#Courts({{ event.groupCount }})</span>
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg">
+              {{ event.name }}
+            </h3>
+            <div class="flex gap-2 mt-2">
+              <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">
+                {{ event.format }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 mt-2 text-gray-500 text-sm">
+              <MapPinned class="size-4" />
+              <span>{{ event.location }}</span>
+              <span>#Courts({{ event.groupCount }})</span>
+            </div>
           </div>
         </div>
+      </template>
+      <div v-else class="flex-1 text-accent-foreground/50">
+        No Upcomming Event
       </div>
     </div>
   </div>

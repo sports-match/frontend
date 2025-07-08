@@ -1,6 +1,6 @@
 <template>
-  <div v-if="event" class="bg-black text-white rounded-2xl flex items-center justify-between shadow-lg">
-    <div class="flex-1 p-6">
+  <div class="bg-black text-white rounded-2xl flex justify-between shadow-lg">
+    <div v-if="event" class="flex-1 p-6">
       <div class="flex items-center font-semibold text-2xl mb-4">
         {{ event?.name }}
       </div>
@@ -24,6 +24,10 @@
           </Button>
         </ReminderDialog>
       </div>
+    </div>
+
+    <div v-else class="flex-1 font-semibold text-2xl p-5 text-accent">
+      No Upcomming Event
     </div>
 
     <div class="flex items-center">
