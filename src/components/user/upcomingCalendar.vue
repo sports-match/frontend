@@ -5,7 +5,7 @@
         Game Day
       </span>
       <span class="inline-flex items-center justify-center bg-green-400 text-white font-bold text-sm w-7 h-7 rounded-lg shadow">
-        {{ Object.keys(eventToday || {}).length || 0 }}
+        {{ Object.keys(eventToday || {}).length ? 1 : 0 }}
       </span>
     </div>
     <div v-if="!Object.keys(eventToday || {}).length" class="relative flex flex-col justify-start items-start">
