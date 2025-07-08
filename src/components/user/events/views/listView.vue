@@ -5,10 +5,16 @@
       :total-records="totalEvents"
       :columns="columns"
       :data="events"
-      @on-page-change="fetchData"
-      @on-sort-change="fetchData"
+      :hide-pagination
+      @on-page-change="fetchData" @on-sort-change="fetchData"
+
       @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
     >
+      <template #name="{ row }">
+        <slot name="name">
+          {{ row.original?.name }}
+        </slot>
+      </template>
       <template #eventTime="{ row }">
         {{ formatDate(row.original?.eventTime) }}
       </template>
@@ -69,6 +75,43 @@ defineProps({
     type: Number,
     default: 0,
   },
+  hidePagination: {
+    type: Boolean,
+    default: false,
+  },
+  columns: {
+    type: Array,
+    default: () => [
+      {
+        accessorKey: 'eventTime',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Date' }),
+      },
+      {
+        accessorKey: 'name',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
+      },
+      {
+        accessorKey: 'club.location',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Location' }),
+      },
+      {
+        accessorKey: 'signedUp',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Signed up' }),
+      },
+      {
+        accessorKey: 'club.name',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Organizer' }),
+      },
+      {
+        accessorKey: 'groupCount',
+        header: ({ column }) => h(ColumnHeader, { column, title: 'Courts' }),
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+      },
+    ],
+  },
 });
 const emit = defineEmits(['onFetch']);
 
@@ -77,36 +120,36 @@ const userStore = useUserStore();
 const eventTable = ref();
 const playerId = computed(() => userStore?.userDetails.playerId || null);
 
-const columns: ColumnDef<any>[] = [
-  {
-    accessorKey: 'eventTime',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Date' }),
-  },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
-  },
-  {
-    accessorKey: 'club.location',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Location' }),
-  },
-  {
-    accessorKey: 'signedUp',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Signed up' }),
-  },
-  {
-    accessorKey: 'club.name',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Organizer' }),
-  },
-  {
-    accessorKey: 'groupCount',
-    header: ({ column }) => h(ColumnHeader, { column, title: 'Courts' }),
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-  },
-];
+// const columns: ColumnDef<any>[] = [
+//   {
+//     accessorKey: 'eventTime',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Date' }),
+//   },
+//   {
+//     accessorKey: 'name',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Event Name' }),
+//   },
+//   {
+//     accessorKey: 'club.location',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Location' }),
+//   },
+//   {
+//     accessorKey: 'signedUp',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Signed up' }),
+//   },
+//   {
+//     accessorKey: 'club.name',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Organizer' }),
+//   },
+//   {
+//     accessorKey: 'groupCount',
+//     header: ({ column }) => h(ColumnHeader, { column, title: 'Courts' }),
+//   },
+//   {
+//     accessorKey: 'status',
+//     header: 'Status',
+//   },
+// ];
 
 function fetchData() {
   const { table } = eventTable.value;

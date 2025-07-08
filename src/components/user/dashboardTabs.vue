@@ -21,7 +21,7 @@
 
       <TabsContent value="myEvents">
         <div class="grid grid-cols-1 md:grid-cols-[1.5fr,1fr] gap-4 mt-4">
-          <Datatable
+          <!-- <Datatable
             hide-pagination
             :total-records="upcomingEvents.length"
             :columns="columns"
@@ -43,7 +43,8 @@
             <template #status="{ row }">
               {{ row.original?.status }}
             </template>
-          </Datatable>
+          </Datatable> -->
+          <ListView :events="upcomingEvents" :columns="columns" :total-events="upcomingEvents.length" hide-pagination />
           <Datatable
             hide-pagination
             :total-records="recentEvents.length"
@@ -172,6 +173,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui
 import { formatDate } from '@/utils/common';
 import { Calendar, CircleAlert, ClipboardList, FileEditIcon, MapPinned, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import ListView from './events/views/listView.vue';
 
 defineProps({
   upcomingEvents: {
