@@ -123,7 +123,7 @@
     </Card>
 
     <footer class="text-xs text-muted-foreground mt-12">
-      © 2025 sportreview.com
+      © 2025 sportrevive.com
     </footer>
   </div>
 </template>

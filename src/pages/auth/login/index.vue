@@ -8,7 +8,7 @@
     </template>
     <FormLogin />
     <div class="text-center text-xs text-muted-foreground pt-4">
-      © 2025 sportreview.com
+      © 2025 sportrevive.com
     </div>
   </PublicLayout>
 </template>

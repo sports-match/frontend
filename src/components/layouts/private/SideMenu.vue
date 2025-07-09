@@ -76,7 +76,7 @@
       <SidebarMenu>
         <SidebarMenuItem class="row items-end justify-end">
           <div class="flex justify-end text-sm pb-2">
-            Copyright &copy; sportreview.com
+            Copyright &copy; sportrevive.com
           </div>
           <div class="flex items-center justify-between gap-2">
             <Button size="xs" variant="ghost" class="text-xs">
