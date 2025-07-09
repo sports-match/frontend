@@ -34,7 +34,7 @@
           Groups
         </TabsTrigger>
         <TabsTrigger
-          v-if="matches?.length && event.status === 'IN_PROGRESS'"
+          v-if="event.status === 'IN_PROGRESS'"
           value="matches"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -58,7 +58,7 @@
           :groups="groups"
           :participants="eventParticipants"
           @pull-event="fetchEvent"
-          @pull-players="fetchPlayers"
+          @pull-players="() => { fetchPlayers(); fetchEventParticipants(); }"
           @pull-groups="fetchGroups"
         />
       </TabsContent>

@@ -119,7 +119,6 @@
             <!-- Individual Results -->
             <div v-if="eventStatus === 'COMPLETED'" class="border-t py-2">
               <div class="overflow-x-auto">
-                <!-- <div class="bg-white rounded-lg border border-gray-200 overflow-auto"> -->
                 <div class="flex justify-between items-center px-4 py-3 border-b">
                   <h2 class="text-lg font-semibold">
                     Individual Results
@@ -130,49 +129,41 @@
                   </button>
                 </div>
 
-                <!-- <table class="min-w-full divide-y divide-gray-200 text-sm text-left">
+                <table class="min-w-full divide-y divide-gray-200 text-sm text-left">
                   <thead class="bg-gray-50">
                     <tr>
-                      <th class="px-4 py-2 font-semibold text-gray-700">
+                      <th class="px-4 py-2 font-semibold">
                         Players
                       </th>
-                      <th
-                        v-for="n in maxScores(group.individualResults)"
-                        :key="n"
-                        class="px-4 py-2 font-semibold text-gray-700 text-center"
-                      >
-                        <span v-if="n === 1">
-                          Scores
+                      <th v-for="(match, index) in group.matrix" :key="`match-header-${index}`" class="px-4 py-2 font-semibold">
+                        <span>
+                          #{{ match.team.id }}
                         </span>
                       </th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-100">
-                    <tr v-for="(result, index) in group.individualResults" :key="index">
-                      <td class="px-4 py-2 align-center">
-                        <div class="flex items-center gap-2">
-                          <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold">
-                            {{ result.match }}
-                          </span>
-                          <div>
-                            <div v-for="(p, i) in result.team" :key="i" class="leading-tight">
-                              <span>{{ p.name }}</span>
-                              <span v-if="p.rating" class="ml-1 text-xs text-gray-500">({{ p.rating }})</span>
-                            </div>
+                    <tr v-for="(row, index) in group.matrix" :key="index">
+                      <td class="flex items-center gap-2 px-4 py-2">
+                        <span class="inline-flex items-center justify-center rounded-full bg-gray-100 w-8 h-8 font-semibold text-xs">
+                          #{{ row.team.id }}
+                        </span>
+                        <div>
+                          <div v-for="(player, playerIndex) in row.team.teamPlayers" :key="playerIndex">
+                            {{ player.player.name }}
                           </div>
                         </div>
                       </td>
-                      <td
-                        v-for="n in maxScores(group.individualResults)"
-                        :key="n"
-                        class="px-4 py-3 text-center align-center"
-                      >
-                        <span v-if="result.scores[n - 1]">{{ result.scores[n - 1] }}</span>
+                      <td v-for="(score, matchIndex) in group.matrix" :key="matchIndex" class="px-4 py-2">
+                        <span v-for="(s, sIndex) in score.matches" :key="sIndex">
+                          <span v-if=" s.otherTeam?.id === row.team.id">
+                            {{ s.myScore }} - {{ s.otherScore }}
+                          </span>
+                        </span>
                       </td>
                     </tr>
                   </tbody>
-                </table> -->
-                <!-- </div> -->
+                </table>
               </div>
             </div>
           </AccordionContent>

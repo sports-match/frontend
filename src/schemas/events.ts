@@ -103,7 +103,13 @@ export type Group = {
   matches: Match[];
   name: string;
   teams: Team[];
+  matrix?: Matrix[];
 };
+
+type Matrix = {
+  team: Team;
+  matches: Match[];
+};;
 
 export type Match = {
   id: number;
@@ -114,6 +120,9 @@ export type Match = {
   teamAWin: boolean;
   teamB: Team;
   teamBWin: boolean;
+  myScore?: number;
+  otherScore?: number;
+  otherTeam?: Team;
 };
 
 export type Club = {
