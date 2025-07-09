@@ -34,21 +34,26 @@
           Groups
         </TabsTrigger>
         <TabsTrigger
-          v-if="event.status === 'IN_PROGRESS'"
           value="matches"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
-          <ChartSpline class="w-5 h-5" />
-          Generated Matches
+          <template v-if="event.status === 'IN_PROGRESS'">
+            <ChartSpline class="w-5 h-5" />
+            Generated Matches
+          </template>
+          <template v-if="event.status === 'COMPLETED'">
+            <ChartSpline class="w-5 h-5" />
+            Results
+          </template>
         </TabsTrigger>
-        <TabsTrigger
-          v-if="event.status === 'COMPLETED'"
+        <!-- <TabsTrigger
+
           value="results"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
           <ChartSpline class="w-5 h-5" />
           Results
-        </TabsTrigger>
+        </TabsTrigger> -->
       </TabsList>
 
       <TabsContent value="registrations">
@@ -68,12 +73,11 @@
       <TabsContent v-if="groups?.length" value="groups">
         <GroupList :groups="groups" @generate-matches="generatingMatches" @finalize-group="finalizeGroup" />
       </TabsContent>
-      <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matches">
-        <MatchesList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" />
+      <TabsContent v-if="event.status === 'IN_PROGRESS' || event.status === 'COMPLETED'" value="matches">
+        <!-- <MatchesList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" /> -->
+        <ResultList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" @pull-groups="fetchGroups" @on-submit-score="onSubmitScore" />
       </TabsContent>
-      <TabsContent value="results">
-        <ResultList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" @pull-groups="fetchGroups" />
-      </TabsContent>
+      <!-- <TabsContent value="results" /> -->
     </Tabs>
   </MainContentLayout>
 </template>
@@ -81,7 +85,7 @@
 <script setup lang="ts">
 import type { Event, EventParams } from '@/schemas/events';
 import type { Ref } from 'vue';
-import { finalizeGroups, generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayerRate, getEventPlayers } from '@/api/event';
+import { finalizeGroups, generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayerRate, getEventPlayers, submitEventScore } from '@/api/event';
 import EventParticipants from '@/components/admin/events/details/EventParticipants.vue';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import MatchesList from '@/components/admin/events/details/MatchesList.vue';
@@ -160,9 +164,20 @@ async function fetchGroups() {
   }
 }
 
+async function onSubmitScore() {
+  try {
+    await submitEventScore(id as string);
+    notify.success('Scores Submit successfully');
+    fetchGroups();
+    fetchEvent();
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
 async function finalizeGroup() {
   try {
-    await finalizeGroups(id as number);
+    await finalizeGroups(id as string);
     notify.success('Group Finalized successfully');
     fetchGroups();
   } catch (error) {

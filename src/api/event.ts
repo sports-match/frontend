@@ -36,10 +36,10 @@ export const getEventGroups = (eventId: string) => http.get(`/events/${eventId}/
 export const getEventMatches = (eventId: string) => http.get(`/events/${eventId}/matches`);
 export const startCheckIn = (eventId: number) => http.patch(`/events/${eventId}/status/CHECK_IN`);
 export const getEventParticipants = (eventId: string) => http.get(`/events/${eventId}/participants`);
-export const finalizeGroups = (eventId: number) => http.post(`/events/${eventId}/groups/finalized`);
+export const finalizeGroups = (eventId: string) => http.post(`/events/${eventId}/groups/finalized`);
 export const editCourt = (groupId: number, courtNumber: string) => http.post(`/match-groups/${groupId}/courts?courtNumber=${courtNumber}`);
 export const getEventPlayerRate = (eventId: string) => http.get(`/players/event/${eventId}/player-rating`);
-
+export const submitEventScore = (eventId: string) => http.post(`/matches/submit-scores/${eventId}`);
 export const teamPlayerAssign = (data: any) => http.post('/team-players/reassign', data);
 
 export const getClubs = (params?: PaginationWithName) => http.get('/clubs', { params });

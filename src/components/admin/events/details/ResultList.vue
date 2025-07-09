@@ -1,5 +1,10 @@
 <template>
   <div class="flex flex-col gap-4">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
+      <Button v-if="eventStatus === 'IN_PROGRESS'" class="bg-primary text-white w-full sm:w-auto" @click="submitScore">
+        <FileCheck2 class="w-5 h-5 mr-2" />Submit Score
+      </Button>
+    </div>
     <!-- Left: Matchups and Scores -->
     <div class="flex-1 flex flex-col gap-4">
       <Accordion type="multiple" class="w-full space-y-4" :default-value="groups[0]?.id?.toString()">
@@ -102,7 +107,7 @@
                         </div>
                       </template>
                       <template v-else>
-                        <Button size="icon" variant="outline" class="text-primary" @click="startEdit(match.id, match)">
+                        <Button v-if="eventStatus === 'IN_PROGRESS'" size="icon" variant="outline" class="text-primary" @click="startEdit(match.id, match)">
                           <Edit class="size-3" />
                         </Button>
                       </template>
@@ -197,7 +202,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
 import { notify } from '@/composables/notify';
-import { CalendarIcon, Check, Edit, X } from 'lucide-vue-next';
+import { CalendarIcon, Check, Edit, FileCheck2, X } from 'lucide-vue-next';
 import { reactive, ref } from 'vue';
 
 defineProps<{
@@ -206,7 +211,7 @@ defineProps<{
   eventPlayerRates: EventPlayerRates[];
 }>();
 
-const emit = defineEmits(['pullGroups']);
+const emit = defineEmits(['pullGroups', 'onSubmitScore']);
 const editIndex = ref<number | null>(null);
 const tempScores = reactive<{ [id: number]: { scoreA: number; scoreB: number } }>({});
 
@@ -232,6 +237,10 @@ const columns = [
     accessorKey: 'newRating',
   },
 ];
+
+async function submitScore() {
+  emit('onSubmitScore');
+}
 
 // Start editing
 function startEdit(index: number, match: any) {
