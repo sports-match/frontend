@@ -44,13 +44,23 @@
               {{ row.original?.status }}
             </template>
           </Datatable> -->
-          <ListView :events="upcomingEvents" :columns="columns" :total-events="upcomingEvents.length" hide-pagination />
+          <ListView :events="upcomingEvents" :columns="columns" :total-events="upcomingEvents.length" hide-pagination>
+            <template #name="{ row }">
+              <div class="font-semibold">
+                {{ row.original?.name }}
+              </div>
+              <div class="flex items-center gap-2 pt-2">
+                <MapPinned v-if="row.original?.club?.location" class="size-4" />
+                {{ row.original?.club?.location }}
+              </div>
+            </template>
+          </ListView>
           <Datatable
             hide-pagination
             :total-records="recentEvents.length"
             :columns="completedColumns"
             :data="recentEvents"
-            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.orignal.id } })"
+            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
           >
             <template #name="{ row }">
               <div class="font-semibold">

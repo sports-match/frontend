@@ -172,7 +172,7 @@ onMounted(() => {
 
 async function fetchUpcoming() {
   try {
-    const { data: content } = await getEvents({
+    const { data: { content } } = await getEvents({
       size: 5,
       sort: 'eventTime',
       eventTimeFilter: 'UPCOMING',
@@ -186,7 +186,7 @@ async function fetchUpcoming() {
 
 async function fetchPast() {
   try {
-    const { data: content } = await getEvents({
+    const { data: { content } } = await getEvents({
       size: 5,
       sort: 'eventTime',
       eventTimeFilter: 'PAST',

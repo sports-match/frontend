@@ -11,7 +11,7 @@
       @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.original.id } })"
     >
       <template #name="{ row }">
-        <slot name="name">
+        <slot name="name" :row="row">
           {{ row.original?.name }}
         </slot>
       </template>

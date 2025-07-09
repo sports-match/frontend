@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import type { TooltipItem } from 'chart.js';
+import { useDateFormat } from '@vueuse/core';
 import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip } from 'chart.js';
 import { computed } from 'vue';
 import { Line as LineChart } from 'vue-chartjs';
@@ -49,38 +50,36 @@ ChartJS.register(
 // const activeTab = ref('Doubles');
 
 // Sample data - replace with your actual data
-const allDates = [
-  '2025-05-27',
-  '2025-05-25',
-  '2025-05-23',
-  '2025-05-22',
-  '2025-05-21',
-  '2025-05-20',
-  '2025-05-18',
-  '2025-05-16',
-  '2025-05-14',
-  '2025-05-12',
-  '2025-05-11',
-  '2025-05-09',
-  '2025-05-08',
-  '2025-05-06',
-  '2025-05-03',
-  '2025-05-01',
-];
+const startDate = new Date();
+startDate.setDate(startDate.getDate() - 30);
+const allDates = Array.from({ length: 30 })
+  .fill(0)
+  .map((_, i) => {
+    const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+    return date.toISOString().split('T')[0];
+  });
 
-// Sample ratings data - replace with your actual data
-// function generateRatings() {
-//   return allDates.map((_) => {
-//     // Simulate ratings between 3.0 and 5.0
-//     return Number((Math.random() * 2 + 3).toFixed(1));
-//   });
-// }
+function getRateScoresPerDay(allDates: string[], doubles: any[]) {
+  const scoreMap = new Map();
+  if (doubles?.length === 0) {
+    return allDates.map(() => '0');
+  }
+  // Step 1: format doubles' createTime to 'YYYY-MM-DD'
+  for (const entry of doubles) {
+    const entryDate = useDateFormat(new Date(entry.createTime), 'YYYY-MM-DD').value;
+    scoreMap.set(entryDate, entry.rateScore);
+  }
 
-// const doublesRatings = generateRatings();
-// const singlesRatings = generateRatings();
+  // Step 2: format each allDates entry and check the map
+  return allDates.map((date) => {
+    const formattedDate = useDateFormat(new Date(date), 'YYYY-MM-DD').value;
+    return String(scoreMap.get(formattedDate) ?? 0);
+  });
+}
 
-const doublesRatings = computed(() => props.data.doubleEventRatingHistory);
-const singlesRatings = computed(() => props.data.singleEventRatingHistory);
+// const doublesRatings = computed(() => props.data.doubleEventRatingHistory);
+const doublesRatings = computed(() => getRateScoresPerDay(allDates, props.data?.doubleEventRatingHistory || []));
+const singlesRatings = computed(() => getRateScoresPerDay(allDates, props.data?.singleEventRatingHistory || []));
 
 const chartData = computed(() => ({
   labels: allDates,
@@ -149,8 +148,8 @@ const chartOptions = {
       },
     },
     y: {
-      min: 3.0,
-      max: 5.0,
+      min: Math.min(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)),
+      max: Math.max(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)) + 5,
       ticks: {
         stepSize: 0.5,
       },
@@ -160,17 +159,4 @@ const chartOptions = {
     },
   },
 };
-
-// Display every 3rd date to prevent overcrowding
-// const displayedDates = computed(() => {
-//   return allDates.filter((_, index) => index % 3 === 0);
-// });
-
-// function formatDateDisplay(dateStr) {
-//   const date = new Date(dateStr);
-//   return date.toLocaleDateString('en-US', {
-//     month: 'short',
-//     day: 'numeric',
-//   });
-// }
 </script>
