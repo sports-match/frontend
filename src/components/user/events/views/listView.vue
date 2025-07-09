@@ -32,7 +32,7 @@
           Event is in progress
         </div>
         <div v-if="row.original.isPublic && row.original.status !== 'IN_PROGRESS'">
-          <div> {{ row.original.status }} </div>
+          <div> {{ formatStatus(row.original.status) }} </div>
           <div v-if="row.original.status !== 'COMPLETED'" class="flex items-center gap-2">
             <Button v-if="row.original.playerStatus === 'REGISTERED'" variant="destructive" size="sm" @click.stop="widthdraw(row.original.id)">
               <CreditCardIcon class="size-4 me-1" />
@@ -54,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ColumnDef } from '@tanstack/vue-table';
 import { checkinEvent, joinEvent, withdrawEvent } from '@/api/event';
 import ColumnHeader from '@/components/shares/datatable/ColumnHeader.vue';
 import Datatable from '@/components/shares/datatable/index.vue';
@@ -62,7 +61,7 @@ import Percentage from '@/components/shares/Percentage.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores/user';
-import { formatDate } from '@/utils/common';
+import { formatDate, formatStatus } from '@/utils/common';
 import { CalendarPlus, CircleCheck, CreditCardIcon } from 'lucide-vue-next';
 import { computed, h, ref } from 'vue';
 

@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatStatus } from '@/utils/common';
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -27,14 +28,6 @@ const statusColors = {
 const resolvedStatus = computed(() => {
   return (props.status as string)?.toLowerCase();
 });
-
-function formatStatus(status: string) {
-  return status
-    .toLowerCase()
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
 
 const bgColor = computed(() => statusColors[resolvedStatus.value as keyof typeof statusColors]?.bg || statusColors.default.bg);
 const textColor = computed(() => statusColors[resolvedStatus.value as keyof typeof statusColors]?.text || statusColors.default.text);
