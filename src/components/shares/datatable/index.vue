@@ -30,7 +30,7 @@
 
               <!-- Expanded Row Slot -->
               <TableRow
-                v-if="expandedRowKeys?.includes(row.original.id)"
+                v-if="expandedRowKeys?.includes(row.original.id.toString())"
                 class="bg-muted/50"
               >
                 <TableCell :colspan="columns.length" class="p-4">

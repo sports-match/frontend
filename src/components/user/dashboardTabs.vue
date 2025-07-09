@@ -76,14 +76,14 @@
                 <span
                   class="inline-flex items-center justify-center text-white font-bold text-sm w-7 h-7 rounded-lg shadow"
                   :class="{
-                    'bg-green-400': row.original?.initialRating < row.original?.finalRating,
-                    'bg-red-400': row.original?.initialRating > row.original?.finalRating,
-                    'bg-gray-400': row.original?.initialRating === row.original?.finalRating,
+                    'bg-green-400': row.original?.wins > row.original?.loses,
+                    'bg-red-400': row.original?.wins < row.original?.loses,
+                    'bg-gray-400': row.original?.wins === row.original?.loses,
                   }"
                 >
                   <component
-                    :is="row.original?.initialRating < row.original?.finalRating ? ArrowUp : ArrowDown"
-                    v-if="row.original?.initialRating !== row.original?.finalRating"
+                    :is="row.original?.wins > row.original?.loses ? ArrowUp : ArrowDown"
+                    v-if="row.original?.wins !== row.original?.loses"
                     class="size-4"
                   />
                   <div v-else>
@@ -105,16 +105,24 @@
         <div>
           <Datatable
             :columns="groupColumns"
-            :data="matches"
-            :total-records="matches.length"
+            :data="completedEvents"
+            :total-records="completedEvents.length"
             :expanded-row-keys="expandedKeys"
-            class="bg-white rounded-md border"
+            hide-pagination
           >
+            <template #name="{ row }">
+              {{ row.original.name }}
+            </template>
+            <template #currentParticipants="{ row }">
+              <div class="flex items-center gap-2">
+                <Percentage :percentage="(row.original?.currentParticipants * 100 / row.original.maxParticipants) || 0" />
+                {{ row.original.currentParticipants || 0 }}
+              </div>
+            </template>
             <!-- Custom Date Column with expand toggle -->
             <template #date="{ row }">
               <div class="flex items-center gap-2">
                 <Button
-                  variant="ghost"
                   size="icon"
                   @click.stop="toggleExpand(row.original.id)"
                 >
@@ -122,24 +130,41 @@
                   <Plus v-else class="size-4" />
                 </Button>
                 <div>
-                  {{ formatDate(row.original.date) }}
+                  {{ formatDate(row.original.eventTime) }}
                 </div>
               </div>
+            </template>
+            <template #status="{ row }">
+              <StatusIndicator :status="row.original.status" />
             </template>
 
             <!-- Expanded Row Slot -->
             <template #expanded-row="{ row }">
-              <div class="px-4 flex justify-between">
-                <div class="text-muted-foreground mb-2 pe-4 flex flex-col items-center gap-2">
-                  <span class="flex items-center gap-2">
-                    <CircleAlert class="text-red-500 size-4" />
-                    Wins: {{ row.original.summary.wins }},
-                    Losses: {{ row.original.summary.losses }}
+              <div class="flex justify-between">
+                <div class="flex items-center gap-2 w-44">
+                  <span
+                    class="inline-flex items-center justify-center text-white font-bold text-sm w-7 h-7 rounded-lg shadow"
+                    :class="{
+                      'bg-green-400': row.original?.wins > row.original?.loses,
+                      'bg-red-400': row.original?.wins < row.original?.loses,
+                      'bg-gray-400': row.original?.wins === row.original?.loses,
+                    }"
+                  >
+                    <component
+                      :is="row.original?.wins > row.original?.loses ? ArrowUp : ArrowDown"
+                      v-if="row.original?.wins !== row.original?.loses"
+                      class="size-4"
+                    />
+                    <div v-else>
+                      -
+                    </div>
                   </span>
-                  <div>
-                    (<span class="font-medium">{{ row.original.summary.eloStart }}</span> →
-                    <span class="font-medium">{{ row.original.summary.eloEnd }}</span>)
-                  </div>
+                  <span>
+                    Wins: <b>{{ row.original.wins }}</b>, loses: <b>{{ row.original.loses }}</b>
+                    <div>
+                      (<b>{{ row.original?.initialRating }}</b> - <b>{{ row.original?.finalRating }}</b>)
+                    </div>
+                  </span>
                 </div>
 
                 <Table>
@@ -157,37 +182,29 @@
                       <TableHead class="px-2 py-1 text-center">
                         Score
                       </TableHead>
-                      <TableHead class="px-2 py-1 text-right">
-                        Actions
-                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow
-                      v-for="(match, i) in row.original.games"
+                      v-for="(match, i) in row.original?.matches"
                       :key="i"
                       class="border-t"
                     >
                       <TableCell class="px-2 py-1" colspan="2">
-                        <div v-for="player in match.team1" :key="player.name">
-                          {{ player.name }} ({{ player.elo }})
+                        <div v-for="player in match.teamA.teamPlayers" :key="player.name">
+                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore?.toFixed(2) }})
                         </div>
                       </TableCell>
                       <TableCell class="px-2 py-1 text-center font-semibold">
-                        {{ match.score1 }}
+                        {{ match.scoreA }}
                       </TableCell>
                       <TableCell class="px-2 py-1" colspan="2">
-                        <div v-for="player in match.team2" :key="player.name">
-                          {{ player.name }} ({{ player.elo }})
+                        <div v-for="player in match.teamB.teamPlayers" :key="player.name">
+                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore?.toFixed(2) }})
                         </div>
                       </TableCell>
                       <TableCell class="px-2 py-1 text-center font-semibold">
-                        {{ match.score2 }}
-                      </TableCell>
-                      <TableCell class="px-2 py-1 text-right">
-                        <Button class="text-primary" variant="ghost" size="icon">
-                          <FileEditIcon class="size-4" />
-                        </Button>
+                        {{ match.scoreB }}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -202,13 +219,16 @@
 </template>
 
 <script setup lang="ts">
+import type { Event } from '@/schemas/events';
 import type { ColumnDef } from '@tanstack/vue-table';
 import Datatable from '@/components/shares/datatable/index.vue';
+import Percentage from '@/components/shares/Percentage.vue';
+import StatusIndicator from '@/components/shares/StatusIndicator.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
 import { formatDate } from '@/utils/common';
-import { ArrowDown, ArrowUp, Calendar, CircleAlert, ClipboardList, FileEditIcon, MapPinned, Minus, Plus } from 'lucide-vue-next';
+import { ArrowDown, ArrowUp, Calendar, ClipboardList, MapPinned, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import ListView from './events/views/listView.vue';
 
@@ -218,6 +238,10 @@ defineProps({
     default: () => [],
   },
   recentEvents: {
+    type: Array,
+    default: () => [],
+  },
+  completedEvents: {
     type: Array,
     default: () => [],
   },
@@ -248,53 +272,6 @@ const completedColumns = [
   },
 ];
 
-// Dummy match data structure
-type Player = { name: string; elo: number };
-type Match = {
-  id: string;
-  date: string;
-  event: string;
-  location: string;
-  signedUp: string;
-  courts: number;
-  status: string;
-  summary: { wins: number; losses: number; eloStart: number; eloEnd: number };
-  games: {
-    team1: Player[];
-    score1: number;
-    team2: Player[];
-    score2: number;
-  }[];
-};
-
-const matches = ref<Match[]>([
-  {
-    id: 'match1',
-    date: '2025-04-26T00:42:00Z',
-    event: 'May 9th Mukilteo Mixer Standard Doubles Mixer',
-    location: 'BBC-Mukilteo',
-    signedUp: '25/24',
-    courts: 4,
-    status: 'Completed',
-    summary: { wins: 1, losses: 4, eloStart: 6648.0, eloEnd: 6608.09 },
-    games: [
-      {
-        team1: [
-          { name: 'Surya Prakash Gummadi', elo: 6588.9 },
-          { name: 'Vamsi Krishna', elo: 6648.0 },
-        ],
-        score1: 16,
-        team2: [
-          { name: 'Mohit Bansal', elo: 6065.36 },
-          { name: 'Sivaprasadu Raju', elo: 7382.23 },
-        ],
-        score2: 21,
-      },
-      // Add more games here
-    ],
-  },
-]);
-
 const expanded = ref<Record<string, boolean>>({});
 const expandedKeys = computed(() =>
   Object.keys(expanded.value).filter(key => expanded.value[key]),
@@ -304,13 +281,12 @@ function toggleExpand(id: string) {
   expanded.value[id] = !expanded.value[id];
 }
 
-const groupColumns: ColumnDef<Match>[] = [
+const groupColumns: ColumnDef<Event>[] = [
   { accessorKey: 'date', header: 'Date', cell: () => null },
-  { accessorKey: 'event', header: 'Event Name' },
-  { accessorKey: 'location', header: 'Location' },
-  { accessorKey: 'signedUp', header: 'Signed up' },
-  { accessorKey: 'courts', header: 'Courts' },
+  { accessorKey: 'name', header: 'Event Name' },
+  { accessorKey: 'club.location', header: 'Location' },
+  { accessorKey: 'currentParticipants', header: 'Signed up' },
+  { accessorKey: 'groupCount', header: 'Courts' },
   { accessorKey: 'status', header: 'Status' },
-  { accessorKey: 'actions', header: 'Actions', cell: () => null },
 ];
 </script>

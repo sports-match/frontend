@@ -138,7 +138,7 @@
       </div>
     </div>
     <div class="mt-6">
-      <DashboardTabs :upcoming-events="upcomingEvents" :recent-events="pastEvents" />
+      <DashboardTabs :upcoming-events="upcomingEvents" :recent-events="pastEvents" :completed-events="completedEvents" />
     </div>
   </MainContentLayout>
 </template>
@@ -161,6 +161,7 @@ const userStore = useUserStore();
 const dashboard = ref<Partial<Dashboard>>({});
 const upcomingEvents = ref([]);
 const pastEvents = ref([]);
+const completedEvents = ref([]);
 
 const playerId = computed(() => userStore?.userDetails.playerId);
 
@@ -168,6 +169,7 @@ onMounted(() => {
   fetchData();
   fetchUpcoming();
   fetchPast();
+  fetchCompleted();
 });
 
 async function fetchUpcoming() {
@@ -193,6 +195,20 @@ async function fetchPast() {
       playerId: playerId.value,
     });
     pastEvents.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function fetchCompleted() {
+  try {
+    const { data: { content } } = await getEvents({
+      size: 10,
+      sort: 'eventTime',
+      status: 'COMPLETED',
+      playerId: playerId.value,
+    });
+    completedEvents.value = content;
   } catch (error) {
     notify.error(error as string);
   }
