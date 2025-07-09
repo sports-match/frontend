@@ -1,5 +1,5 @@
 export function formatDate(
-  input: string | Date | undefined,
+  input: string | Date | undefined | null,
   options?: Intl.DateTimeFormatOptions,
   locale: string = 'en-US',
 ): string {

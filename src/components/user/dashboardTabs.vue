@@ -61,6 +61,33 @@
                 {{ row.original?.club?.location }}
               </div>
             </template>
+            <template #result="{ row }">
+              <div class="flex items-center gap-2">
+                <span
+                  class="inline-flex items-center justify-center text-white font-bold text-sm w-7 h-7 rounded-lg shadow"
+                  :class="{
+                    'bg-green-400': row.original?.initialRating < row.original?.finalRating,
+                    'bg-red-400': row.original?.initialRating > row.original?.finalRating,
+                    'bg-gray-400': row.original?.initialRating === row.original?.finalRating,
+                  }"
+                >
+                  <component
+                    :is="row.original?.initialRating < row.original?.finalRating ? ArrowUp : ArrowDown"
+                    v-if="row.original?.initialRating !== row.original?.finalRating"
+                    class="size-4"
+                  />
+                  <div v-else>
+                    -
+                  </div>
+                </span>
+                <span>
+                  Wins: <b>{{ row.original.wins }}</b>, loses: <b>{{ row.original.loses }}</b>
+                  <div>
+                    (<b>{{ row.original?.initialRating }}</b> - <b>{{ row.original?.finalRating }}</b>)
+                  </div>
+                </span>
+              </div>
+            </template>
           </Datatable>
         </div>
       </TabsContent>
@@ -171,7 +198,7 @@ import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shares/ui/tabs';
 import { formatDate } from '@/utils/common';
-import { Calendar, CircleAlert, ClipboardList, FileEditIcon, MapPinned, Minus, Plus } from 'lucide-vue-next';
+import { ArrowDown, ArrowUp, Calendar, CircleAlert, ClipboardList, FileEditIcon, MapPinned, Minus, Plus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import ListView from './events/views/listView.vue';
 

@@ -119,53 +119,116 @@
           <h2 class="text-lg font-semibold mb-2">
             Last Match
           </h2>
-          <p class="text-xl font-bold">
-            Won vs Parker
-          </p>
-          <p class="text-sm text-gray-400">
-            May 12, 2025
-          </p>
+          <template v-if=" getLastMatchTextAndDate.text">
+            <p class="text-xl font-bold">
+              {{ getLastMatchTextAndDate.text }}
+            </p>
+            <p class="text-sm text-gray-400">
+              {{ formatDate(getLastMatchTextAndDate.date) || '' }}
+            </p>
+          </template>
+          <template v-else>
+            <p class="text-sm text-gray-400 h-12">
+              No Record yet
+            </p>
+          </template>
         </div>
         <!-- Calendar & Events -->
         <UpcomingCalendar :event-today="dashboard.eventToday" :events="dashboard.upcomingEvents" />
       </div>
     </div>
     <div class="mt-6">
-      <DashboardTabs :upcoming-events="dashboard.upcomingEvents" :recent-events="dashboard.recentEvents" />
+      <DashboardTabs :upcoming-events="upcomingEvents" :recent-events="pastEvents" />
     </div>
   </MainContentLayout>
 </template>
 
 <script setup lang="ts">
 import type { Dashboard } from '@/schemas/dashboard';
-import { getPlayerEvents, playersDashboard } from '@/api/user';
+import { getEvents } from '@/api/event';
+import { playersDashboard } from '@/api/user';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
 import DashboardTabs from '@/components/user/dashboardTabs.vue';
 import GraphView from '@/components/user/graphView.vue';
 import UpcomingCalendar from '@/components/user/upcomingCalendar.vue';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores/user';
+import { formatDate } from '@/utils/common';
 import { Calendar1, User, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore();
 const dashboard = ref<Partial<Dashboard>>({});
+const upcomingEvents = ref([]);
+const pastEvents = ref([]);
 
 const playerId = computed(() => userStore?.userDetails.playerId);
-const playerEvents = ref<any[]>([]);
 
 onMounted(() => {
   fetchData();
+  fetchUpcoming();
+  fetchPast();
 });
+
+async function fetchUpcoming() {
+  try {
+    const { data: content } = await getEvents({
+      size: 5,
+      sort: 'eventTime',
+      eventTimeFilter: 'UPCOMING',
+      playerId: playerId.value,
+    });
+    upcomingEvents.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
+
+async function fetchPast() {
+  try {
+    const { data: content } = await getEvents({
+      size: 5,
+      sort: 'eventTime',
+      eventTimeFilter: 'PAST',
+      playerId: playerId.value,
+    });
+    pastEvents.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchData() {
   try {
-    const { data } = await playersDashboard(playerId.value);
-    const { data: eventSummary } = await getPlayerEvents(playerId.value);
-    playerEvents.value = eventSummary;
+    const { data } = await playersDashboard(playerId.value as number);
     dashboard.value = data;
   } catch (error) {
     notify.error(error as string);
   }
 }
+
+const getLastMatchTextAndDate = computed(() => {
+  const lastMatch = dashboard.value?.lastMatch;
+  if (!lastMatch)
+    return { text: '', date: null };
+
+  const isWin = lastMatch.teamAWin || lastMatch.teamBWin;
+  const isTeamA = lastMatch.teamAWin === true;
+  const opponent = isTeamA ? lastMatch.teamB.name : lastMatch.teamA.name;
+  const result = isWin ? 'Won' : 'Lost';
+
+  // Try to find latest rating update time
+  const allRatings = [
+    ...lastMatch.teamA.teamPlayers,
+    ...lastMatch.teamB.teamPlayers,
+  ].flatMap(tp => tp.player.playerSportRating);
+
+  const updateTimes = allRatings.map(r => new Date(r.updateTime));
+  const latestUpdate = updateTimes.length > 0 ? new Date(Math.max(...updateTimes)) : null;
+
+  return {
+    text: `${result} vs ${opponent}`,
+    date: latestUpdate,
+  };
+});
 </script>
