@@ -6,7 +6,7 @@
     <div v-if="event.playerStatus === 'REGISTERED'" class="flex justify-end">
       <Button @click="checkIn">
         <CopyCheckIcon class="mr-2 size-4" />
-        Chick In
+        Check In
       </Button>
     </div>
     <Tabs default-value="registrations" class="w-full">
