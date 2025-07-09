@@ -5,7 +5,12 @@
       <Accordion type="multiple" class="w-full space-y-4" :default-value="groups[0]?.id?.toString()">
         <AccordionItem v-for="group in groups" :key="group.name" :value="group.name">
           <AccordionTrigger class="bg-primary text-white px-4 py-3 rounded-xl data-[state=open]:rounded-b-none">
-            {{ group.name }} Matchups and Scores
+            <div class="flex flex-col items-start justify-start text-sm">
+              Your Matchups and Scores
+              <div>
+                {{ group.name }} <span v-if="group.courtNumbers">(Court {{ group.courtNumbers }})</span>
+              </div>
+            </div>
           </AccordionTrigger>
           <AccordionContent class="bg-white rounded-b-lg border border-t-0 p-0">
             <!-- Matchups Table -->
