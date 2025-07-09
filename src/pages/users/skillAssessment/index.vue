@@ -153,6 +153,8 @@ type Question = {
 const userStore = useUserStore();
 const router = useRouter();
 
+const { query: { redirect } } = router.currentRoute.value;
+
 const questions = ref<Question[]>([]);
 const answers = ref<{ questionId: number; answerValue: number; playerId: number }[]>([]);
 const form = ref<Record<string, number>>({});
@@ -187,6 +189,7 @@ async function submitQuestions() {
     await answerSelfAssessment({ answers: answers.value });
     userStore.setAssessmentStatus(true);
     router.push({ name: 'DashboardPage' });
+    router.push({ path: redirect?.toString() ?? '/dashboard', replace: true });
     notify.success('Assessment submitted successfully!');
   } catch (error) {
     notify.error(error as string);

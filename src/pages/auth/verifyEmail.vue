@@ -58,7 +58,7 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-const { email } = route.query;
+const { email, redirect } = route.query;
 const code = ref('');
 const timer = ref(30);
 let interval: number | undefined;
@@ -89,7 +89,7 @@ async function submitCode() {
     if (!email)
       return;
     await verifyEmail({ email: email as string, code: code.value });
-    router.push({ name: 'AuthLoginPage' });
+    router.push({ name: 'AuthLoginPage', query: { redirect } });
     notify.success('Sign up successfully! Please Sign in.');
   } catch (error) {
     notify.error(error as string);

@@ -40,7 +40,7 @@
 
       <!-- Sidebar -->
       <div class="border rounded-lg p-6">
-        <Button class="w-full" :disabled="!event.isPublic" @click="signUpEvent">
+        <Button class="w-full" :disabled="isAuthenticated && !event?.isPublic" @click="signUpEvent">
           <CalendarArrowUp class="mr-2 size-4" />
           Sign up
         </Button>
@@ -70,17 +70,21 @@
 import type { Event } from '@/schemas/events';
 import { joinEvent } from '@/api/event';
 import { Button } from '@/components/shares/ui/button';
+import { useAuthentication } from '@/composables';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores';
 import { formatDate } from '@/utils/common';
 import { CalendarArrowUp, MapPin } from 'lucide-vue-next';
 import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const props = defineProps<{
   event: Event;
 }>();
-
 const emit = defineEmits(['onJoinedEvent']);
+const router = useRouter();
+const route = useRoute();
+const { isAuthenticated } = useAuthentication();
 
 const userStore = useUserStore();
 
@@ -90,9 +94,13 @@ const imageUrl = computed(() => {
   return `${import.meta.env.VITE_API_URL}${props.event?.posterImage}`;
 });
 
-const playerId = computed(() => userStore?.userDetails.playerId || null);
+const playerId = computed(() => userStore?.userDetails?.playerId || null);
 
 async function signUpEvent() {
+  if (!isAuthenticated.value) {
+    router.push({ name: 'AuthLoginPage', query: { redirect: route.fullPath } });
+    return;
+  }
   const id = props.event.id;
   try {
     await joinEvent(id, {

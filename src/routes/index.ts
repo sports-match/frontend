@@ -31,16 +31,16 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
   // set(isLoading, true);
   const { isAuthenticated, assessmentStatus, completedClubSelectionStatus, isPlayer, isOrganizer } = useAuthentication();
 
-  if (!to.meta.public && !get(isAuthenticated)) {
+  if (!to.meta.public && !get(isAuthenticated) && to.name !== 'ViewEvent') {
     return next({ name: 'HomePage', query: { redirect: to.fullPath } });
   } else if (to.meta.public && get(isAuthenticated)) {
     return next({ name: 'DashboardPage' });
   } else if (get(isAuthenticated) && !get(assessmentStatus) && get(isPlayer) && to.name !== 'SkillAssessmentPage') {
-    return next({ name: 'SkillAssessmentPage' });
+    return next({ name: 'SkillAssessmentPage', query: { redirect: from.query.redirect } });
   } else if (get(isAuthenticated) && !get(completedClubSelectionStatus) && get(isOrganizer) && to.name !== 'ClubSelectPage') {
     return next({ name: 'ClubSelectPage' });
   }

@@ -42,7 +42,7 @@
       <p class="text-sm text-muted-foreground">
         Not a member?
         <Button variant="link" size="sm" class="p-0 ml-2">
-          <RouterLink to="/auth/signup" class="text-primary">
+          <RouterLink :to="`/auth/signup?redirect=${redirect}`" class="text-primary">
             Sign up
           </RouterLink>
         </Button>
@@ -72,6 +72,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const userStore = useUserStore();
 
+const { query: { redirect } } = router.currentRoute.value;
 const formData = ref({
   username: '',
   password: '',
@@ -80,7 +81,6 @@ const formData = ref({
 // const isLoading = ref(false);
 async function onSubmit() {
   try {
-    const { query: { redirect } } = router.currentRoute.value;
     const { data: { token: accessToken, ...rest } } = await login(formData.value);
     const { token } = useAuthentication();
     set(token, accessToken);

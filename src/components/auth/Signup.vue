@@ -81,7 +81,7 @@
       <p class="text-sm text-muted-foreground">
         Already have an account?
         <Button variant="link" size="sm" class="p-0 ml-2">
-          <RouterLink to="/auth/login" class="text-primary">
+          <RouterLink :to="`/auth/login?redirect=${redirect}`" class="text-primary">
             Sign in
           </RouterLink>
         </Button>
@@ -106,7 +106,7 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-const { user } = route.query;
+const { user, redirect } = route.query;
 
 const isLoading = ref(false);
 
@@ -132,7 +132,7 @@ async function onSubmit(event: Event) {
   isLoading.value = true;
   try {
     const { data } = await register(formData.value);
-    router.push({ name: 'VerifyEmailPage', query: { email: data.email } });
+    router.push({ name: 'VerifyEmailPage', query: { email: data.email, redirect } });
   } catch (error) {
     notify.error(error as string);
   } finally {
