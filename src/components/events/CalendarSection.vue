@@ -28,13 +28,15 @@
       <!-- Event 1 -->
       <template v-if="onlyTwoEvents.length">
         <div v-for="event in onlyTwoEvents" :key="event.id" class="flex gap-4 mb-6">
-          <div class="text-gray-400 text-sm flex-shrink-0 pt-1">
+          <div class="text-gray-400 text-sm flex-shrink-0 pt-1 hover:underline">
             {{ formatDate(event.eventTime) }}
           </div>
           <div class="flex-1">
-            <h3 class="font-semibold text-lg">
-              {{ event.name }}
-            </h3>
+            <router-link :to="{ name: 'ViewEvent', params: { id: event.id } }">
+              <h3 class="font-semibold text-lg hover:underline">
+                {{ event.name }}
+              </h3>
+            </router-link>
             <div class="flex gap-2 mt-2">
               <span class="bg-gray-100 text-gray-700 rounded px-2 py-0.5 text-xs">
                 {{ event.format }}
