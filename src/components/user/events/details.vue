@@ -51,7 +51,7 @@
         <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
       <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matchList">
-        <MatchList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" />
+        <MatchList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" @pull-groups="fetchGroups" />
       </TabsContent>
       <TabsContent v-if="isCompleted" value="results">
         <ResultList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" />
