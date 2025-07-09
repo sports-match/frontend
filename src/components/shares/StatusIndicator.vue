@@ -3,7 +3,7 @@
     class="inline-flex items-center justify-center text-xs p-1 px-3 rounded-lg"
     :class="[bgColor, textColor]"
   >
-    {{ status }}
+    {{ formatStatus(status) }}
   </span>
 </template>
 
@@ -27,6 +27,14 @@ const statusColors = {
 const resolvedStatus = computed(() => {
   return (props.status as string)?.toLowerCase();
 });
+
+function formatStatus(status: string) {
+  return status
+    .toLowerCase()
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 const bgColor = computed(() => statusColors[resolvedStatus.value as keyof typeof statusColors]?.bg || statusColors.default.bg);
 const textColor = computed(() => statusColors[resolvedStatus.value as keyof typeof statusColors]?.text || statusColors.default.text);

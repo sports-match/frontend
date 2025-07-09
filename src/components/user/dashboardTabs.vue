@@ -192,7 +192,7 @@
                     >
                       <TableCell class="px-2 py-1" colspan="2">
                         <div v-for="player in match.teamA.teamPlayers" :key="player.name">
-                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore?.toFixed(2) }})
+                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore }})
                         </div>
                       </TableCell>
                       <TableCell class="px-2 py-1 text-center font-semibold">
@@ -200,7 +200,7 @@
                       </TableCell>
                       <TableCell class="px-2 py-1" colspan="2">
                         <div v-for="player in match.teamB.teamPlayers" :key="player.name">
-                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore?.toFixed(2) }})
+                          {{ player.player?.name }} ({{ player.player?.playerSportRating[0]?.rateScore }})
                         </div>
                       </TableCell>
                       <TableCell class="px-2 py-1 text-center font-semibold">

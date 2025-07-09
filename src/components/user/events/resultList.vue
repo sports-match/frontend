@@ -52,7 +52,7 @@
                         <div>
                           <div v-for="(p, i) in match.teamA.teamPlayers" :key="i" class="leading-tight">
                             <span>{{ p.player?.name }}</span>
-                            <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ match.teamA.averageScore }})</span>
+                            <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ p.player.playerSportRating[0].rateScore }})</span>
                           </div>
                         </div>
                       </div>
@@ -72,7 +72,7 @@
                         <div>
                           <div v-for="(p, i) in match.teamB.teamPlayers" :key="i" class="leading-tight">
                             <span>{{ p.player?.name }}</span>
-                            <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ match.teamB.averageScore }})</span>
+                            <span v-if="p.player?.playerSportRating" class="text-xs text-gray-500 ml-1">({{ p.player.playerSportRating[0].rateScore }})</span>
                           </div>
                         </div>
                       </div>
