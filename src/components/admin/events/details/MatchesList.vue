@@ -127,7 +127,7 @@
                       <td v-for="(score, matchIndex) in group.matrix" :key="matchIndex" class="px-4 py-2">
                         <span v-for="(s, sIndex) in score.matches" :key="sIndex">
                           <span v-if=" s.otherTeam?.id === row.team.id">
-                            {{ s.myScore }} - {{ s.otherScore }}
+                            {{ s.otherScore }} - {{ s.myScore }}
                           </span>
                         </span>
                       </td>
