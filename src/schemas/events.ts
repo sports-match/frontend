@@ -138,3 +138,12 @@ export type Club = {
   createTime: string;
   updateTime: string;
 };
+
+export type EventPlayerRates = {
+  losses: number;
+  name: string;
+  newRating: number;
+  previousRating: number;
+  ratingChanges: number;
+  wins: number;
+};

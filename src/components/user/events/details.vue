@@ -51,10 +51,10 @@
         <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
       </TabsContent>
       <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matchList">
-        <MatchList :event-status="event.status" :groups="groups" />
+        <MatchList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" />
       </TabsContent>
       <TabsContent v-if="isCompleted" value="results">
-        <ResultList :event-status="event.status" :groups="groups" />
+        <ResultList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>
@@ -64,7 +64,7 @@
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
 import type { Ref } from 'vue';
-import { checkinEvent, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
+import { checkinEvent, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayerRate, getEventPlayers } from '@/api/event';
 import EventCard from '@/components/events/DetailsCard.vue';
 import MainContentLayout from '@/components/shares/main-content-layout/MainContentLayout.vue';
 import { Button } from '@/components/shares/ui/button';
@@ -89,6 +89,7 @@ const players = ref<Player[]>([]);
 const matches = ref([]);
 const groups = ref([]);
 const eventParticipants = ref([]);
+const eventPlayerRates = ref([]);
 
 const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
 const isCompleted = computed(() => event.value?.status === 'COMPLETED');
@@ -102,7 +103,17 @@ onMounted(async () => {
   fetchMatchList();
   fetchGroups();
   fetchEventParticipants();
+  fetchPlayerRates();
 });
+
+async function fetchPlayerRates() {
+  try {
+    const { data } = await getEventPlayerRate(id as string);
+    eventPlayerRates.value = data;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchEventParticipants() {
   try {

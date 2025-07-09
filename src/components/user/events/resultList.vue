@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col md:flex-row gap-4">
+  <div class="flex flex-col gap-4">
     <!-- Left: Matchups and Scores -->
     <div class="flex-1 flex flex-col gap-4">
       <Accordion type="multiple" class="w-full space-y-4" :default-value="groups[0]?.id?.toString()">
@@ -140,16 +140,62 @@
         </AccordionItem>
       </Accordion>
     </div>
+
+    <Datatable
+      v-if="eventStatus === 'COMPLETED'"
+      :total-records="eventPlayerRates.length"
+      :columns="columns"
+      :data="eventPlayerRates"
+      hide-pagination
+    >
+      <template #winLoss="{ row }">
+        {{ row.original.wins }} - {{ row.original.losses }}
+      </template>
+      <template #ratingChanges="{ row }">
+        <div class="flex gap-1">
+          {{ row.original.ratingChanges }}
+          <template v-if="row.original.ratingChanges !== 0">
+            <ArrowUp v-if="row.original.ratingChanges > 0" class="w-4 h-4 text-green-500" />
+            <ArrowDown v-else class="w-4 h-4 text-destructive" />
+          </template>
+        </div>
+      </template>
+    </Datatable>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Group } from '@/schemas/events';
+import type { EventPlayerRates, Group } from '@/schemas/events';
+import Datatable from '@/components/shares/datatable/index.vue';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/shares/ui/accordion';
 import { CalendarIcon } from 'lucide-vue-next';
 
 defineProps<{
   groups: Group[];
   eventStatus: string;
+  eventPlayerRates: EventPlayerRates[];
 }>();
+
+const columns = [
+  {
+    header: 'Player',
+    accessorKey: 'name',
+  },
+  {
+    header: 'W/L',
+    accessorKey: 'winLoss',
+  },
+  {
+    header: 'Total Ratings Change',
+    accessorKey: 'ratingChanges',
+  },
+  {
+    header: 'Previous Rating',
+    accessorKey: 'previousRating',
+  },
+  {
+    header: 'New Rating',
+    accessorKey: 'newRating',
+  },
+];
 </script>

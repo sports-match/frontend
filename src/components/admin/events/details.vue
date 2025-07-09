@@ -69,10 +69,10 @@
         <GroupList :groups="groups" @generate-matches="generatingMatches" @finalize-group="finalizeGroup" />
       </TabsContent>
       <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matches">
-        <MatchesList :event-status="event.status" :groups="groups" />
+        <MatchesList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" />
       </TabsContent>
       <TabsContent value="results">
-        <ResultList :event-status="event.status" :groups="groups" @pull-groups="fetchGroups" />
+        <ResultList :event-status="event.status" :groups="groups" :event-player-rates="eventPlayerRates" @pull-groups="fetchGroups" />
       </TabsContent>
     </Tabs>
   </MainContentLayout>
@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import type { Event, EventParams } from '@/schemas/events';
 import type { Ref } from 'vue';
-import { finalizeGroups, generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayers } from '@/api/event';
+import { finalizeGroups, generateMatches, getEvent, getEventGroups, getEventMatches, getEventParticipants, getEventPlayerRate, getEventPlayers } from '@/api/event';
 import EventParticipants from '@/components/admin/events/details/EventParticipants.vue';
 import GroupList from '@/components/admin/events/details/GroupList.vue';
 import MatchesList from '@/components/admin/events/details/MatchesList.vue';
@@ -104,6 +104,7 @@ const playersInEvent = ref([]);
 const groups = ref([]);
 const matches = ref([]);
 const eventParticipants = ref([]);
+const eventPlayerRates = ref([]);
 
 onMounted(() => {
   fetchEvent();
@@ -111,7 +112,17 @@ onMounted(() => {
   fetchGroups();
   getMatches();
   fetchEventParticipants();
+  fetchPlayerRates();
 });
+
+async function fetchPlayerRates() {
+  try {
+    const { data } = await getEventPlayerRate(id as string);
+    eventPlayerRates.value = data;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 
 async function fetchEventParticipants() {
   try {
