@@ -13,7 +13,7 @@
       <Input
         ref="inputRef"
         v-model="inputValue"
-        type="number"
+        type="text"
         :placeholder="placeholder"
         class="w-20"
         @keydown.enter="save"

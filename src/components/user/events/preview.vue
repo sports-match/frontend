@@ -52,9 +52,7 @@
           </div>
           <div class="flex justify-between">
             <strong class="text-gray-600">Courts:</strong>
-            <span v-if="event?.groupCount && event?.groupCount > 0">
-              {{ event?.groupCount > 3 ? `1 to ${event?.groupCount}` : Array.from({ length: event?.groupCount }).map((_, i) => i + 1).join(', ') }}
-            </span>
+            {{ event?.groupCount }}
           </div>
           <div class="flex justify-between">
             <strong class="text-gray-600">Groups:</strong>
