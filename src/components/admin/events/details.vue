@@ -37,7 +37,7 @@
           value="matches"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
-          <template v-if="event.status === 'IN_PROGRESS'">
+          <template v-if="event.status === 'IN_PROGRESS' && matches.length">
             <ChartSpline class="w-5 h-5" />
             Generated Matches
           </template>
