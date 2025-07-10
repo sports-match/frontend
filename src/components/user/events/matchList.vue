@@ -37,7 +37,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(match, index) in group.matches" :key="match.id" class="border-t align-center">
+                  <tr
+                    v-for="(match, index) in group.matches" :key="match.id" class="border-t align-center"
+                    :class="{ 'bg-yellow-100/50': isCurrentUser(match) }"
+                  >
                     <!-- Game number -->
                     <td class="px-4 py-2 whitespace-nowrap align-center">
                       <div class="font-semibold">
