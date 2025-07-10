@@ -9,11 +9,11 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
-        <Button class="bg-primary text-white w-full sm:w-auto" @click="generateMatches">
+        <Button v-if="groups[0].finalized" class="bg-primary text-white w-full sm:w-auto" @click="generateMatches">
           <Gamepad class="w-5 h-5 mr-2" /> Generate Matches
         </Button>
 
-        <Button class="bg-primary text-white w-full sm:w-auto" @click="finalizeGroup">
+        <Button v-if="!groups[0].finalized" class="bg-primary text-white w-full sm:w-auto" @click="finalizeGroup">
           <ListTree class="w-5 h-5 mr-2" />Finalize Group
         </Button>
       </div>
@@ -68,7 +68,10 @@
                   <Button variant="outline" size="sm">
                     <Edit class="size-3 text-primary" />
                   </Button> -->
-                  <InlineEdit v-model="group.courtNumbers" @update:model-value="updateCourtNumber(group.courtNumbers, group.id)" />
+                  <InlineEdit v-if="!group.finalized" v-model="group.courtNumbers" @update:model-value="updateCourtNumber(group.courtNumbers, group.id)" />
+                  <span v-else>
+                    {{ group.courtNumbers }}
+                  </span>
                 </div>
               </TableCell>
               <!-- <TableCell>

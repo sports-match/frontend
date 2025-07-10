@@ -104,6 +104,7 @@ export type Group = {
   name: string;
   teams: Team[];
   matrix?: Matrix[];
+  finalized?: boolean;
 };
 
 type Matrix = {

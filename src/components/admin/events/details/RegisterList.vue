@@ -9,16 +9,20 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
-        <Button class="bg-primary text-white w-full sm:w-auto" @click="startEventCheckIn">
+        <Button v-if="event.status === 'PUBLISHED'" class="bg-primary text-white w-full sm:w-auto" @click="startEventCheckIn">
           <CheckCheck class="w-5 h-5 mr-2" />Start Check In
         </Button>
 
         <GenerateGroup
+          v-if="!groups.length"
           class="w-full sm:w-auto"
           :groups="groups"
           @pull-groups="fetchGroups"
         />
-        <AddMemberDialog :exclude-ids="participants.map((p: TeamPlayer) => p?.player?.id)" :event="event" class="w-full sm:w-auto" @pull-players="getPlayers" />
+        <AddMemberDialog
+          v-if="event.status === 'PUBLISHED' || event.status === 'CHECK_IN'"
+          :exclude-ids="participants.map((p: TeamPlayer) => p?.player?.id)" :event="event" class="w-full sm:w-auto" @pull-players="getPlayers"
+        />
       </div>
     </div>
 
@@ -38,7 +42,7 @@
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
+          <Button v-if="event.status === 'PUBLISHED'" variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
             <Dock class="size-4" />
           </Button>
           <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
