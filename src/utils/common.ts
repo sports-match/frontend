@@ -42,13 +42,13 @@ export function getCheckInCountdown(checkInStr: string): string | null {
   const checkInDate = new Date(checkInStr.replace(' ', 'T'));
   const diffMs = checkInDate.getTime() - now.getTime();
 
-  if (diffMs <= 0)
-    return null; // already started
+  // if (diffMs <= 0)
+  //   return null; // already started
 
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  // const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays <= 4)
-    return null;
+  // if (diffDays <= 4)
+  //   return null;
 
   const totalSeconds = Math.floor(diffMs / 1000);
   const days = Math.floor(totalSeconds / (60 * 60 * 24));
@@ -62,9 +62,8 @@ export function getCheckInCountdown(checkInStr: string): string | null {
     parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
   if (minutes > 0 && days === 0)
     parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
-
-  if (diffDays < 4)
-    return `Check-in starts in ${parts.join(' ')}`;
-  else
-    return `Check-in starts at ${formatDate(checkInDate, { month: 'short', day: 'numeric' }, 'en-US')}`;
+  // if (diffDays < 4)
+  return `Check-in starts in ${parts.join(' ')}`;
+  // else
+  //   return `Check-in starts at ${formatDate(checkInDate, { month: 'short', day: 'numeric' }, 'en-US')}`;
 }

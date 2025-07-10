@@ -39,13 +39,13 @@
       <template #status="{ row }">
         <div>
           <CircleCheck
-            v-if="row.original?.status === 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId"
+            v-if="row.original?.status === 'CHECKED_IN'"
             class="size-6 text-green-500"
           />
           <X v-if="row.original?.status !== 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId" class="size-6 text-red-500" />
         </div>
         <div v-if="row.original?.player?.id === currentUserPlayerId" class="flex gap-2">
-          <div v-tooltip="event.status !== 'CHECK_IN' ? getCheckInCountdown(event.checkInStart) : ''">
+          <div v-if="row.original?.status !== 'CHECKED_IN'" v-tooltip="getCheckInCountdown(event.checkInStart)">
             <Button
               size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
             >
@@ -56,6 +56,7 @@
             </Button>
           </div>
           <Button
+            v-if="row.original?.status !== 'CHECKED_IN'"
             variant="destructive"
             size="sm"
             @click.stop="widthdraw(row.original.player.id)"
