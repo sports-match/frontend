@@ -3,12 +3,12 @@
   <MainContentLayout v-else>
     <EventCard v-if="event" :event="event" />
 
-    <div v-if="event.playerStatus === 'REGISTERED'" class="flex justify-end">
+    <!-- <div v-if="event.playerStatus === 'REGISTERED'" class="flex justify-end">
       <Button @click="checkIn">
         <CopyCheckIcon class="mr-2 size-4" />
         Check In
       </Button>
-    </div>
+    </div> -->
     <Tabs default-value="registrations" class="w-full">
       <TabsList class="border-b border-gray-200 w-full justify-start space-x-6 bg-transparent rounded-xs">
         <TabsTrigger
@@ -156,18 +156,18 @@ async function fetchPlayers() {
   }
 }
 
-async function checkIn() {
-  try {
-    await checkinEvent(event.value?.id, {
-      eventId: event.value?.id,
-      playerId: currentUserPlayerId.value,
-    });
-    notify.success('Checked in successfully');
-    fetchPlayers();
-  } catch (e) {
-    notify.error(e as string);
-  }
-}
+// async function checkIn() {
+//   try {
+//     await checkinEvent(event.value?.id, {
+//       eventId: event.value?.id,
+//       playerId: currentUserPlayerId.value,
+//     });
+//     notify.success('Checked in successfully');
+//     fetchPlayers();
+//   } catch (e) {
+//     notify.error(e as string);
+//   }
+// }
 
 async function fetchMatchList() {
   try {

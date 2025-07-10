@@ -40,17 +40,29 @@
         <div>
           <CircleCheck
             v-if="row.original?.status === 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId"
-            class="size-8 text-green-500"
+            class="size-6 text-green-500"
           />
+          <X v-if="row.original?.status !== 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId" class="size-6 text-red-500" />
         </div>
-        <Button
-          v-if="row.original?.player?.id === currentUserPlayerId"
-          variant="destructive"
-          size="sm"
-          @click.stop="widthdraw(row.original.player.id)"
-        >
-          <Dock class="size-4 me-1" />Widthdraw
-        </Button>
+        <div v-if="row.original?.player?.id === currentUserPlayerId" class="flex gap-2">
+          <div v-tooltip="event.status !== 'CHECK_IN' ? getCheckInCountdown(event.checkInStart) : ''">
+            <Button
+              size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
+            >
+              <CopyCheckIcon class="size-4 me-2" />
+              <span class="inline-block whitespace-nowrap">
+                Check In
+              </span>
+            </Button>
+          </div>
+          <Button
+            variant="destructive"
+            size="sm"
+            @click.stop="widthdraw(row.original.player.id)"
+          >
+            <Dock class="size-4 me-1" />Widthdraw
+          </Button>
+        </div>
       </template>
     </Datatable>
   </div>
@@ -59,13 +71,14 @@
 <script setup lang="ts">
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
-import { withdrawEvent } from '@/api/event';
+import { checkinEvent, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
 import PlayerSearchDialog from '@/components/shares/dialogs/PlayerSearchDialog.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores';
-import { CircleCheck, Dock, User } from 'lucide-vue-next';
+import { getCheckInCountdown } from '@/utils/common';
+import { CircleCheck, CopyCheckIcon, Dock, User, X } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -112,6 +125,20 @@ function getPlayers() {
 
 function pullEvent() {
   emit('pullEvent');
+}
+
+async function checkIn() {
+  try {
+    await checkinEvent(props.event?.id, {
+      eventId: props.event?.id,
+      playerId: currentUserPlayerId.value,
+    });
+    notify.success('Checked in successfully');
+    pullEvent();
+    getPlayers();
+  } catch (e) {
+    notify.error(e as string);
+  }
 }
 
 async function widthdraw(playerId: string | number) {
