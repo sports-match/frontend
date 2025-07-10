@@ -28,7 +28,7 @@
       <!-- Event 1 -->
       <template v-if="onlyTwoEvents.length">
         <div v-for="event in onlyTwoEvents" :key="event.id" class="flex gap-4 mb-6">
-          <div class="text-gray-400 text-sm flex-shrink-0 pt-1 hover:underline">
+          <div class="text-gray-400 text-sm flex-shrink-0 pt-1">
             {{ formatDate(event.eventTime) }}
           </div>
           <div class="flex-1">

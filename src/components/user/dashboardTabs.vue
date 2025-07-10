@@ -21,29 +21,6 @@
 
       <TabsContent value="myEvents">
         <div class="grid grid-cols-1 md:grid-cols-[1.5fr,1fr] gap-4 mt-4">
-          <!-- <Datatable
-            hide-pagination
-            :total-records="upcomingEvents.length"
-            :columns="columns"
-            :data="upcomingEvents"
-            @on-row-click="(row) => $router.push({ name: 'ViewEvent', params: { id: row.orignal.id } })"
-          >
-            <template #name="{ row }">
-              <div class="font-semibold">
-                {{ row.original?.name }}
-              </div>
-              <div class="flex items-center gap-2 pt-2">
-                <MapPinned v-if="row.original?.club?.location" class="size-4" />
-                {{ row.original?.club?.location }}
-              </div>
-            </template>
-            <template #eventTime="{ row }">
-              {{ formatDate(row.original?.eventTime) }}
-            </template>
-            <template #status="{ row }">
-              {{ row.original?.status }}
-            </template>
-          </Datatable> -->
           <ListView :events="upcomingEvents" :columns="columns" :total-events="upcomingEvents.length" hide-pagination>
             <template #name="{ row }">
               <div class="font-semibold">
@@ -124,6 +101,7 @@
               <div class="flex items-center gap-2">
                 <Button
                   size="icon"
+                  class="min-w-7"
                   @click.stop="toggleExpand(row.original.id)"
                 >
                   <Minus v-if="expanded[row.original.id]" class="size-4" />
@@ -143,7 +121,7 @@
               <div class="flex justify-between">
                 <div class="flex items-center gap-2 w-44">
                   <span
-                    class="inline-flex items-center justify-center text-white font-bold text-sm w-7 h-7 rounded-lg shadow"
+                    class="inline-flex items-center justify-center text-white font-bold text-sm min-w-7 h-7 rounded-lg shadow"
                     :class="{
                       'bg-green-400': row.original?.wins > row.original?.loses,
                       'bg-red-400': row.original?.wins < row.original?.loses,

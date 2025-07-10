@@ -168,7 +168,7 @@
 import type { EventPlayerRates, Group } from '@/schemas/events';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/shares/ui/accordion';
-import { CalendarIcon } from 'lucide-vue-next';
+import { ArrowDown, ArrowUp, CalendarIcon } from 'lucide-vue-next';
 
 defineProps<{
   groups: Group[];
