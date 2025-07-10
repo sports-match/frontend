@@ -4,7 +4,7 @@
       Welcome Back, {{ userStore.userDetails?.user?.user?.username }}
     </template>
     <template #action>
-      <CreateEvent />
+      <CreateEvent @on-submitted="() => { fetchData(); getUpCommingEvent(); }" />
     </template>
     <div v-if="!showPendingForOrganizer" class="flex flex-col gap-4">
       <EventCard :events="upcomingEvents?.content" />
