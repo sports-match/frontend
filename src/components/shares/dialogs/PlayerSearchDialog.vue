@@ -146,7 +146,7 @@ async function submitPlayer() {
       } else {
         await teamPlayerAssign({
           targetTeamId: props.teamId,
-          teamPlayerId: selectedPlayer.value.teamId,
+          teamPlayerId: selectedPlayer.value?.player?.teamPlayerId,
         });
         notify.success('Player assign successfully');
       }

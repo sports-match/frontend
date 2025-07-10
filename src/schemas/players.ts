@@ -15,4 +15,5 @@ export type Player = {
   }[];
   updateTime: string;
   userId: number;
+  teamPlayerId?: number;
 };
