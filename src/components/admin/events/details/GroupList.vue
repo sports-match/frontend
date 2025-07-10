@@ -9,7 +9,7 @@
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto sm:justify-end">
-        <Button v-if="groups[0].finalized" class="bg-primary text-white w-full sm:w-auto" @click="generateMatches">
+        <Button v-if="groups[0].finalized && !groups[0].matches.length" class="bg-primary text-white w-full sm:w-auto" @click="generateMatches">
           <Gamepad class="w-5 h-5 mr-2" /> Generate Matches
         </Button>
 

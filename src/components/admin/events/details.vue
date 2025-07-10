@@ -180,6 +180,8 @@ async function finalizeGroup() {
     await finalizeGroups(id as string);
     notify.success('Group Finalized successfully');
     fetchGroups();
+    getMatches();
+    fetchEvent();
   } catch (error) {
     notify.error(error as string);
   }
@@ -191,6 +193,7 @@ async function generatingMatches() {
     notify.success(data.message);
     getMatches();
     fetchGroups();
+    fetchEvent();
   } catch (error) {
     notify.error(error as string);
   }
