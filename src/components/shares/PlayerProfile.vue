@@ -84,12 +84,20 @@
     <div class="bg-white rounded-xl">
       <GraphView :data="dashboard" />
     </div>
+
+    <DashboardTabs hide-my-events :completed-events="completedEvents" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { getEvents } from '@/api/event';
+import DashboardTabs from '@/components/user/dashboardTabs.vue';
 import GraphView from '@/components/user/graphView.vue';
+import { notify } from '@/composables/notify';
+import { useUserStore } from '@/stores';
 import { CircleCheck, MapPin } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 defineProps<{
   dashboard: {
@@ -104,4 +112,29 @@ defineProps<{
     singleEventRatingChanges?: number;
   };
 }>();
+const userStore = useUserStore();
+const route = useRoute();
+
+const { id } = route.params;
+const playerId = computed(() => userStore?.userDetails.playerId);
+
+const completedEvents = ref([]);
+
+onMounted(() => {
+  fetchCompleted();
+});
+
+async function fetchCompleted() {
+  try {
+    const { data: { content } } = await getEvents({
+      size: 10,
+      sort: 'eventTime',
+      status: 'COMPLETED',
+      playerId: id || playerId.value,
+    });
+    completedEvents.value = content;
+  } catch (error) {
+    notify.error(error as string);
+  }
+}
 </script>

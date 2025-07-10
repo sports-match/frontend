@@ -1,8 +1,9 @@
 <template>
   <div>
-    <Tabs default-value="myEvents" class="w-full">
+    <Tabs :default-value="hideMyEvents ? 'recentGames' : 'myEvents'" class="w-full">
       <TabsList class="border-b border-gray-200 w-full justify-start space-x-6 bg-transparent rounded-xs">
         <TabsTrigger
+          v-if="!hideMyEvents"
           value="myEvents"
           class="flex rounded-none items-center gap-1 text-black data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary px-0 pb-2 text-sm font-medium transition-colors"
         >
@@ -19,7 +20,7 @@
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="myEvents">
+      <TabsContent v-if="!hideMyEvents" value="myEvents">
         <div class="grid grid-cols-1 md:grid-cols-[1.5fr,1fr] gap-4 mt-4">
           <ListView :events="upcomingEvents" :columns="columns" :total-events="upcomingEvents.length" hide-pagination>
             <template #name="{ row }">
@@ -222,6 +223,10 @@ defineProps({
   completedEvents: {
     type: Array,
     default: () => [],
+  },
+  hideMyEvents: {
+    type: Boolean,
+    default: false,
   },
 });
 
