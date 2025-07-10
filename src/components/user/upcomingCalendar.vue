@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl shadow p-4 space-y-4">
+  <div class="p-4 space-y-4">
     <div class="flex align-middle gap-2">
       <span class="text-xl font-semibold">
         Game Day
@@ -103,16 +103,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   events: () => [],
 });
-
-// const todayEvent: ComputedRef<Event[]> = computed(() => {
-//   const today = new Date();
-//   return props.events?.filter((event) => {
-//     const eventDate = new Date(event.eventTime);
-//     return eventDate.getFullYear() === today.getFullYear()
-//       && eventDate.getMonth() === today.getMonth()
-//       && eventDate.getDate() === today.getDate();
-//   });
-// });
 
 const upcommingNoToday: ComputedRef<Event[]> = computed(() => {
   const today = new Date();

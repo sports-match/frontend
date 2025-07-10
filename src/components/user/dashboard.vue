@@ -32,7 +32,7 @@
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Doubles Rating -->
-          <div class="bg-white text-black rounded-xl p-6 shadow space-y-2">
+          <Card class="rounded-xl p-6 space-y-2">
             <div class="text-sm flex justify-between items-start">
               <span class="text-gray-500">SSR</span>
               <div class="bg-gray-100 p-2 rounded-full">
@@ -56,10 +56,10 @@
                 {{ dashboard.doubleEventRatingChanges }}
               </div>
             </div>
-          </div>
+          </Card>
 
           <!-- Singles Rating -->
-          <div class="bg-white text-black rounded-xl p-6 shadow space-y-2">
+          <Card class="rounded-xl p-6 space-y-2">
             <div class="text-sm flex justify-between items-start">
               <span class="text-gray-500">SSR</span>
               <div class="bg-gray-100 p-2 rounded-full">
@@ -83,58 +83,57 @@
                 {{ dashboard.singleEventRatingChanges }}
               </div>
             </div>
-          </div>
+          </Card>
 
           <!-- Total Events -->
-          <div class="bg-white text-black rounded-xl p-6 shadow space-y-2">
+          <Card class="rounded-xl p-6 space-y-2">
             <div class="text-sm flex justify-between items-start">
               <span class="text-gray-500">Total Events</span>
               <div class="bg-gray-100 p-2 rounded-full">
                 <Calendar1 class="size-8" />
               </div>
             </div>
-            <!-- <div class="font-semibold text-lg">
-            Total Events
-          </div> -->
             <div class="text-2xl font-bold">
               {{ dashboard.totalEvent }}
             </div>
             <div>
               Times
             </div>
-          </div>
+          </Card>
         </div>
 
         <!-- Ratings Progress Chart -->
-        <div class="bg-white rounded-xl">
-          <GraphView :data="dashboard" />
+
+        <GraphView :data="dashboard" />
         <!-- Chart component here -->
-        </div>
       </div>
 
       <!-- Sidebar (right, 1/3 width) -->
       <div class="flex flex-col gap-6">
         <!-- Last Match Card -->
-        <div class="bg-gradient-to-r from-gray-900 to-black text-white p-6 rounded-xl">
+        <div class="bg-gradient-to-r from-gray-900 to-black text-white p-6 rounded-xl flex flex-col">
           <h2 class="text-lg font-semibold mb-2">
             Last Match
           </h2>
-          <template v-if=" getLastMatchTextAndDate.text">
+          <template v-if="getLastMatchTextAndDate.text">
             <p class="text-xl font-bold">
               {{ getLastMatchTextAndDate.text }}
             </p>
-            <p class="text-sm text-gray-400">
+            <p class="text-sm text-gray-400 mt-auto">
               {{ formatDate(getLastMatchTextAndDate.date) || '' }}
             </p>
           </template>
           <template v-else>
-            <p class="text-sm text-gray-400 h-12">
+            <p class="text-sm text-gray-400 h-12 mt-auto">
               No Record yet
             </p>
           </template>
         </div>
+
         <!-- Calendar & Events -->
-        <UpcomingCalendar :event-today="dashboard.eventToday" :events="dashboard.upcomingEvents" />
+        <Card class="flex-1 items-stretch rounded-xl">
+          <UpcomingCalendar :event-today="dashboard.eventToday" :events="dashboard.upcomingEvents" />
+        </Card>
       </div>
     </div>
     <div class="mt-6">
@@ -148,6 +147,7 @@ import type { Dashboard } from '@/schemas/dashboard';
 import { getEvents } from '@/api/event';
 import { playersDashboard } from '@/api/user';
 import { MainContentLayout } from '@/components/shares/main-content-layout';
+import { Card } from '@/components/shares/ui/card';
 import DashboardTabs from '@/components/user/dashboardTabs.vue';
 import GraphView from '@/components/user/graphView.vue';
 import UpcomingCalendar from '@/components/user/upcomingCalendar.vue';

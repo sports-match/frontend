@@ -50,6 +50,7 @@ export type AuthUser = {
     dataScopes: any[];
     roles: string[];
     user: BaseUser;
+    username: string;
   };
   organizerId?: number;
   completedClubSelection?: boolean;

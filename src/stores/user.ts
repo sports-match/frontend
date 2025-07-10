@@ -18,6 +18,7 @@ export const useUserStore = defineStore('user', {
       completedClubSelection: false,
       organizerId: null as number | null,
       organizerInfo: {},
+      user: {},
     } as AuthUser,
   }),
   actions: {

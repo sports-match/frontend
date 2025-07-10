@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg p-4 shadow space-y-6">
+  <Card class="rounded-xl p-4 space-y-6">
     <div class="text-xl font-semibold">
       Ratings Progress
     </div>
@@ -18,11 +18,12 @@
     <div class="h-72">
       <LineChart :data="chartData" :options="chartOptions" />
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import type { TooltipItem } from 'chart.js';
+import { Card } from '@/components/shares/ui/card';
 import { useDateFormat } from '@vueuse/core';
 import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip } from 'chart.js';
 import { computed } from 'vue';
