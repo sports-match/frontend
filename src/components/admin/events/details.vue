@@ -170,6 +170,7 @@ async function onSubmitScore() {
     notify.success('Scores Submit successfully');
     fetchGroups();
     fetchEvent();
+    fetchPlayerRates();
   } catch (error) {
     notify.error(error as string);
   }
