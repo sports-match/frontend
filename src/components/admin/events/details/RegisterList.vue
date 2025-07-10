@@ -45,7 +45,7 @@
           <Button v-if="event.status === 'PUBLISHED'" variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
             <Dock class="size-4" />
           </Button>
-          <Button v-if="row.original.status !== 'CHECKED_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
+          <Button v-if="row.original.status !== 'CHECKED_IN' && event.status === 'CHECK_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
             <CircleCheck class="size-4" />
           </Button>
         </div>
