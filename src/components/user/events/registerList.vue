@@ -44,7 +44,7 @@
           />
           <X v-if="row.original?.status !== 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId" class="size-6 text-red-500" />
         </div>
-        <div v-if="row.original?.player?.id === currentUserPlayerId" class="flex gap-2">
+        <div v-if="row.original?.player?.id === currentUserPlayerId || row.original?.partner?.id === currentUserPlayerId" class="flex gap-2">
           <div v-if="row.original?.status !== 'CHECKED_IN'" v-tooltip="getCheckInCountdown(event.checkInStart)">
             <Button
               size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
