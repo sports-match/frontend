@@ -84,7 +84,7 @@
                   </Button>
                 </div>
               </TableCell> -->
-              <TableCell>{{ group.groupTeamSize }}</TableCell>
+              <TableCell>{{ group.playerCount }}</TableCell>
             <!-- <TableCell class="text-right">
             </TableCell> -->
             </TableRow>
