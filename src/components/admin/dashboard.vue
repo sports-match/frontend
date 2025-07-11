@@ -61,6 +61,7 @@ async function fetchData(params: EventParams = {}) {
     page,
     size,
     sort,
+    eventTimeFilter: 'UPCOMING',
   });
 }
 
