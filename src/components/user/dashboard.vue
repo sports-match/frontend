@@ -1,7 +1,7 @@
 <template>
   <MainContentLayout>
     <template #title>
-      Welcome Back, {{ userStore.userDetails?.user?.username }}
+      Welcome Back, {{ userStore.userDetails?.user?.user?.username }}
     </template>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
