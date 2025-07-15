@@ -188,7 +188,7 @@ async function submitQuestions() {
   try {
     await answerSelfAssessment({ answers: answers.value });
     userStore.setAssessmentStatus(true);
-    router.push({ path: redirect?.toString() ?? '/dashboard', replace: true });
+    router.push({ path: (redirect?.toString() && redirect?.toString() !== 'undefined') ? redirect?.toString() : '/dashboard', replace: true });
     notify.success('Assessment submitted successfully!');
   } catch (error) {
     notify.error(error as string);

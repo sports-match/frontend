@@ -81,7 +81,10 @@
       <p class="text-sm text-muted-foreground">
         Already have an account?
         <Button variant="link" size="sm" class="p-0 ml-2">
-          <RouterLink :to="`/auth/login?redirect=${redirect}`" class="text-primary">
+          <RouterLink
+            :to="redirect ? `/auth/login?redirect=${redirect}` : '/auth/login'"
+            class="text-primary"
+          >
             Sign in
           </RouterLink>
         </Button>

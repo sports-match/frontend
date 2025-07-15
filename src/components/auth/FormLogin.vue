@@ -42,7 +42,7 @@
       <p class="text-sm text-muted-foreground">
         Not a member?
         <Button variant="link" size="sm" class="p-0 ml-2">
-          <RouterLink :to="`/auth/signup?redirect=${redirect}`" class="text-primary">
+          <RouterLink :to="redirect ? `/auth/signup?redirect=${redirect}` : '/auth/signup'" class="text-primary">
             Sign up
           </RouterLink>
         </Button>
@@ -85,7 +85,7 @@ async function onSubmit() {
     const { token } = useAuthentication();
     set(token, accessToken);
     userStore.setUserDetails(rest);
-    router.push({ path: redirect?.toString() ?? '/dashboard', replace: true });
+    router.push({ path: (redirect?.toString() && redirect?.toString() !== 'undefined') ? redirect?.toString() : '/dashboard', replace: true });
     notify.success('Login successful!');
   } catch (error) {
     notify.error(error as string);
