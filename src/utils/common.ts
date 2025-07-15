@@ -1,7 +1,5 @@
 export function formatDate(
   input: string | Date | undefined | null,
-  options?: Intl.DateTimeFormatOptions,
-  locale: string = 'en-US',
 ): string {
   let date: Date;
 
@@ -19,14 +17,8 @@ export function formatDate(
   if (Number.isNaN(date?.getTime()))
     return 'Invalid Date';
 
-  return new Intl.DateTimeFormat(locale, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    ...(options || {}),
-  }).format(date);
+  const utcDate = new Date(`${date} UTC`);
+  return utcDate.toLocaleString();
 }
 
 export function formatStatus(status: string) {
