@@ -107,29 +107,24 @@ async function fetchPlayers(reset = false) {
   if (loading.value || (!hasMore.value && !reset))
     return;
 
+  loading.value = true;
   try {
-    loading.value = true;
     if (reset) {
       page.value = 1;
       hasMore.value = true;
       players.value = [];
     }
 
-    const {
-      data: { content, totalElements },
-    } = await getPlayers({
+    const { data: { content, totalElements } } = await getPlayers({
       page: page.value - 1,
       size: pageSize,
       name: search.value,
     });
 
-    if (reset) {
-      players.value = content.filter((p: Player) => !props.excludeIds.includes(p.id));
-    } else {
-      players.value = [...players.value, ...content].filter((p: Player) => !props.excludeIds.includes(p.id));
-    }
+    const newPlayers = content.filter((p: Player) => !props.excludeIds.includes(p.id));
+    players.value = reset ? newPlayers : players.value.concat(newPlayers);
 
-    hasMore.value = players.value.length < totalElements;
+    hasMore.value = players.value.length + (props.excludeIds?.length || 0) < totalElements;
     page.value++;
   } catch (error) {
     notify.error(error as string);
@@ -183,9 +178,10 @@ watch(open, (val) => {
 useInfiniteScroll(
   scrollTarget,
   () => {
-    if (hasMore.value && !loading.value)
+    if (hasMore.value && !loading.value) {
       fetchPlayers();
+    }
   },
-  { distance: 100 },
+  { distance: 150 },
 );
 </script>
