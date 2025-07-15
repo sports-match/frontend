@@ -28,7 +28,7 @@
         <p class="text-xl text-gray-300">
           Badminton ladders are live – be part of the very first season in Washington!
         </p>
-        <Button class="mt-4">
+        <Button class="mt-4" @click="$router.push({ name: 'AuthLoginPage' })">
           Explore Competitive Ladders
         </Button>
       </section>
@@ -175,7 +175,7 @@
           SportRevive is reinventing community play. Whether you're rediscovering a sport you love or trying something completely new — there's a spot waiting for you.
         </p>
         <div class="flex flex-col md:flex-row justify-center gap-4">
-          <Button class="bg-blue-600 hover:bg-blue-700">
+          <Button class="bg-blue-600 hover:bg-blue-700" @click="$router.push({ name: 'AuthLoginPage' })">
             Explore Ladders
           </Button>
           <Button variant="ghost" class="text-white border border-white">
