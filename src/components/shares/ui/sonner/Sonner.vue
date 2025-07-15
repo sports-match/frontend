@@ -2,6 +2,7 @@
   <Sonner
     class="toaster group"
     v-bind="props"
+    :expand="false"
     :toast-options="{
       classes: {
         description: 'group-[.toast]:text-muted-foreground',
