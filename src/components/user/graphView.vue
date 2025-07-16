@@ -150,9 +150,9 @@ const chartOptions = {
     },
     y: {
       min: Math.min(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)),
-      max: Math.max(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)) + 5,
+      max: Math.max(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)) + 100,
       ticks: {
-        stepSize: 0.5,
+        stepSize: 1,
       },
       grid: {
         color: '#e5e7eb', // Tailwind gray-200
