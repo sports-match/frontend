@@ -38,107 +38,64 @@
 
         <!-- Table Body -->
         <TableBody>
-          <template v-for="(group, gIndex) in groups" :key="gIndex">
-            <!-- Main Group Row -->
-            <TableRow class="cursor-pointer hover:bg-muted" @click="toggleExpand(gIndex)">
-              <TableCell class="p-6 flex font-medium items-center gap-2 ">
+          <template v-for="(group, gIndex) in groups" :key="group.id">
+            <!-- Group Header Row -->
+            <TableRow
+              class="cursor-pointer hover:bg-muted"
+              @click="toggleExpand(gIndex)"
+              @dragenter.prevent="expandOnDragEnter(gIndex)"
+            >
+              <TableCell class="p-6 flex font-medium items-center gap-2">
                 <Button size="sm">
                   <Minus v-if="expanded[gIndex]" class="size-4" />
                   <Plus v-else class="size-4" />
                 </Button>
-                <span>
-                  {{ group.name }}
-                </span>
+                {{ group.name }}
               </TableCell>
-              <TableCell class="items-center p-2">
-                <div class="flex items-center justify-between">
-                  <span>
-                    {{ group.matches?.length }}
-                  </span>
-                  <!-- <Button variant="outline" size="sm">
-                    <Edit class="size-3 text-primary" />
-                  </Button> -->
-                </div>
-              </TableCell>
+              <TableCell>{{ group.matches?.length }}</TableCell>
               <TableCell>
-                <div class="flex items-center justify-between" @click.stop>
-                  <!-- <span>
-                    {{ group.courtNumbers }}
-                  </span>
-                  <Button variant="outline" size="sm">
-                    <Edit class="size-3 text-primary" />
-                  </Button> -->
-                  <InlineEdit v-if="!group.finalized" v-model="group.courtNumbers" @update:model-value="updateCourtNumber(group.courtNumbers, group.id)" />
-                  <span v-else>
-                    {{ group.courtNumbers }}
-                  </span>
-                </div>
+                <InlineEdit
+                  v-if="!group.finalized"
+                  v-model="group.courtNumbers"
+                  @update:model-value="updateCourtNumber(group.courtNumbers, group.id)"
+                />
+                <span v-else>{{ group.courtNumbers }}</span>
               </TableCell>
-              <!-- <TableCell>
-                <div class="flex items-center justify-between">
-                  <span>
-                    {{ group.time }}
-                  </span>
-                  <Button variant="outline" size="sm">
-                    <Clock class="size-3 text-primary" />
-                  </Button>
-                </div>
-              </TableCell> -->
               <TableCell>{{ group.playerCount }}</TableCell>
-            <!-- <TableCell class="text-right">
-            </TableCell> -->
             </TableRow>
 
-            <!-- Expandable Nested Rows -->
+            <!-- Expanded Nested Teams -->
             <template v-if="expanded[gIndex]">
               <TableRow class="bg-muted/50">
                 <TableCell colspan="6" class="pl-14 pt-2 pb-4">
                   <div class="grid grid-cols-6 font-semibold pb-2 border-b">
                     <span class="col-span-3">Players Name</span>
-                    <!-- <span>Rank</span> -->
-                  <!-- <span class="col-span-2 text-right">Actions</span> -->
                   </div>
 
-                  <div
-                    v-for="(player, pIndex) in group.teams"
-                    :key="pIndex"
-                    class="grid grid-cols-6 py-2 border-b last:border-b-0 text-sm"
+                  <!-- Inner Container (Players per Group) -->
+                  <Container
+                    group-name="players-group"
+                    orientation="vertical"
+                    drag-handle-selector=".drag-handle"
+                    :get-child-payload="(index: number) => ({ team: groups[gIndex].teams[index], groupIndex: gIndex })"
+                    :should-accept-drop="() => true"
+                    @drop="(e: any) => onDrop(gIndex, e)"
                   >
-                    <span v-for="(team, tIndex) in player.teamPlayers" :key="tIndex" class="col-span-3 p-2">
-                      {{ team.player?.name }} ({{ team.player?.playerSportRating[0]?.rateScore }})
-                    </span>
-                    <!-- <span class="p-2">{{ player.rank }}</span> -->
-                  <!-- <div class="col-span-2 flex justify-end gap-2">
-                    <Button variant="ghost" size="sm">
-                      <ArrowLeftRight class="text-blue-500 size-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <ClockAlert class="text-yellow-500 size-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Dock class="text-red-500 size-4" />
-                    </Button>
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger as-child>
-                        <Button variant="ghost" size="sm">
-                          <Ellipsis class="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Eye class="size-4 mr-2" /> View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit class="size-4 mr-2" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem class="text-destructive">
-                          <Trash class="size-4 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div> -->
-                  </div>
+                    <Draggable
+                      v-for="(player, pIndex) in group.teams"
+                      :key="player.id || pIndex"
+                    >
+                      <div class="grid grid-cols-6 py-2 border-b text-sm bg-white/50 hover:bg-muted cursor-move">
+                        <span class="col-span-3 p-2 drag-handle flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M7 4h2v2H7V4zm0 4h2v2H7V8zm0 4h2v2H7v-2zm4-8h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2z" />
+                          </svg>
+                          {{ player.teamPlayers?.[0]?.player?.name }}
+                          ({{ player.teamPlayers?.[0]?.player?.playerSportRating?.[0]?.rateScore }})
+                        </span>
+                      </div>
+                    </Draggable>
+                  </Container>
                 </TableCell>
               </TableRow>
             </template>
@@ -151,7 +108,7 @@
 
 <script setup lang="ts">
 import type { Group } from '@/schemas/events';
-import { editCourt } from '@/api/event';
+import { editCourt, relocateTeam } from '@/api/event';
 import InlineEdit from '@/components/shares/InlineEdit.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Input } from '@/components/shares/ui/input';
@@ -159,14 +116,96 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { notify } from '@/composables/notify';
 import { Clock, Edit, Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { Container, Draggable } from 'vue3-smooth-dnd';
+import { useRoute } from 'vue-router';
 
 const props = defineProps<{
   groups: Group[];
 }>();
-const emit = defineEmits(['generateMatches', 'finalizeGroup']);
-const search = ref('');
 
-const expanded = ref(props.groups.map(() => false));
+const emit = defineEmits(['generateMatches', 'finalizeGroup', 'fetchGroups']);
+
+const route = useRoute();
+
+const { id: eventId } = route.params;
+const groups = ref(JSON.parse(JSON.stringify(props.groups))); // deep clone for reactivity
+
+const expanded = ref<boolean[]>([]);
+const draggingFrom = ref<number | null>(null);
+
+function toggleExpand(index: number) {
+  expanded.value[index] = !expanded.value[index];
+}
+
+function expandOnDragEnter(gIndex: number) {
+  if (!expanded.value[gIndex]) {
+    expanded.value[gIndex] = true;
+  }
+}
+
+// Move player between groups
+function onDrop(targetGroupIndex: number, dropResult: any) {
+  if (!dropResult)
+    return;
+
+  const { removedIndex, addedIndex, payload } = dropResult;
+  if (removedIndex == null && addedIndex == null)
+    return;
+
+  // Move within the same group
+  if (payload && payload.groupIndex === targetGroupIndex) {
+    if (removedIndex != null && addedIndex != null) {
+      const updated = [...groups.value[targetGroupIndex].teams];
+      const [moved] = updated.splice(removedIndex, 1);
+      updated.splice(addedIndex, 0, moved);
+      groups.value[targetGroupIndex].teams = updated;
+    }
+  }
+  // Move between groups
+  else if (payload && payload.groupIndex !== undefined && addedIndex != null) {
+    const fromGroupIndex = payload.groupIndex;
+    const movedTeamId = payload.team.id;
+
+    // Find and remove from source group
+    const sourceTeams = [...groups.value[fromGroupIndex].teams];
+    const realRemovedIndex = sourceTeams.findIndex(t => t.id === movedTeamId);
+    if (realRemovedIndex === -1)
+      return;
+    const [moved] = sourceTeams.splice(realRemovedIndex, 1);
+
+    // Add to target group at the correct position
+    const targetTeams = [...groups.value[targetGroupIndex].teams];
+    targetTeams.splice(addedIndex, 0, moved);
+
+    // Save previous state for rollback
+    const prevSourceTeams = [...groups.value[fromGroupIndex].teams];
+    const prevTargetTeams = [...groups.value[targetGroupIndex].teams];
+
+    // Optimistically update UI
+    groups.value[fromGroupIndex].teams = sourceTeams;
+    groups.value[targetGroupIndex].teams = targetTeams;
+
+    // Wait for API, rollback if error
+    moveTeam(movedTeamId, groups.value[targetGroupIndex].id, () => {
+      // Rollback on error
+      groups.value[fromGroupIndex].teams = prevSourceTeams;
+      groups.value[targetGroupIndex].teams = prevTargetTeams;
+    });
+  }
+}
+
+async function moveTeam(teamId: number, targetGroupId: number, onError?: () => void) {
+  try {
+    await relocateTeam(eventId as string, { teamId, targetGroupId });
+    notify.success('Team moved successfully');
+  } catch (error) {
+    notify.error(error as string);
+    if (onError)
+      onError();
+  } finally {
+    fetchGroups();
+  }
+}
 
 async function updateCourtNumber(courtNumber: string, groupId: number) {
   try {
@@ -176,8 +215,9 @@ async function updateCourtNumber(courtNumber: string, groupId: number) {
     notify.error(error as string);
   }
 }
-function toggleExpand(index: number) {
-  expanded.value[index] = !expanded.value[index];
+
+function fetchGroups() {
+  emit('fetchGroups');
 }
 
 function generateMatches() {
