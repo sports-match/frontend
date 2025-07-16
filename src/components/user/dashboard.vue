@@ -49,11 +49,15 @@
               <div
                 class="text-sm"
                 :class="{
-                  'text-green-500': dashboard.singleEventRatingChanges > 0,
-                  'text-red-500': dashboard.singleEventRatingChanges < 0,
+                  'text-green-500': dashboard.doubleEventRatingChanges > 0,
+                  'text-destructive': dashboard.doubleEventRatingChanges < 0,
                 }"
               >
                 {{ dashboard.doubleEventRatingChanges }}
+                <template v-if="dashboard.doubleEventRatingChanges !== 0">
+                  <ArrowUp v-if="dashboard.doubleEventRatingChanges > 0" class="w-4 h-4 text-green-500" />
+                  <ArrowDown v-else class="w-4 h-4 text-destructive" />
+                </template>
               </div>
             </div>
           </Card>
@@ -77,10 +81,14 @@
                 class="text-sm"
                 :class="{
                   'text-green-500': dashboard.singleEventRatingChanges > 0,
-                  'text-red-500': dashboard.singleEventRatingChanges < 0,
+                  'text-destructive': dashboard.singleEventRatingChanges < 0,
                 }"
               >
                 {{ dashboard.singleEventRatingChanges }}
+                <template v-if="dashboard.singleEventRatingChanges !== 0">
+                  <ArrowUp v-if="dashboard.singleEventRatingChanges > 0" class="w-4 h-4 text-green-500" />
+                  <ArrowDown v-else class="w-4 h-4 text-destructive" />
+                </template>
               </div>
             </div>
           </Card>
@@ -154,7 +162,7 @@ import UpcomingCalendar from '@/components/user/upcomingCalendar.vue';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores/user';
 import { formatDate } from '@/utils/common';
-import { Calendar1, User, Users } from 'lucide-vue-next';
+import { ArrowDown, ArrowUp, Calendar1, User, Users } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore();
