@@ -111,11 +111,10 @@ import type { Group } from '@/schemas/events';
 import { editCourt, relocateTeam } from '@/api/event';
 import InlineEdit from '@/components/shares/InlineEdit.vue';
 import { Button } from '@/components/shares/ui/button';
-import { Input } from '@/components/shares/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { notify } from '@/composables/notify';
-import { Clock, Edit, Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 import { Container, Draggable } from 'vue3-smooth-dnd';
 import { useRoute } from 'vue-router';
 
@@ -130,8 +129,15 @@ const route = useRoute();
 const { id: eventId } = route.params;
 const groups = ref(JSON.parse(JSON.stringify(props.groups))); // deep clone for reactivity
 
+// Watch for props.groups change and update local groups
+watch(
+  () => props.groups,
+  (newGroups) => {
+    groups.value = JSON.parse(JSON.stringify(newGroups));
+  },
+  { deep: true },
+);
 const expanded = ref<boolean[]>([]);
-const draggingFrom = ref<number | null>(null);
 
 function toggleExpand(index: number) {
   expanded.value[index] = !expanded.value[index];
