@@ -45,7 +45,7 @@
           <X v-if="row.original?.status !== 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId" class="size-6 text-red-500" />
         </div>
         <div v-if="row.original?.player?.id === currentUserPlayerId || row.original?.partner?.id === currentUserPlayerId" class="flex gap-2">
-          <div v-if="row.original?.status !== 'CHECKED_IN'" v-tooltip="getCheckInCountdown(event.checkInStart)">
+          <div v-if="row.original?.status !== 'CHECKED_IN'" v-tooltip="event.status === 'CHECK_IN' ? '' : getCheckInCountdown(event.checkInStart)">
             <Button
               size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
             >
@@ -59,7 +59,7 @@
             v-if="row.original?.status !== 'CHECKED_IN'"
             variant="destructive"
             size="sm"
-            @click.stop="widthdraw(row.original.player.id)"
+            @click.stop="widthdraw"
           >
             <Dock class="size-4 me-1" />Widthdraw
           </Button>
@@ -142,11 +142,11 @@ async function checkIn() {
   }
 }
 
-async function widthdraw(playerId: string | number) {
+async function widthdraw() {
   try {
     await withdrawEvent(props.event?.id, {
       eventId: props.event?.id,
-      playerId,
+      playerId: currentUserPlayerId.value,
     });
     notify.success('Widthdraw event successfully');
     pullEvent();
