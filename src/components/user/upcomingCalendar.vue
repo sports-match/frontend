@@ -29,7 +29,6 @@
           <router-link v-if="eventToday" :to="{ name: 'ViewEvent', params: { id: eventToday?.id } }" class="hover:underline">
             {{ eventToday.name }}
           </router-link><br>
-          <span class="font-normal truncate block">{{ eventToday?.description }}</span>
         </div>
         <div>
           <span class="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm font-medium">{{ eventToday?.club?.name }}</span>
@@ -71,7 +70,6 @@
           <router-link :to="{ name: 'ViewEvent', params: { id: event.id } }" class="hover:underline">
             {{ event.name }}
           </router-link><br>
-          <span class="font-normal truncate block">{{ event.description }}</span>
         </div>
         <div>
           <span class="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm font-medium">{{ event.club?.name }}</span>
