@@ -40,7 +40,7 @@
 
       <!-- Sidebar -->
       <div class="border rounded-lg p-6">
-        <Button class="w-full" :disabled="isAuthenticated && !event?.isPublic" @click="signUpEvent">
+        <Button class="w-full" :disabled="isAuthenticated && !event?.isPublic || event.status === 'COMPLETED'" @click="signUpEvent">
           <CalendarArrowUp class="mr-2 size-4" />
           Sign up
         </Button>
