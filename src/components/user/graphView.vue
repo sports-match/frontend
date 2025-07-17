@@ -26,7 +26,7 @@ import type { TooltipItem } from 'chart.js';
 import { Card } from '@/components/shares/ui/card';
 import { useDateFormat } from '@vueuse/core';
 import { CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip } from 'chart.js';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Line as LineChart } from 'vue-chartjs';
 
 const props = defineProps({
@@ -78,16 +78,25 @@ function getRateScoresPerDay(allDates: string[], doubles: any[]) {
   });
 }
 
-// const doublesRatings = computed(() => props.data.doubleEventRatingHistory);
-const doublesRatings = computed(() => getRateScoresPerDay(allDates, props.data?.doubleEventRatingHistory || []));
-const singlesRatings = computed(() => getRateScoresPerDay(allDates, props.data?.singleEventRatingHistory || []));
+const doublesRatings = ref<string[]>([]);
+const singlesRatings = ref<string[]>([]);
+const allDatesRef = ref<string[]>(allDates);
+
+watch(
+  () => props.data,
+  (newData) => {
+    doublesRatings.value = getRateScoresPerDay(allDatesRef.value, newData?.doubleEventRatingHistory || []);
+    singlesRatings.value = getRateScoresPerDay(allDatesRef.value, newData?.singleEventRatingHistory || []);
+  },
+  { immediate: true, deep: true },
+);
 
 const chartData = computed(() => ({
-  labels: allDates,
+  labels: allDatesRef.value,
   datasets: [{
     label: 'Doubles Rating',
     data: doublesRatings.value,
-    borderColor: '#22c55e', // green-500
+    borderColor: '#22c55e',
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
     borderWidth: 2,
     pointBorderColor: '#22c55e',
@@ -99,7 +108,7 @@ const chartData = computed(() => ({
   }, {
     label: 'Singles Rating',
     data: singlesRatings.value,
-    borderColor: '#3b82f6', // blue-500
+    borderColor: '#3b82f6',
     backgroundColor: 'rgba(34, 197, 94, 0.1)',
     borderWidth: 2,
     pointBackgroundColor: '#fff',
@@ -111,7 +120,7 @@ const chartData = computed(() => ({
   }],
 }));
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -123,7 +132,7 @@ const chartOptions = {
         usePointStyle: true,
         pointStyle: 'circle',
         backgroundColor: '#22c55e',
-        boxWidth: 8, // Smaller dot
+        boxWidth: 8,
         boxHeight: 8,
         padding: 12,
       },
@@ -141,8 +150,7 @@ const chartOptions = {
       },
       ticks: {
         display: true,
-        // Rotate labels vertically
-        color: '#6b7280', // Tailwind gray-500
+        color: '#6b7280',
         maxRotation: 90,
         minRotation: 90,
         align: 'center',
@@ -150,14 +158,17 @@ const chartOptions = {
     },
     y: {
       min: Math.min(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)),
-      max: Math.max(...doublesRatings.value.map(x => +x), ...singlesRatings.value.map(x => +x)) + 100,
+      max: Math.max(
+        ...doublesRatings.value.map(x => +x),
+        ...singlesRatings.value.map(x => +x),
+      ) + 250,
       ticks: {
-        stepSize: 1,
+        stepSize: 50,
       },
       grid: {
-        color: '#e5e7eb', // Tailwind gray-200
+        color: '#e5e7eb',
       },
     },
   },
-};
+}));
 </script>
