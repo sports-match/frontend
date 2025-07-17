@@ -56,7 +56,8 @@ startDate.setDate(startDate.getDate() - 30);
 const allDates = Array.from({ length: 30 })
   .fill(0)
   .map((_, i) => {
-    const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+    const date = new Date();
+    date.setDate(date.getDate() - (29 - i));
     return date.toISOString().split('T')[0];
   });
 
