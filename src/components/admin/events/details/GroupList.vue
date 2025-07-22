@@ -86,12 +86,15 @@
                       :key="player.id || pIndex"
                     >
                       <div class="grid grid-cols-6 py-2 border-b text-sm bg-white/50 hover:bg-muted cursor-move">
-                        <span class="col-span-3 p-2 drag-handle flex items-center gap-2">
+                        <span class="col-span-4 p-2 drag-handle flex items-center gap-2">
                           <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M7 4h2v2H7V4zm0 4h2v2H7V8zm0 4h2v2H7v-2zm4-8h2v2h-2V4zm0 4h2v2h-2V8zm0 4h2v2h-2v-2z" />
                           </svg>
-                          {{ player.teamPlayers?.[0]?.player?.name }}
-                          ({{ player.teamPlayers?.[0]?.player?.playerSportRating?.[0]?.rateScore }})
+                          <span v-for="(teamPlayer, tIndex) in player.teamPlayers" :key="teamPlayer?.player?.id">
+                            {{ teamPlayer?.player?.name }}
+                            ({{ teamPlayer?.player?.playerSportRating?.[0]?.rateScore }})
+                            <span v-if="tIndex === 0 && player.teamPlayers.length > 1">&</span>
+                          </span>
                         </span>
                       </div>
                     </Draggable>
@@ -113,7 +116,7 @@ import InlineEdit from '@/components/shares/InlineEdit.vue';
 import { Button } from '@/components/shares/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/shares/ui/table';
 import { notify } from '@/composables/notify';
-import { Gamepad, ListTree, Minus, Plus } from 'lucide-vue-next';
+import { Gamepad, ListTree, Minus, Plus, Users } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import { Container, Draggable } from 'vue3-smooth-dnd';
 import { useRoute } from 'vue-router';
