@@ -25,7 +25,7 @@
           <span class="text-destructive">Not yet...</span>
         </span>
         <PlayerSearchDialog
-          v-if="row.original?.player?.id === currentUserPlayerId"
+          v-if="row.original?.player?.id === currentUserPlayerId || row.original?.partner?.id === currentUserPlayerId"
           :event="event"
           :team-id="row.original?.teamId"
           :exclude-ids="[row.original?.player?.id]"
