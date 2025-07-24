@@ -48,7 +48,7 @@
         <RegisterList v-if="event" :event="event" :players="players" @pull-players="fetchPlayers" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent value="participants">
-        <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" />
+        <EventParticipants v-if="event" :event="event" :players="eventParticipants" @pull-players="fetchEventParticipants" @pull-event="fetchEvent" />
       </TabsContent>
       <TabsContent v-if="event.status === 'IN_PROGRESS'" value="matchList">
         <MatchList :event-player-rates="eventPlayerRates" :event-status="event.status" :groups="groups" @pull-groups="fetchGroups" />

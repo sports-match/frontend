@@ -36,18 +36,20 @@
       @on-page-change="getPlayers"
     >
       <template #actions="{ row }">
-        <div class="flex gap-2">
+        <div class="flex gap-1">
           <ReminderDialog :event="event" :player-id="row.original?.id">
             <Button class="bg-yellow-500 hover:bg-yellow-400" size="icon">
               <ClockAlert class="size-4" />
             </Button>
           </ReminderDialog>
-          <Button v-if="event.status === 'PUBLISHED'" variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
-            <Dock class="size-4" />
-          </Button>
-          <Button v-if="row.original.status !== 'CHECKED_IN' && event.status === 'CHECK_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
-            <CircleCheck class="size-4" />
-          </Button>
+          <template v-if="!(row.original?.player?.id && row.original?.partner?.id)">
+            <Button v-if="row.original.status !== 'CHECKED_IN' && event.status === 'CHECK_IN'" class="bg-green-500 hover:bg-green-400" size="icon" @click.stop="checkIn(row.original?.player?.id)">
+              <CircleCheck class="size-4" />
+            </Button>
+            <Button v-if="event.status === 'PUBLISHED'" variant="destructive" size="icon" @click.stop="widthdraw(row.original?.player?.id)">
+              <Dock class="size-4" />
+            </Button>
+          </template>
         </div>
       </template>
       <template #checkIn="{ row }">
