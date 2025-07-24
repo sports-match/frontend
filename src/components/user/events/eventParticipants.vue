@@ -1,8 +1,19 @@
 <template>
   <div>
-    <div class="flex justify-end">
+    <div v-if="event.status === 'CHECK_IN' || event.status === 'PUBLISHED'" class="flex justify-end gap-2">
+      <div v-if="!isCurrentPlayerCheckedIn" v-tooltip="event.status === 'CHECK_IN' ? '' : getCheckInCountdown(event.checkInStart)">
+        <Button
+          v-if="event.playerStatus !== 'CHECKED_IN' "
+          size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
+        >
+          <CopyCheckIcon class="size-4 me-2" />
+          <span class="inline-block whitespace-nowrap">
+            Check In
+          </span>
+        </Button>
+      </div>
       <Button
-        v-if="event.playerStatus === 'CHECKED_IN'"
+        v-if="event.status === 'CHECK_IN' || event.status === 'PUBLISHED'"
         variant="destructive"
         size="sm"
         @click.stop="widthdraw"
@@ -36,12 +47,13 @@
 import type { Event } from '@/schemas/events';
 import type { Player } from '@/schemas/players';
 import type { ColumnDef } from '@tanstack/vue-table';
-import { withdrawEvent } from '@/api/event';
+import { checkinEvent, withdrawEvent } from '@/api/event';
 import Datatable from '@/components/shares/datatable/index.vue';
 import { Button } from '@/components/shares/ui/button';
 import { notify } from '@/composables/notify';
 import { useUserStore } from '@/stores';
-import { CircleCheck, Dock, X } from 'lucide-vue-next';
+import { getCheckInCountdown } from '@/utils/common';
+import { CircleCheck, CopyCheckIcon, Dock, X } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -56,7 +68,7 @@ const userStore = useUserStore();
 const participantsTable = ref();
 
 const currentUserPlayerId = computed(() => userStore?.userDetails.playerId);
-// const isCurrentUser = computed(() => props.players?.find((p: any) => p.player?.id === currentUserPlayerId.value));
+const isCurrentPlayerCheckedIn = computed(() => props.players?.find((p: any) => p.player?.id === currentUserPlayerId.value)?.status === 'CHECKED_IN');
 
 const columns: ColumnDef<any>[] = [
   {
@@ -73,6 +85,20 @@ const columns: ColumnDef<any>[] = [
     header: 'Check In?',
   },
 ];
+
+async function checkIn() {
+  try {
+    await checkinEvent(props.event?.id, {
+      eventId: props.event?.id,
+      playerId: currentUserPlayerId.value,
+    });
+    notify.success('Checked in successfully');
+    emit('pullEvent');
+    getPlayers();
+  } catch (e) {
+    notify.error(e as string);
+  }
+}
 
 function getPlayers() {
   const { table } = participantsTable.value;

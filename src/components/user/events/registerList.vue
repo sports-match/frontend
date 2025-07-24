@@ -42,12 +42,12 @@
             v-if="row.original?.status === 'CHECKED_IN'"
             class="size-6 text-green-500"
           />
-          <X v-if="row.original?.status !== 'CHECKED_IN' && row.original?.player?.id !== currentUserPlayerId" class="size-6 text-red-500" />
+          <X v-if="row.original?.status !== 'CHECKED_IN'" class="size-6 text-red-500" />
         </div>
-        <div v-if="row.original?.player?.id === currentUserPlayerId || row.original?.partner?.id === currentUserPlayerId" class="flex gap-2">
+        <!-- <div v-if="row.original?.player?.id === currentUserPlayerId || row.original?.partner?.id === currentUserPlayerId" class="flex gap-2">
           <div v-if="row.original?.status !== 'CHECKED_IN'" v-tooltip="event.status === 'CHECK_IN' ? '' : getCheckInCountdown(event.checkInStart)">
             <Button
-              v-if="event.playerStatus !== 'CHECKED_IN'"
+              v-if="event.playerStatus !== 'CHECKED_IN' "
               size="sm" :disabled="event.status !== 'CHECK_IN'" @click="checkIn"
             >
               <CopyCheckIcon class="size-4 me-2" />
@@ -57,14 +57,14 @@
             </Button>
           </div>
           <Button
-            v-if="row.original?.status !== 'CHECKED_IN'"
+            v-if="row.original?.status !== 'CHECKED_IN' && event.status === 'CHECK_IN'"
             variant="destructive"
             size="sm"
             @click.stop="widthdraw"
           >
             <Dock class="size-4 me-1" />Widthdraw
           </Button>
-        </div>
+        </div> -->
       </template>
     </Datatable>
   </div>
@@ -125,34 +125,34 @@ function getPlayers() {
   emit('pullPlayers', { page: pageIndex, size: pageSize });
 }
 
-function pullEvent() {
-  emit('pullEvent');
-}
+// function pullEvent() {
+//   emit('pullEvent');
+// }
 
-async function checkIn() {
-  try {
-    await checkinEvent(props.event?.id, {
-      eventId: props.event?.id,
-      playerId: currentUserPlayerId.value,
-    });
-    notify.success('Checked in successfully');
-    pullEvent();
-    getPlayers();
-  } catch (e) {
-    notify.error(e as string);
-  }
-}
+// async function checkIn() {
+//   try {
+//     await checkinEvent(props.event?.id, {
+//       eventId: props.event?.id,
+//       playerId: currentUserPlayerId.value,
+//     });
+//     notify.success('Checked in successfully');
+//     pullEvent();
+//     getPlayers();
+//   } catch (e) {
+//     notify.error(e as string);
+//   }
+// }
 
-async function widthdraw() {
-  try {
-    await withdrawEvent(props.event?.id, {
-      eventId: props.event?.id,
-      playerId: currentUserPlayerId.value,
-    });
-    notify.success('Widthdraw event successfully');
-    pullEvent();
-  } catch (e) {
-    notify.error(e as string);
-  }
-}
+// async function widthdraw() {
+//   try {
+//     await withdrawEvent(props.event?.id, {
+//       eventId: props.event?.id,
+//       playerId: currentUserPlayerId.value,
+//     });
+//     notify.success('Widthdraw event successfully');
+//     pullEvent();
+//   } catch (e) {
+//     notify.error(e as string);
+//   }
+// }
 </script>
